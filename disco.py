@@ -580,7 +580,7 @@ multipip_res = subprocess.run(
 ).stdout.decode("utf-8")
 print(multipip_res)
 
-if is_colab or michael_mode:
+if is_colab:
     subprocess.run(["apt", "install", "imagemagick"], stdout=subprocess.PIPE).stdout.decode("utf-8")
 
 try:
