@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "deforum-stable-diffusion"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.pyright]
+include = ["keyframes.py"]
+exclude = [
+    "**/__pycache__",
+    ".venv"
+]
+reportMissingImports = true
+venvPath = "./.venv/"
+stubPath = "./typings/"
+executionEnvironments = [
+    { root = "./", venv = "./", extraPaths = [] }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.15.6"
+black = "^22.10.0"
+poethepoet = "^0.16.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
