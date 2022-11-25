@@ -3268,6 +3268,8 @@ if animation_mode == "Video Input":
 
                 framecount = 0
                 for frame1, frame2 in tqdm(zip(frames[:-1], frames[1:]), total=len(frames) - 1):
+                    if framecount % 50 == 0:
+                        print(f"Process flowframes: {framecount}")
 
                     out_flow21_fn = f"{flo_fwd_folder}/{frame1.split('/')[-1]}"
 
