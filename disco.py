@@ -432,6 +432,7 @@ else:
 # !! }}
 # @title 1.2 Prepare Folders
 import subprocess, os, sys, ipykernel
+from external_settings import michael_mode, vid_input
 
 
 def gitclone(url, targetdir=None):
@@ -509,7 +510,7 @@ def createPath(filepath):
 
 initDirPath = f"{root_path}/init_images"
 createPath(initDirPath)
-outDirPath = f"{root_path}/images_out"
+outDirPath = f"{root_path}/output"
 createPath(outDirPath)
 
 if is_colab:
@@ -579,7 +580,7 @@ multipip_res = subprocess.run(
 ).stdout.decode("utf-8")
 print(multipip_res)
 
-if is_colab:
+if is_colab or michael_mode:
     subprocess.run(["apt", "install", "imagemagick"], stdout=subprocess.PIPE).stdout.decode("utf-8")
 
 try:
@@ -667,6 +668,7 @@ from CLIP import clip
 from resize_right import resize
 from guided_diffusion.script_util import create_model_and_diffusion, model_and_diffusion_defaults
 from datetime import datetime
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -1899,7 +1901,7 @@ def save_settings():
     }
     # print('Settings:', setting_list)
     with open(
-        f"{batchFolder}/{batch_name}({batchNum})_settings.txt", "w+", encoding="utf-8"
+        f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}", "w+", encoding="utf-8"
     ) as f:  # save settings
         json.dump(setting_list, f, ensure_ascii=False, indent=4)
 
@@ -2106,6 +2108,7 @@ class SecondaryDiffusionImageNet2(nn.Module):
 # !!   "id": "ModelSettings"
 # !! }}
 # @markdown ####**Models Settings (note: For pixel art, the best is pixelartdiffusion_expanded):**
+# !msettings
 diffusion_model = (  # @param ["256x256_diffusion_uncond", "512x512_diffusion_uncond_finetune_008100", "portrait_generator_v001", "pixelartdiffusion_expanded", "pixel_art_diffusion_hard_256", "pixel_art_diffusion_soft_256", "pixelartdiffusion4k", "watercolordiffusion_2", "watercolordiffusion", "PulpSciFiDiffusion", "custom"]
     "512x512_diffusion_uncond_finetune_008100"
 )
@@ -2546,24 +2549,26 @@ if diffusion_model == "custom":
 # !!   "id": "BasicSettings"
 # !! }}
 # @markdown ####**Basic Settings:**
-batch_name = "TimeToDisco"  # @param{type: 'string'}
-steps = 250  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
-width_height_for_512x512_models = [1280, 768]  # @param{type: 'raw'}
-clip_guidance_scale = 5000  # @param{type: 'number'}
-tv_scale = 0  # @param{type: 'number'}
+# !settings
+batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
+steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
+clip_guidance_scale = 20000  # @param{type: 'number'}
+tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
-sat_scale = 0  # @param{type: 'number'}
+sat_scale = 1000  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
+# !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
 width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 
 # @markdown ####**Video Init Basic Settings:**
-video_init_steps = 100  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
-video_init_clip_guidance_scale = 1000  # @param{type: 'number'}
-video_init_tv_scale = 0.1  # @param{type: 'number'}
-video_init_range_scale = 150  # @param{type: 'number'}
+video_init_steps = steps  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+video_init_clip_guidance_scale = clip_guidance_scale  # @param{type: 'number'}
+video_init_tv_scale = tv_scale  # @param{type: 'number'}
+video_init_range_scale = range_scale  # @param{type: 'number'}
 video_init_sat_scale = 300  # @param{type: 'number'}
 video_init_cutn_batches = 4  # @param{type: 'number'}
 video_init_skip_steps = 50  # @param{type: 'integer'}
@@ -2588,8 +2593,17 @@ side_y = (width_height[1] // 64) * 64
 if side_x != width_height[0] or side_y != width_height[1]:
     print(f"Changing output size to {side_x}x{side_y}. Dimensions must by multiples of 64.")
 
-# Make folder for batch
-batchFolder = f"{outDirPath}/{batch_name}"
+vidFolder = f"{outDirPath}/{batch_name}"
+batchFolder = vidFolder
+settingsFile = "settings.txt"
+if michael_mode:
+    # Prefix settings file so it's easier to find at top of dir list
+    settingsFile = "_settings.txt"
+    num_dirs = 0
+    if os.path.exists(vidFolder):
+        lst = os.listdir(vidFolder)
+        num_dirs = len(lst)
+    batchFolder = os.path.join(vidFolder, time.strftime(f"_{999 - num_dirs}_%m_%d__%H_%M")) 
 createPath(batchFolder)
 
 
@@ -2606,7 +2620,7 @@ createPath(batchFolder)
 # !!   "id": "AnimSettings"
 # !! }}
 # @markdown ####**Animation Mode:**
-animation_mode = "None"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+animation_mode = "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
 # @markdown *For animation, you probably want to turn `cutn_batches` to 1 to make it quicker.*
 
 
@@ -2615,9 +2629,11 @@ animation_mode = "None"  # @param ['None', '2D', '3D', 'Video Input'] {type:'str
 # @markdown ####**Video Input Settings:**
 if is_colab:
     video_init_path = "/content/drive/MyDrive/init.mp4"  # @param {type: 'string'}
+elif michael_mode:
+    video_init_path = os.path.join(initDirPath, vid_input)
 else:
     video_init_path = "init.mp4"  # @param {type: 'string'}
-extract_nth_frame = 2  # @param {type: 'number'}
+extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
 video_init_seed_continuity = False  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
@@ -2630,42 +2646,51 @@ video_init_check_consistency = False  # Insert param here when ready
 video_init_blend_mode = "optical flow"  # @param ['None', 'linear', 'optical flow']
 # Call optical flow from video frames and warp prev frame with flow
 if animation_mode == "Video Input":
-    if persistent_frame_output_in_batch_folder or (
+    if michael_mode:
+        videoFramesFolder = f"{vidFolder}/videoFrames"
+    elif persistent_frame_output_in_batch_folder or (
         not is_colab
     ):  # suggested by Chris the Wizard#8082 at discord
         videoFramesFolder = f"{batchFolder}/videoFrames"
     else:
         videoFramesFolder = f"/content/videoFrames"
-    createPath(videoFramesFolder)
-    print(f"Exporting Video Frames (1 every {extract_nth_frame})...")
-    try:
-        for f in pathlib.Path(f"{videoFramesFolder}").glob("*.jpg"):
-            f.unlink()
-    except:
-        print("")
-    vf = f"select=not(mod(n\,{extract_nth_frame}))"
-    if os.path.exists(video_init_path):
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-i",
-                f"{video_init_path}",
-                "-vf",
-                f"{vf}",
-                "-vsync",
-                "vfr",
-                "-q:v",
-                "2",
-                "-loglevel",
-                "error",
-                "-stats",
-                f"{videoFramesFolder}/%04d.jpg",
-            ],
-            stdout=subprocess.PIPE,
-        ).stdout.decode("utf-8")
+    vid_already_exported = False
+    if os.path.exists(videoFramesFolder):
+        lst = os.listdir(videoFramesFolder)
+        vid_already_exported = len(lst) > 1
+    if michael_mode and vid_already_exported:
+        print(f"Video Frames already exist")
     else:
-        print(f"\nWARNING!\n\nVideo not found: {video_init_path}.\nPlease check your video path.\n")
-    #!ffmpeg -i {video_init_path} -vf {vf} -vsync vfr -q:v 2 -loglevel error -stats {videoFramesFolder}/%04d.jpg
+        createPath(videoFramesFolder)
+        print(f"Exporting Video Frames (1 every {extract_nth_frame})...")
+        try:
+            for f in pathlib.Path(f"{videoFramesFolder}").glob("*.jpg"):
+                f.unlink()
+        except:
+            print("")
+        vf = f"select=not(mod(n\,{extract_nth_frame}))"
+        if os.path.exists(video_init_path):
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-i",
+                    f"{video_init_path}",
+                    "-vf",
+                    f"{vf}",
+                    "-vsync",
+                    "vfr",
+                    "-q:v",
+                    "2",
+                    "-loglevel",
+                    "error",
+                    "-stats",
+                    f"{videoFramesFolder}/%04d.jpg",
+                ],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
+        else:
+            print(f"\nWARNING!\n\nVideo not found: {video_init_path}.\nPlease check your video path.\n")
+        #!ffmpeg -i {video_init_path} -vf {vf} -vsync vfr -q:v 2 -loglevel error -stats {videoFramesFolder}/%04d.jpg
 
 
 # @markdown ---
@@ -2678,6 +2703,7 @@ key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
 if animation_mode == "Video Input":
+    # TODO(mjmaurer): Update to infite if we want to do video animations
     max_frames = len(glob(f"{videoFramesFolder}/*.jpg"))
 
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
@@ -2721,15 +2747,17 @@ if turbo_mode and animation_mode != "3D":
 
 # @markdown ####**Coherency Settings:**
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
-frames_scale = 1500  # @param{type: 'integer'}
+# !play !animate
+frames_scale = 5000  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-frames_skip_steps = "60%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# !play !animate
+frames_skip_steps = "75%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 
 # @markdown ####**Video Init Coherency Settings:**
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
-video_init_frames_scale = 15000  # @param{type: 'integer'}
+video_init_frames_scale = frames_scale  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-video_init_frames_skip_steps = "70%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+video_init_frames_skip_steps = frames_skip_steps  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 
 # ======= VR MODE
 # @markdown ---
@@ -3386,20 +3414,7 @@ transformation_percent = [0.09]  # @param
 # !!   "id": "Prompts"
 # !! }}
 # Note: If using a pixelart diffusion model, try adding "#pixelart" to the end of the prompt for a stronger effect. It'll tend to work a lot better!
-text_prompts = {
-    0: [
-        (
-            "A beautiful painting of a singular lighthouse, shining its light across a tumultuous"
-            " sea of blood by greg rutkowski and thomas kinkade, Trending on artstation."
-        ),
-        "yellow color scheme",
-    ],
-    100: ["This set of prompts start at frame 100", "This prompt has weight five:5"],
-}
-
-image_prompts = {
-    # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
-}
+from external_prompts import text_prompts, image_prompts
 
 # %%
 # !! {"metadata":{
@@ -3475,7 +3490,7 @@ if resume_run:
         try:
             batchNum
         except:
-            batchNum = len(glob(f"{batchFolder}/{batch_name}(*)_settings.txt")) - 1
+            batchNum = len(glob(f"{batchFolder}/{batch_name}(*)_{settingsFile}")) - 1
     else:
         batchNum = int(run_to_resume)
     if resume_from_frame == "latest":
@@ -3504,8 +3519,8 @@ if resume_run:
 else:
     start_frame = 0
     batchNum = len(glob(batchFolder + "/*.txt"))
-    while os.path.isfile(f"{batchFolder}/{batch_name}({batchNum})_settings.txt") or os.path.isfile(
-        f"{batchFolder}/{batch_name}-{batchNum}_settings.txt"
+    while os.path.isfile(f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}") or os.path.isfile(
+        f"{batchFolder}/{batch_name}-{batchNum}_{settingsFile}"
     ):
         batchNum += 1
 
@@ -3517,6 +3532,51 @@ if set_seed == "random_seed":
     # print(f'Using seed: {seed}')
 else:
     seed = int(set_seed)
+
+
+fps = 24  # @param {type:"number"}
+blend = 0.5  # @param {type: 'number'}
+
+if michael_mode:
+    final_frame = "final_frame"
+
+    init_frame = 1  # @param {type:"number"} This is the frame where the video will start
+    last_frame = 5000  # @param {type:"number"} You can change i to the number of the last frame you want to generate. It will raise an error if that number of frames does not exist.
+
+    latest_run = batchNum
+
+    folder = batch_name  # @param
+    run = latest_run  # @param
+    filepath = f"{outDirPath}/{folder}/{folder}({run}).mp4"
+    image_path = f"{outDirPath}/{folder}/{folder}({run})_%04d.png"
+
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-vcodec",
+        "png",
+        "-r",
+        str(fps),
+        "-start_number",
+        str(init_frame),
+        "-i",
+        image_path,
+        "-frames:v",
+        str(last_frame + 1),
+        "-c:v",
+        "libx264",
+        "-vf",
+        f"fps={fps}",
+        "-pix_fmt",
+        "yuv420p",
+        "-crf",
+        "17",
+        "-preset",
+        "veryslow",
+        filepath,
+    ]
+    with open(os.path.join(batchFolder, '00_ffmpeg.txt'), 'w') as fp:
+        fp.write(" ".join(cmd))
 
 args = {
     "batchNum": batchNum,
@@ -3602,6 +3662,8 @@ args = {
     "use_vertical_symmetry": use_vertical_symmetry,
     "use_horizontal_symmetry": use_horizontal_symmetry,
     "transformation_percent": transformation_percent,
+    "fps": fps,
+    "blend": blend,
     # video init settings
     "video_init_steps": video_init_steps,
     "video_init_clip_guidance_scale": video_init_clip_guidance_scale,
@@ -3691,7 +3753,6 @@ if animation_mode == "Video Input":
     if (len(flows) == 0) and video_init_flow_warp:
         sys.exit("ERROR: 0 flow files found.\nPlease rerun the flow generation cell.")
 
-blend = 0.5  # @param {type: 'number'}
 video_init_check_consistency = False  # @param {type: 'boolean'}
 if skip_video_for_run_all == True:
     print("Skipping video creation, uncheck skip_video_for_run_all if you want to run it")

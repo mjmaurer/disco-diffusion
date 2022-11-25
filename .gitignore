@@ -5,6 +5,7 @@ MiDaS/
 models/
 pretrained/*
 settings.json
+output
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
