@@ -633,16 +633,6 @@ except:
         )
     sys.path.append(f"{PROJECT_DIR}/MiDaS")
 
-try:
-    sys.path.append(PROJECT_DIR)
-    import disco_xform_utils as dxf
-except:
-    if not os.path.exists("disco-diffusion"):
-        gitclone("https://github.com/alembics/disco-diffusion.git")
-    if not os.path.exists("disco_xform_utils.py"):
-        shutil.move("disco-diffusion/disco_xform_utils.py", "disco_xform_utils.py")
-    sys.path.append(PROJECT_DIR)
-
 import torch
 from dataclasses import dataclass
 from functools import partial
@@ -706,8 +696,21 @@ if USE_ADABINS:
             )
         sys.path.append(f"{PROJECT_DIR}/AdaBins")
     from infer import InferenceHelper
+    print("AdaBins worked")
 
     MAX_ADABINS_AREA = 500000
+
+
+try:
+    sys.path.append(PROJECT_DIR)
+    import disco_xform_utils as dxf
+except:
+    if not os.path.exists("disco-diffusion"):
+        gitclone("https://github.com/alembics/disco-diffusion.git")
+    if not os.path.exists("disco_xform_utils.py"):
+        shutil.move("disco-diffusion/disco_xform_utils.py", "disco_xform_utils.py")
+    sys.path.append(PROJECT_DIR)
+
 
 import torch
 
