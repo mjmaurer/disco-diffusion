@@ -3226,7 +3226,7 @@ if animation_mode == "Video Input":
 if animation_mode == "Video Input":
     import gc
 
-    force_flow_generation = False  # @param {type:'boolean'}
+    force_flow_generation = True  # @param {type:'boolean'}
     in_path = videoFramesFolder
     flo_folder = f"{in_path}/out_flo_fwd"
 
