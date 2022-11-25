@@ -2563,6 +2563,11 @@ sat_scale = 1000  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
+# @markdown ####**Init Image Settings:**
+init_image = None  # @param{type: 'string'}
+init_scale = 1000  # @param{type: 'integer'}
+skip_steps = steps - 100  # @param{type: 'integer'}
+# @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
 width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
@@ -2574,15 +2579,10 @@ video_init_tv_scale = tv_scale  # @param{type: 'number'}
 video_init_range_scale = range_scale  # @param{type: 'number'}
 video_init_sat_scale = 300  # @param{type: 'number'}
 video_init_cutn_batches = 4  # @param{type: 'number'}
-video_init_skip_steps = 50  # @param{type: 'integer'}
+video_init_skip_steps = skip_steps  # @param{type: 'integer'}
 
 # @markdown ---
 
-# @markdown ####**Init Image Settings:**
-init_image = None  # @param{type: 'string'}
-init_scale = 1000  # @param{type: 'integer'}
-skip_steps = 10  # @param{type: 'integer'}
-# @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 width_height = (
     width_height_for_256x256_models
@@ -3229,7 +3229,7 @@ if animation_mode == "Video Input":
 if animation_mode == "Video Input":
     import gc
 
-    force_flow_generation = True  # @param {type:'boolean'}
+    force_flow_generation = False  # @param {type:'boolean'}
     in_path = videoFramesFolder
     flo_folder = f"{in_path}/out_flo_fwd"
 
