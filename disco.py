@@ -3281,6 +3281,7 @@ if animation_mode == "Video Input":
 
                     flow21 = get_flow(frame2, frame1, raft_model)
                     np.save(out_flow21_fn, flow21)
+                    framecount += 1
 
                     if video_init_check_consistency:
                         # TBD
