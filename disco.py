@@ -1705,6 +1705,7 @@ def do_run():
                 with image_display:
                     if j % args.display_rate == 0 or cur_t == -1 or intermediateStep == True:
                         for k, image in enumerate(sample["pred_xstart"]):
+                            print(f"j: {j}, k: {k}")
                             # tqdm.write(f'Batch {i}, step {j}, output {k}:')
                             current_time = datetime.now().strftime("%y%m%d-%H%M%S_%f")
                             if args.n_batches > 0:
@@ -1723,15 +1724,7 @@ def do_run():
                                             f"{args.batch_name}({args.batchNum})_{i:04}-{j:03}.png"
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
-                            # image.save("preblend.png")
-                            # frame_step_pct = args.frames_skip_steps_series[frame_num]
-                            # blend_ramp = args.blend_ramp_series[frame_num]
-                            # init_img = Image.open(fetch(init_image)).convert("RGB")
-                            # init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
-                            # init_img.save("initimg.png")
-                            # # Higher number favors second image
-                            # image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
-                            if j % args.display_rate == 0 or cur_t == -1 and not michael_mode:
+                            if (j % args.display_rate == 0 or cur_t == -1) and not michael_mode:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
                                 display.display(display.Image("progress.png"))
@@ -1751,6 +1744,14 @@ def do_run():
                                 if frame_num == 0:
                                     save_settings()
 
+                                image.save("preblend.png")
+                                frame_step_pct = args.frames_skip_steps_series[frame_num]
+                                blend_ramp = args.blend_ramp_series[frame_num]
+                                init_img = Image.open(fetch(init_image)).convert("RGB")
+                                init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                                init_img.save("initimg.png")
+                                # Higher number favors second image
+                                image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
 
                                 if frame_num == 12:
                                     image.save("12.png")
