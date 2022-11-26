@@ -1750,6 +1750,7 @@ def do_run():
                                 blend_ramp = args.blend_ramp_series[frame_num]
                                 init_img = Image.open(fetch(init_image)).convert("RGB")
                                 init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                                image.save("lastDiffusion.png")
                                 # Higher number favors second image
                                 image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
 
