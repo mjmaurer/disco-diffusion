@@ -1751,8 +1751,10 @@ def do_run():
                                 init_img = Image.open(fetch(init_image)).convert("RGB")
                                 init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
                                 image.save("lastDiffusion.png")
+                                pct = frame_step_pct ** blend_ramp
+                                print(f"Blend pct: {pct}")
                                 # Higher number favors second image
-                                image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
+                                image = Image.blend(image, init_img, pct)
 
                                 if frame_num == 12:
                                     image.save("12.png")
@@ -2761,7 +2763,7 @@ target_frame = 24 * 8
 # frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(.1)"
-blend_ramp = f"0:(0)"
+blend_ramp = f"0:(1)"
 eta = "0:(0.5)"
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
