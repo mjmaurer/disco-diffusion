@@ -1725,7 +1725,7 @@ def do_run():
                             frame_step_pct = args.frames_skip_steps_series[frame_num]
                             init_img = Image.open(fetch(init_image)).convert("RGB")
                             init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
-                            image = Image.blend(image, init_img, frame_step_pct)
+                            image = Image.blend(image, init_img, frame_step_pct ** 2)
                             if j % args.display_rate == 0 or cur_t == -1:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
@@ -2583,7 +2583,7 @@ warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 250  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
-clip_guidance_scale = 20000  # @param{type: 'number'}
+clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
 sat_scale = 1000  # @param{type: 'number'}
@@ -2592,7 +2592,7 @@ cutn_batches = 2  # @param{type: 'number'}
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
-init_scale = 20000  # @param{type: 'integer'}
+init_scale = 10000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
