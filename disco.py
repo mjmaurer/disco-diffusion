@@ -1624,7 +1624,6 @@ def do_run():
                     + sat_losses.sum() * sat_scale
                 )
                 if init is not None and init_scale:
-                    print(f"Init scale {init_scale}")
                     init_losses = lpips_model(x_in, init)
                     loss = loss + init_losses.sum() * init_scale
                 x_in_grad += torch.autograd.grad(loss, x_in)[0]
@@ -1693,6 +1692,7 @@ def do_run():
                     randomize_class=randomize_class,
                     order=2,
                 )
+
 
             # with run_display:
             # display.clear_output(wait=True)
@@ -3451,7 +3451,7 @@ if animation_mode == "Video Input":
 # !! }}
 # @markdown ####**Saving:**
 
-intermediate_saves = 0  # @param{type: 'raw'}
+intermediate_saves = 4 # @param{type: 'raw'}
 intermediates_in_subfolder = True  # @param{type: 'boolean'}
 # @markdown Intermediate steps will save a copy at your specified intervals. You can either format it as a single integer or a list of specific steps
 
