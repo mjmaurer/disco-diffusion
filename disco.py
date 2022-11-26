@@ -2133,8 +2133,8 @@ diffusion_model = (  # @param ["256x256_diffusion_uncond", "512x512_diffusion_un
     "512x512_diffusion_uncond_finetune_008100"
 )
 
-use_secondary_model = False  # @param {type: 'boolean'}
-diffusion_sampling_mode = "ddim"  # @param ['plms','ddim']
+use_secondary_model = True  # @param {type: 'boolean'}
+diffusion_sampling_mode = "plms"  # @param ['plms','ddim']
 # @markdown #####**Custom model:**
 custom_path = (  # @param {type: 'string'}
     "/content/drive/MyDrive/deep_learning/ddpm/ema_0.9999_058000.pt"
