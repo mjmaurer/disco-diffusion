@@ -2594,7 +2594,7 @@ steps = 130  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: tru
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
-range_scale = 50  # @param{type: 'number'}
+range_scale = 10  # @param{type: 'number'}
 sat_scale = 2000  # @param{type: 'number'}
 cutn_batches = 2  # @param{type: 'number'}
 # !play aroudn with this
@@ -2602,7 +2602,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other 
-init_scale = 20000  # @param{type: 'integer'}
+init_scale = 30000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 

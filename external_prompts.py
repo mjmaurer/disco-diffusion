@@ -3,7 +3,8 @@ main_style = "vibrant, octane render, by kilian eng"
 text_prompts = {
     0: [
         (
-            "A network of massive tree branches, "
+            # "A forest with massive trees engraves with cartoon bears, "
+            "Massive tree branches and cartoon bears, "
             + main_style
         ),
     ],
