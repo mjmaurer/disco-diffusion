@@ -3,7 +3,7 @@ main_style = "vibrant, octane render, psychedelic, by kilian eng"
 text_prompts = {
     0: [
         (
-            "A bipedal bear and a human lying in the fall foilage of a forest"
+            "A bipedal bear and a human lying in the fall foilage of a forest, "
             + main_style
         ),
     ],
