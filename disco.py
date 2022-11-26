@@ -2640,7 +2640,7 @@ extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
 video_init_seed_continuity = False  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
-video_init_flow_warp = True  # @param {type: 'boolean'}
+video_init_flow_warp = False  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
 video_init_flow_blend = (
     0.999  # @param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
