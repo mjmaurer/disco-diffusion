@@ -2580,7 +2580,7 @@ clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 0# 10000  # @param{type: 'number'}
 range_scale =0 # 150  # @param{type: 'number'}
 sat_scale = 0# 1000  # @param{type: 'number'}
-cutn_batches = 4  # @param{type: 'number'}
+cutn_batches = 1  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
@@ -3448,7 +3448,7 @@ if intermediate_saves and intermediates_in_subfolder is True:
 perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
 set_seed = "random_seed"  # @param{type: 'string'}
-clamp_grad = True  # @param{type: 'boolean'}
+clamp_grad = False  # @param{type: 'boolean'}
 clamp_max = 0.05  # @param{type: 'number'}
 
 
