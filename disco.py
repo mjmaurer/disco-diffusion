@@ -1703,8 +1703,8 @@ def do_run():
                         for k, image in enumerate(sample["pred_xstart"]):
                             # tqdm.write(f'Batch {i}, step {j}, output {k}:')
                             current_time = datetime.now().strftime("%y%m%d-%H%M%S_%f")
-                            percent = math.ceil(j / total_steps * 100)
                             if args.n_batches > 0:
+                                percent = math.ceil(j / total_steps * 100)
                                 # if intermediates are saved to the subfolder, don't append a step or percentage to the name
                                 if cur_t == -1 and args.intermediates_in_subfolder is True:
                                     save_num = f"{frame_num:04}" if animation_mode != "None" else i
