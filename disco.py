@@ -2612,6 +2612,52 @@ skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
 width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 
+key_frames = True  # @param {type:"boolean"}
+max_frames = 10000  # @param {type:"number"}
+
+animation_mode = "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+
+interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
+    "Linear"
+)
+target_frame = 24 * 8
+# !eta
+# I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
+# if eta is low, step count can be a bit lower
+# eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.24)"
+blend_ramp = f"0:(1)"
+eta = "0:(0.5)"
+flow_blend = "0:(.999)"  # @param {type:"string"}
+angle = "0:(0)"  # @param {type:"string"}
+zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
+translation_x = "0: (0)"  # @param {type:"string"}
+translation_y = "0: (0)"  # @param {type:"string"}
+translation_z = "0: (10.0)"  # @param {type:"string"}
+rotation_3d_x = "0: (0)"  # @param {type:"string"}
+rotation_3d_y = "0: (0)"  # @param {type:"string"}
+rotation_3d_z = "0: (0)"  # @param {type:"string"}
+midas_depth_model = "dpt_large"  # @param {type:"string"}
+midas_weight = 0.3  # @param {type:"number"}
+near_plane = 200  # @param {type:"number"}
+far_plane = 10000  # @param {type:"number"}
+fov = 40  # @param {type:"number"}
+padding_mode = "border"  # @param {type:"string"}
+sampling_mode = "bicubic"  # @param {type:"string"}
+
+# ======= TURBO MODE
+# @markdown ---
+# @markdown ####**Turbo Mode (3D anim only):**
+# @markdown (Starts after frame 10,) skips diffusion steps and just uses depth map to warp images for skipped frames.
+# @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
+# @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
+
+turbo_mode = False  # @param {type:"boolean"}
+turbo_steps = "3"  # @param ["2","3","4","5","6"] {type:"string"}
+turbo_preroll = 10  # frames
+
 # @markdown ####**Video Init Basic Settings:**
 video_init_steps = steps  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 video_init_clip_guidance_scale = clip_guidance_scale  # @param{type: 'number'}
@@ -2663,7 +2709,6 @@ createPath(batchFolder)
 # !!   "id": "AnimSettings"
 # !! }}
 # @markdown ####**Animation Mode:**
-animation_mode = "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
 # @markdown *For animation, you probably want to turn `cutn_batches` to 1 to make it quicker.*
 
 
@@ -2738,6 +2783,9 @@ if animation_mode == "Video Input":
             )
         #!ffmpeg -i {video_init_path} -vf {vf} -vsync vfr -q:v 2 -loglevel error -stats {videoFramesFolder}/%04d.jpg
 
+if animation_mode == "Video Input":
+    # TODO(mjmaurer): Update to infite if we want to do video animations
+    max_frames = len(glob(f"{videoFramesFolder}/*.jpg"))
 
 # @markdown ---
 
@@ -2745,53 +2793,6 @@ if animation_mode == "Video Input":
 # @markdown `zoom` is a multiplier of dimensions, 1 is no zoom.
 # @markdown All rotations are provided in degrees.
 
-key_frames = True  # @param {type:"boolean"}
-max_frames = 10000  # @param {type:"number"}
-
-if animation_mode == "Video Input":
-    # TODO(mjmaurer): Update to infite if we want to do video animations
-    max_frames = len(glob(f"{videoFramesFolder}/*.jpg"))
-
-interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
-    "Linear"
-)
-target_frame = 24 * 8
-# !eta
-# I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
-# if eta is low, step count can be a bit lower
-# eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-# frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-# blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.24)"
-blend_ramp = f"0:(1)"
-eta = "0:(0.5)"
-flow_blend = "0:(.999)"  # @param {type:"string"}
-angle = "0:(0)"  # @param {type:"string"}
-zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
-translation_x = "0: (0)"  # @param {type:"string"}
-translation_y = "0: (0)"  # @param {type:"string"}
-translation_z = "0: (10.0)"  # @param {type:"string"}
-rotation_3d_x = "0: (0)"  # @param {type:"string"}
-rotation_3d_y = "0: (0)"  # @param {type:"string"}
-rotation_3d_z = "0: (0)"  # @param {type:"string"}
-midas_depth_model = "dpt_large"  # @param {type:"string"}
-midas_weight = 0.3  # @param {type:"number"}
-near_plane = 200  # @param {type:"number"}
-far_plane = 10000  # @param {type:"number"}
-fov = 40  # @param {type:"number"}
-padding_mode = "border"  # @param {type:"string"}
-sampling_mode = "bicubic"  # @param {type:"string"}
-
-# ======= TURBO MODE
-# @markdown ---
-# @markdown ####**Turbo Mode (3D anim only):**
-# @markdown (Starts after frame 10,) skips diffusion steps and just uses depth map to warp images for skipped frames.
-# @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
-# @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
-
-turbo_mode = False  # @param {type:"boolean"}
-turbo_steps = "3"  # @param ["2","3","4","5","6"] {type:"string"}
-turbo_preroll = 10  # frames
 
 # insist turbo be used only w 3d anim.
 if turbo_mode and animation_mode != "3D":
