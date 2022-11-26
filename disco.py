@@ -1722,6 +1722,10 @@ def do_run():
                                             f"{args.batch_name}({args.batchNum})_{i:04}-{j:03}.png"
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
+                            frame_step_pct = args.frames_skip_steps_series[frame_num]
+                            init = Image.open(fetch(init_image)).convert("RGB")
+                            init = init.resize((args.side_x, args.side_y), args.warp_interp)
+                            image = Image.blend(image, init, frame_step_pct)
                             if j % args.display_rate == 0 or cur_t == -1:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
@@ -2583,7 +2587,7 @@ clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
 sat_scale = 1000  # @param{type: 'number'}
-cutn_batches = 1  # @param{type: 'number'}
+cutn_batches = 2  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
@@ -2661,7 +2665,7 @@ else:
     video_init_path = "init.mp4"  # @param {type: 'string'}
 extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
-video_init_seed_continuity = False  # @param {type: 'boolean'}
+video_init_seed_continuity = True  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
 video_init_flow_warp = False  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
@@ -2741,7 +2745,7 @@ interp_spline = (  # Do not change, currently will not look good. param ['Linear
 target_frame = 24 * 8
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 eta = f"0:(0.01), 24:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.999), {24 * 6}: (.999), {target_frame}: (0.45)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.45)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
@@ -3664,7 +3668,7 @@ if michael_mode:
 
     folder = batch_name  # @param
     run = latest_run  # @param
-    filepath = f"{batchFolder}/{folder}\\({run}\\).mp4"
+    filepath = f"{batchFolder}/__{folder}\\({run}\\).mp4"
     image_path = f"{batchFolder}/{folder}\\({run}\\)_%04d.png"
 
     cmd = [
@@ -3692,7 +3696,7 @@ if michael_mode:
         "veryslow",
         filepath,
     ]
-    with open(os.path.join(batchFolder, "00_ffmpeg.txt"), "w") as fp:
+    with open(os.path.join(batchFolder, "_00_ffmpeg.txt"), "w") as fp:
         fp.write(" ".join(cmd))
 
 # !args
