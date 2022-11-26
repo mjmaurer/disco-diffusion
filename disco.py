@@ -1728,11 +1728,13 @@ def do_run():
                             blend_ramp = args.blend_ramp_series[frame_num]
                             init_img = Image.open(fetch(init_image)).convert("RGB")
                             init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                            init_img.save("initimg.png")
                             image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
                             if j % args.display_rate == 0 or cur_t == -1:
                                 image.save("progress.png")
-                                display.clear_output(wait=True)
-                                display.display(display.Image("progress.png"))
+                                if not michael_mode:
+                                    display.clear_output(wait=True)
+                                    display.display(display.Image("progress.png"))
                             if args.steps_per_checkpoint is not None:
                                 if j % args.steps_per_checkpoint == 0 and j > 0:
                                     if args.intermediates_in_subfolder is True:
@@ -1749,10 +1751,12 @@ def do_run():
                                 if frame_num == 0:
                                     save_settings()
 
+
                                 if frame_num == 12:
                                     image.save("12.png")
                                 if args.animation_mode != "None":
                                     image.save("prevFrame.png")
+
                                 image.save(f"{batchFolder}/{filename}")
                                 if args.animation_mode == "3D":
                                     # If turbo, save a blended image
