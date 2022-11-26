@@ -2748,8 +2748,10 @@ interp_spline = (  # Do not change, currently will not look good. param ['Linear
 target_frame = 24 * 8
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.05)"
+blend_ramp = f"0:(.01)"
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
