@@ -1624,6 +1624,7 @@ def do_run():
                     + sat_losses.sum() * sat_scale
                 )
                 if init is not None and init_scale:
+                    print(f"Init scale {init_scale}")
                     init_losses = lpips_model(x_in, init)
                     loss = loss + init_losses.sum() * init_scale
                 x_in_grad += torch.autograd.grad(loss, x_in)[0]
@@ -2589,9 +2590,9 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 200  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 180  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
-clip_guidance_scale = 5000  # @param{type: 'number'}
+clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
 sat_scale = 1000  # @param{type: 'number'}
@@ -2601,7 +2602,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other 
-init_scale = 1000  # @param{type: 'integer'}
+init_scale = 20000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
