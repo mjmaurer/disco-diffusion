@@ -3660,8 +3660,8 @@ if michael_mode:
 
     folder = batch_name  # @param
     run = latest_run  # @param
-    filepath = f"{outDirPath}/{folder}/{folder}({run}).mp4"
-    image_path = f"{batchFolder}/{folder}({run})_%04d.png"
+    filepath = f"{batchFolder}/{folder}\\({run}\\).mp4"
+    image_path = f"{batchFolder}/{folder}\\({run}\\)_%04d.png"
 
     cmd = [
         "ffmpeg",
