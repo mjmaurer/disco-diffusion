@@ -1,4 +1,4 @@
-main_style = "vibrant, octane render, psychedelic, by kilian eng"
+main_style = "vibrant, oil painting, psychedelic, by kilian eng"
 
 text_prompts = {
     0: [
