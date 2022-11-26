@@ -1518,8 +1518,8 @@ def do_run():
         if init_image is not None:
             init = Image.open(fetch(init_image)).convert("RGB")
             init = init.resize((args.side_x, args.side_y), args.warp_interp)
-            if frame_num == 0:
-                init.save("post_init_resize.png")
+            if frame_num == 12:
+                init.save("post_init_resize12.png")
             init = TF.to_tensor(init).to(device).unsqueeze(0).mul(2).sub(1)
 
         if args.perlin_init:
@@ -1662,6 +1662,7 @@ def do_run():
                 init = regen_perlin()
 
             if args.diffusion_sampling_mode == "ddim":
+                print(f"oeta: {args.eta_series[frame_num]}")
                 samples = sample_fn(
                     model,
                     (batch_size, 3, args.side_y, args.side_x),
@@ -2576,15 +2577,15 @@ batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
-tv_scale = 0  # @param{type: 'number'}
-range_scale = 0  # @param{type: 'number'}
-sat_scale = 0  # @param{type: 'number'}
+tv_scale = 0# 10000  # @param{type: 'number'}
+range_scale =0 # 150  # @param{type: 'number'}
+sat_scale = 0# 1000  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
-init_scale = 1000  # @param{type: 'integer'}
+init_scale = 20000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
