@@ -1723,13 +1723,14 @@ def do_run():
                                             f"{args.batch_name}({args.batchNum})_{i:04}-{j:03}.png"
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
-                            image.save("preblend.png")
-                            frame_step_pct = args.frames_skip_steps_series[frame_num]
-                            blend_ramp = args.blend_ramp_series[frame_num]
-                            init_img = Image.open(fetch(init_image)).convert("RGB")
-                            init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
-                            init_img.save("initimg.png")
-                            image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
+                            # image.save("preblend.png")
+                            # frame_step_pct = args.frames_skip_steps_series[frame_num]
+                            # blend_ramp = args.blend_ramp_series[frame_num]
+                            # init_img = Image.open(fetch(init_image)).convert("RGB")
+                            # init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                            # init_img.save("initimg.png")
+                            # # Higher number favors second image
+                            # image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
                             if j % args.display_rate == 0 or cur_t == -1 and not michael_mode:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
