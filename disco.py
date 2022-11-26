@@ -2593,9 +2593,9 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 140  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 130  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
-clip_guidance_scale = 15000  # @param{type: 'number'}
+clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 1  # @param{type: 'number'}
 sat_scale = 2000  # @param{type: 'number'}
