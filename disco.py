@@ -1518,6 +1518,8 @@ def do_run():
         if init_image is not None:
             init = Image.open(fetch(init_image)).convert("RGB")
             init = init.resize((args.side_x, args.side_y), args.warp_interp)
+            if frame_num == 0:
+                init.save("post_init_resize.png")
             init = TF.to_tensor(init).to(device).unsqueeze(0).mul(2).sub(1)
 
         if args.perlin_init:
@@ -2574,9 +2576,9 @@ batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
-tv_scale = 10000  # @param{type: 'number'}
-range_scale = 150  # @param{type: 'number'}
-sat_scale = 1000  # @param{type: 'number'}
+tv_scale = 0  # @param{type: 'number'}
+range_scale = 0  # @param{type: 'number'}
+sat_scale = 0  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
@@ -2733,7 +2735,7 @@ interp_spline = (  # Do not change, currently will not look good. param ['Linear
     "Linear"
 )
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
-eta = "0:(0), 48:(0), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+eta = "0:(0.01), 48:(0.01), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = "0:(.99), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
