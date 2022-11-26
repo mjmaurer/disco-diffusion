@@ -696,6 +696,7 @@ if USE_ADABINS:
             )
         sys.path.append(f"{PROJECT_DIR}/AdaBins")
     from infer import InferenceHelper
+
     print("AdaBins worked")
 
     MAX_ADABINS_AREA = 500000
@@ -1386,6 +1387,9 @@ def do_run():
                 skip_steps = args.calc_frames_skip_steps
 
         if args.animation_mode == "Video Input":
+            cur_flow_blend = flow_blend
+            if args.key_frames:
+                cur_flow_blend = args.flow_blend_series[frame_num]
             init_scale = args.video_init_frames_scale
             skip_steps = args.calc_frames_skip_steps
             if not video_init_seed_continuity:
@@ -1404,7 +1408,7 @@ def do_run():
                     flo_path = f"/{flo_folder}/{frame1_path.split('/')[-1]}.npy"
 
                     init_image = "warped.png"
-                    print(video_init_flow_blend)
+                    print(flow_blend)
                     weights_path = None
                     if video_init_check_consistency:
                         # TBD
@@ -1414,8 +1418,11 @@ def do_run():
                         prev,
                         frame2,
                         flo_path,
-                        blend=video_init_flow_blend,
+                        blend=cur_flow_blend,
                         weights_path=weights_path,
+                        forward_clip=0,
+                        pad_pct=args.padding_ratio,
+                        padding_mode=args.padding_mode,
                     ).save(init_image)
 
             else:
@@ -1508,7 +1515,7 @@ def do_run():
         init = None
         if init_image is not None:
             init = Image.open(fetch(init_image)).convert("RGB")
-            init = init.resize((args.side_x, args.side_y), Image.LANCZOS)
+            init = init.resize((args.side_x, args.side_y), args.warp_interp)
             init = TF.to_tensor(init).to(device).unsqueeze(0).mul(2).sub(1)
 
         if args.perlin_init:
@@ -1798,8 +1805,11 @@ def generate_eye_views(trans_scale, batchFolder, filename, frame_num, midas_mode
 
 
 def save_settings():
+    # !savesettings
     setting_list = {
         "text_prompts": text_prompts,
+        "padding_ratio": padding_ratio,
+        "padding_mode": padding_mode,
         "image_prompts": image_prompts,
         "clip_guidance_scale": clip_guidance_scale,
         "tv_scale": tv_scale,
@@ -1898,7 +1908,7 @@ def save_settings():
         "video_init_frames_skip_steps": video_init_frames_skip_steps,
         # warp settings
         "video_init_flow_warp": video_init_flow_warp,
-        "video_init_flow_blend": video_init_flow_blend,
+        "flow_blend": flow_blend,
         "video_init_check_consistency": video_init_check_consistency,
         "video_init_blend_mode": video_init_blend_mode,
     }
@@ -2546,13 +2556,19 @@ if diffusion_model == "custom":
 """
 # 3. Settings
 """
+import PIL
 
 # %%
 # !! {"metadata":{
 # !!   "id": "BasicSettings"
 # !! }}
 # @markdown ####**Basic Settings:**
+#@markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
+padding_ratio = 0.5  # @param {type:"slider", min:0, max:1, step:0.1}
+padding_mode = "reflect"  # @param ['reflect','edge','wrap']
+# relative to image size, in range 0-1
+warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
@@ -2606,7 +2622,7 @@ if michael_mode:
     if os.path.exists(vidFolder):
         lst = os.listdir(vidFolder)
         num_dirs = len(lst)
-    batchFolder = os.path.join(vidFolder, time.strftime(f"_{999 - num_dirs}_%m_%d__%H_%M")) 
+    batchFolder = os.path.join(vidFolder, time.strftime(f"_{999 - num_dirs}_%m_%d__%H_%M"))
 createPath(batchFolder)
 
 
@@ -2640,11 +2656,11 @@ extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
 video_init_seed_continuity = True  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
-video_init_flow_warp = False  # @param {type: 'boolean'}
+video_init_flow_warp = True  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
-video_init_flow_blend = (
-    0.999  # @param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
-)
+# video_init_flow_blend = (
+#     0.5  # @param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
+# )
 video_init_check_consistency = False  # Insert param here when ready
 video_init_blend_mode = "optical flow"  # @param ['None', 'linear', 'optical flow']
 # Call optical flow from video frames and warp prev frame with flow
@@ -2692,7 +2708,10 @@ if animation_mode == "Video Input":
                 stdout=subprocess.PIPE,
             ).stdout.decode("utf-8")
         else:
-            print(f"\nWARNING!\n\nVideo not found: {video_init_path}.\nPlease check your video path.\n")
+            print(
+                f"\nWARNING!\n\nVideo not found: {video_init_path}.\nPlease check your video"
+                " path.\n"
+            )
         #!ffmpeg -i {video_init_path} -vf {vf} -vsync vfr -q:v 2 -loglevel error -stats {videoFramesFolder}/%04d.jpg
 
 
@@ -2712,6 +2731,7 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
+flow_blend = "0:(.5)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
@@ -2760,7 +2780,9 @@ frames_skip_steps = "85%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: '
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
 video_init_frames_scale = frames_scale  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-video_init_frames_skip_steps = frames_skip_steps  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+video_init_frames_skip_steps = (
+    frames_skip_steps  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+)
 
 # ======= VR MODE
 # @markdown ---
@@ -2910,7 +2932,22 @@ def split_prompts(prompts):
     return prompt_series
 
 
+# !series
 if key_frames:
+    try:
+        flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
+    except RuntimeError as e:
+        print(
+            "WARNING: You have selected to use key frames, but you have not "
+            "formatted `flow_blend` correctly for key frames.\n"
+            "Attempting to interpret `flow_blend` as "
+            f'"0: ({flow_blend})"\n'
+            "Please read the instructions to find out how to use key frames "
+            "correctly.\n"
+        )
+        flow_blend = f"0: ({flow_blend})"
+        flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
+
     try:
         angle_series = get_inbetweens(parse_key_frames(angle))
     except RuntimeError as e:
@@ -3173,11 +3210,12 @@ if animation_mode == "Video Input":
 
         return flow12
 
-    def warp_flow(img, flow):
+    def warp_flow(img, flow, mul=1.0):
         h, w = flow.shape[:2]
         flow = flow.copy()
         flow[:, :, 0] += np.arange(w)
         flow[:, :, 1] += np.arange(h)[:, np.newaxis]
+        flow *= mul  # new
         res = cv2.remap(img, flow, None, cv2.INTER_LINEAR)
         return res
 
@@ -3194,20 +3232,61 @@ if animation_mode == "Video Input":
             img = img.resize(size)
         return img
 
-    def warp(frame1, frame2, flo_path, blend=0.5, weights_path=None):
+    def warp(
+        frame1,
+        frame2,
+        flo_path,
+        blend=0.5,
+        weights_path=None,
+        forward_clip=0.0,
+        pad_pct=0.1,
+        padding_mode="reflect",
+        inpaint_blend=0.0,
+        video_mode=False,
+        warp_mul=1.0,
+    ):
         flow21 = np.load(flo_path)
-        frame1pil = np.array(frame1.convert("RGB").resize((flow21.shape[1], flow21.shape[0])))
-        frame1_warped21 = warp_flow(frame1pil, flow21)
+        pad = int(max(flow21.shape) * pad_pct)  # new
+        flow21 = np.pad(flow21, pad_width=((pad, pad), (pad, pad), (0, 0)), mode="constant")  # new
+
+        frame1pil = np.array(frame1.convert("RGB"))  # .resize((flow21.shape[1], flow21.shape[0])))
+        frame1pil = np.pad(
+            frame1pil, pad_width=((pad, pad), (pad, pad), (0, 0)), mode=padding_mode
+        )  # new
+        if video_mode:  # new
+            warp_mul = 1.0
+        frame1_warped21 = warp_flow(frame1pil, flow21, warp_mul)
+        frame1_warped21 = frame1_warped21[
+            pad : frame1_warped21.shape[0] - pad, pad : frame1_warped21.shape[1] - pad, :
+        ]
         # frame2pil = frame1pil
-        frame2pil = np.array(frame2.convert("RGB").resize((flow21.shape[1], flow21.shape[0])))
+        # frame2pil = np.array(frame2.convert("RGB").resize((flow21.shape[1], flow21.shape[0])))
+        frame2pil = np.array(
+            frame2.convert("RGB").resize(
+                (flow21.shape[1] - pad * 2, flow21.shape[0] - pad * 2), warp_interp
+            )
+        )
 
         if weights_path:
             # TBD
-            pass
+            forward_weights = load_cc(weights_path, blur=consistency_blur)
+            # print('forward_weights')
+            # print(forward_weights.shape)
+            if not video_mode:
+                frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+
+            forward_weights = forward_weights.clip(forward_clip, 1.0)
+            blended_w = frame2pil * (1 - blend) + blend * (
+                frame1_warped21 * forward_weights + frame2pil * (1 - forward_weights)
+            )
         else:
+            # if not video_mode: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
             blended_w = frame2pil * (1 - blend) + frame1_warped21 * (blend)
 
-        return PIL.Image.fromarray(blended_w.astype("uint8"))
+        blended_w = PIL.Image.fromarray(blended_w.round().astype("uint8"))
+        # if not video_mode:
+        #     if enable_adjust_brightness: blended_w = adjust_brightness(blended_w)
+        return blended_w
 
     in_path = videoFramesFolder
     flo_folder = f"{in_path}/out_flo_fwd"
@@ -3525,9 +3604,9 @@ if resume_run:
 else:
     start_frame = 0
     batchNum = len(glob(batchFolder + "/*.txt"))
-    while os.path.isfile(f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}") or os.path.isfile(
-        f"{batchFolder}/{batch_name}-{batchNum}_{settingsFile}"
-    ):
+    while os.path.isfile(
+        f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}"
+    ) or os.path.isfile(f"{batchFolder}/{batch_name}-{batchNum}_{settingsFile}"):
         batchNum += 1
 
 print(f"Starting Run: {batch_name}({batchNum}) at frame {start_frame}")
@@ -3581,11 +3660,14 @@ if michael_mode:
         "veryslow",
         filepath,
     ]
-    with open(os.path.join(batchFolder, '00_ffmpeg.txt'), 'w') as fp:
+    with open(os.path.join(batchFolder, "00_ffmpeg.txt"), "w") as fp:
         fp.write(" ".join(cmd))
 
+# !args
 args = {
     "batchNum": batchNum,
+    "padding_ratio": padding_ratio,
+    "padding_mode": padding_mode,
     "prompts_series": split_prompts(text_prompts) if text_prompts else None,
     "image_prompts_series": split_prompts(image_prompts) if image_prompts else None,
     "seed": seed,
@@ -3626,11 +3708,13 @@ args = {
     "rotation_3d_z": rotation_3d_z,
     "midas_depth_model": midas_depth_model,
     "midas_weight": midas_weight,
+    "warp_interp": warp_interp,
     "near_plane": near_plane,
     "far_plane": far_plane,
     "fov": fov,
     "padding_mode": padding_mode,
     "sampling_mode": sampling_mode,
+    "flow_blend_series": flow_blend_series,
     "angle_series": angle_series,
     "zoom_series": zoom_series,
     "translation_x_series": translation_x_series,
@@ -3682,7 +3766,7 @@ args = {
     "video_init_frames_skip_steps": video_init_frames_skip_steps,
     # warp settings
     "video_init_flow_warp": video_init_flow_warp,
-    "video_init_flow_blend": video_init_flow_blend,
+    "flow_blend": flow_blend,
     "video_init_check_consistency": video_init_check_consistency,
     "video_init_blend_mode": video_init_blend_mode,
 }
@@ -3740,7 +3824,6 @@ finally:
 # !!   "id": "CreateVid",
 # !!   "cellView": "form"
 # !! }}
-import PIL
 
 # @title ### **Create video**
 # @markdown Video file will save in the same folder as your images.
@@ -3810,9 +3893,17 @@ else:
             if video_init_check_consistency:
                 # TBD
                 pass
-            warp(frame1, frame2, flo_path, blend=blend, weights_path=weights_path).save(
-                batchFolder + f"/flow/{folder}({run})_{i:04}.png"
-            )
+            warp(
+                frame1,
+                frame2,
+                flo_path,
+                blend=blend,
+                weights_path=weights_path,
+                pad_pct=padding_ratio,
+                padding_mode=padding_mode,
+                inpaint_blend=0,
+                video_mode=True,
+            ).save(batchFolder + f"/flow/{folder}({run})_{i:04}.png")
     if video_init_blend_mode == "linear":
         image_path = f"{outDirPath}/{folder}/blend/{folder}({run})_%04d.png"
         filepath = f"{outDirPath}/{folder}/{folder}({run})_blend.mp4"
