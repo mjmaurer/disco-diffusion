@@ -2738,7 +2738,7 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-target_frame = 24 * 12
+target_frame = 24 * 8
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 eta = f"0:(0.01), 24:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(.999), {24 * 6}: (.999), {target_frame}: (0.45)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
