@@ -3448,8 +3448,8 @@ if intermediate_saves and intermediates_in_subfolder is True:
 perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
 set_seed = "random_seed"  # @param{type: 'string'}
-clamp_grad = False  # @param{type: 'boolean'}
-clamp_max = 0.05  # @param{type: 'number'}
+clamp_grad = True  # @param{type: 'boolean'}
+clamp_max = 0.001  # @param{type: 'number'}
 
 
 ### EXTRA ADVANCED SETTINGS:
