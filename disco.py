@@ -3770,7 +3770,7 @@ args = {
     "sampling_mode": sampling_mode,
     "eta_series": eta_series,
     "flow_blend_series": flow_blend_series,
-    "blend_ramp": blend_ramp,
+    "blend_ramp_series": blend_ramp_series,
     "frames_skip_steps_series": frames_skip_steps_series,
     "angle_series": angle_series,
     "zoom_series": zoom_series,
