@@ -1723,9 +1723,9 @@ def do_run():
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
                             frame_step_pct = args.frames_skip_steps_series[frame_num]
-                            init = Image.open(fetch(init_image)).convert("RGB")
-                            init = init.resize((args.side_x, args.side_y), args.warp_interp)
-                            image = Image.blend(image, init, frame_step_pct)
+                            init_img = Image.open(fetch(init_image)).convert("RGB")
+                            init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                            image = Image.blend(image, init_img, frame_step_pct)
                             if j % args.display_rate == 0 or cur_t == -1:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
