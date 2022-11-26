@@ -1388,10 +1388,11 @@ def do_run():
 
         if args.animation_mode == "Video Input":
             cur_flow_blend = flow_blend
+            skip_steps = args.calc_frames_skip_steps
             if args.key_frames:
                 cur_flow_blend = args.flow_blend_series[frame_num]
+                skip_steps = math.floor(args.steps * args.frames_skip_steps_series[frame_num])
             init_scale = args.video_init_frames_scale
-            skip_steps = args.calc_frames_skip_steps
             if not video_init_seed_continuity:
                 seed += 1
             if video_init_flow_warp:
@@ -1455,6 +1456,7 @@ def do_run():
             image_prompt = []
 
         print(f"Frame {frame_num} Prompt: {frame_prompt}")
+        print(f"Skip steps: {skip_steps}")
 
         model_stats = []
         for clip_model in clip_models:
@@ -1905,7 +1907,6 @@ def save_settings():
         "video_init_cutn_batches": video_init_cutn_batches,
         "video_init_skip_steps": video_init_skip_steps,
         "video_init_frames_scale": video_init_frames_scale,
-        "video_init_frames_skip_steps": video_init_frames_skip_steps,
         # warp settings
         "video_init_flow_warp": video_init_flow_warp,
         "flow_blend": flow_blend,
@@ -2565,7 +2566,7 @@ import PIL
 # @markdown ####**Basic Settings:**
 #@markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
-padding_ratio = 0.5  # @param {type:"slider", min:0, max:1, step:0.1}
+padding_ratio = 0.3  # @param {type:"slider", min:0, max:1, step:0.1}
 flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
@@ -2582,7 +2583,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 init_scale = 1000  # @param{type: 'integer'}
-skip_steps = steps - 50  # @param{type: 'integer'}
+skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2731,6 +2732,7 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
+frames_skip_steps = "0:(.99), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
@@ -2774,15 +2776,11 @@ if turbo_mode and animation_mode != "3D":
 frames_scale = 5000  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
 # !play !animate
-frames_skip_steps = "85%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 
 # @markdown ####**Video Init Coherency Settings:**
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
 video_init_frames_scale = frames_scale  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-video_init_frames_skip_steps = (
-    frames_skip_steps  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-)
 
 # ======= VR MODE
 # @markdown ---
@@ -2934,6 +2932,19 @@ def split_prompts(prompts):
 
 # !series
 if key_frames:
+    try:
+        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
+    except RuntimeError as e:
+        print(
+            "WARNING: You have selected to use key frames, but you have not "
+            "formatted `frame_skip_steps` correctly for key frames.\n"
+            "Attempting to interpret `flow_blend` as "
+            f'"0: ({flow_blend})"\n'
+            "Please read the instructions to find out how to use key frames "
+            "correctly.\n"
+        )
+        frames_skip_steps = f"0: ({frames_skip_steps})"
+        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
     try:
         flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
     except RuntimeError as e:
@@ -3552,9 +3563,7 @@ if retain_overwritten_frames:
     retainFolder = f"{batchFolder}/retained"
     createPath(retainFolder)
 
-
-skip_step_ratio = int(frames_skip_steps.rstrip("%")) / 100
-calc_frames_skip_steps = math.floor(steps * skip_step_ratio)
+calc_frames_skip_steps = math.floor(steps * frames_skip_steps_series[0])
 
 if animation_mode == "Video Input":
     frames = sorted(glob(in_path + "/*.*"))
@@ -3715,6 +3724,7 @@ args = {
     "flow_padding_mode": flow_padding_mode,
     "sampling_mode": sampling_mode,
     "flow_blend_series": flow_blend_series,
+    "frames_skip_steps_series": frames_skip_steps_series,
     "angle_series": angle_series,
     "zoom_series": zoom_series,
     "translation_x_series": translation_x_series,
@@ -3763,7 +3773,6 @@ args = {
     "video_init_cutn_batches": video_init_cutn_batches,
     "video_init_skip_steps": video_init_skip_steps,
     "video_init_frames_scale": video_init_frames_scale,
-    "video_init_frames_skip_steps": video_init_frames_skip_steps,
     # warp settings
     "video_init_flow_warp": video_init_flow_warp,
     "flow_blend": flow_blend,
@@ -3781,7 +3790,6 @@ if animation_mode == "Video Input":
     args["cutn_batches"] = args["video_init_cutn_batches"]
     args["skip_steps"] = args["video_init_skip_steps"]
     args["frames_scale"] = args["video_init_frames_scale"]
-    args["frames_skip_steps"] = args["video_init_frames_skip_steps"]
 
 args = SimpleNamespace(**args)
 
