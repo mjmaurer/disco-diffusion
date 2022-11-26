@@ -1646,6 +1646,7 @@ def do_run():
             sample_fn = diffusion.plms_sample_loop_progressive
 
         image_display = Output()
+        # for me i = 0 and k = 0
         for i in range(args.n_batches):
             if args.animation_mode == "None":
                 display.clear_output(wait=True)
@@ -1744,12 +1745,10 @@ def do_run():
                                 if frame_num == 0:
                                     save_settings()
 
-                                image.save("preblend.png")
                                 frame_step_pct = args.frames_skip_steps_series[frame_num]
                                 blend_ramp = args.blend_ramp_series[frame_num]
                                 init_img = Image.open(fetch(init_image)).convert("RGB")
                                 init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
-                                init_img.save("initimg.png")
                                 # Higher number favors second image
                                 image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
 
