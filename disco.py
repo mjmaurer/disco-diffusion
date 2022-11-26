@@ -3734,7 +3734,6 @@ args = {
     "rotation_3d_y_series": rotation_3d_y_series,
     "rotation_3d_z_series": rotation_3d_z_series,
     "frames_scale": frames_scale,
-    "skip_step_ratio": skip_step_ratio,
     "calc_frames_skip_steps": calc_frames_skip_steps,
     "text_prompts": text_prompts,
     "image_prompts": image_prompts,
