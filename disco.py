@@ -2580,9 +2580,9 @@ batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
-tv_scale = 0# 10000  # @param{type: 'number'}
-range_scale =0 # 150  # @param{type: 'number'}
-sat_scale = 0# 1000  # @param{type: 'number'}
+tv_scale = 10000  # @param{type: 'number'}
+range_scale = 150  # @param{type: 'number'}
+sat_scale = 1000  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
@@ -2738,9 +2738,10 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
+target_frame = 24 * 20
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
-eta = "0:(0.01), 48:(0.01), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = "0:(.999), 48: (.999), 120: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+eta = f"0:(0.01), 24:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.999), {24 * 12}: (.999), {target_frame}: (0.6)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
