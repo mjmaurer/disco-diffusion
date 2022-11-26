@@ -1415,6 +1415,7 @@ def do_run():
                         # TBD
                         pass
 
+                    # A high flow blend favors the previous output frame
                     warp(
                         prev,
                         frame2,
@@ -2581,13 +2582,13 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 250  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 330  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
-clip_guidance_scale = 10000  # @param{type: 'number'}
+clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
 sat_scale = 1000  # @param{type: 'number'}
-cutn_batches = 2  # @param{type: 'number'}
+cutn_batches = 1  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
@@ -2744,7 +2745,7 @@ interp_spline = (  # Do not change, currently will not look good. param ['Linear
 )
 target_frame = 24 * 8
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
-eta = f"0:(0.01), 24:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.45)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
@@ -3553,7 +3554,7 @@ from external_prompts import text_prompts, image_prompts
 # !! }}
 # @title Do the Run!
 # @markdown `n_batches` ignored with animation modes.
-display_rate = 20  # @param{type: 'number'}
+display_rate = 10000  # @param{type: 'number'}
 n_batches = 50  # @param{type: 'number'}
 
 if animation_mode == "Video Input":
