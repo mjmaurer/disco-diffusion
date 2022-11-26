@@ -2566,7 +2566,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 init_scale = 1000  # @param{type: 'integer'}
-skip_steps = steps - 100  # @param{type: 'integer'}
+skip_steps = steps - 50  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2754,7 +2754,7 @@ if turbo_mode and animation_mode != "3D":
 frames_scale = 5000  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
 # !play !animate
-frames_skip_steps = "75%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = "85%"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 
 # @markdown ####**Video Init Coherency Settings:**
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
