@@ -2577,13 +2577,13 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 450  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 250  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 150  # @param{type: 'number'}
 sat_scale = 1000  # @param{type: 'number'}
-cutn_batches = 4  # @param{type: 'number'}
+cutn_batches = 1  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
@@ -2600,8 +2600,8 @@ video_init_steps = steps  # @param [25,50,100,150,250,500,1000]{type: 'raw', all
 video_init_clip_guidance_scale = clip_guidance_scale  # @param{type: 'number'}
 video_init_tv_scale = tv_scale  # @param{type: 'number'}
 video_init_range_scale = range_scale  # @param{type: 'number'}
-video_init_sat_scale = 300  # @param{type: 'number'}
-video_init_cutn_batches = 4  # @param{type: 'number'}
+video_init_sat_scale = sat_scale  # @param{type: 'number'}
+video_init_cutn_batches = cutn_batches  # @param{type: 'number'}
 video_init_skip_steps = skip_steps  # @param{type: 'integer'}
 
 # @markdown ---
@@ -2661,7 +2661,7 @@ else:
     video_init_path = "init.mp4"  # @param {type: 'string'}
 extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
-video_init_seed_continuity = True  # @param {type: 'boolean'}
+video_init_seed_continuity = False  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
 video_init_flow_warp = False  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
@@ -2738,10 +2738,10 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-target_frame = 24 * 20
+target_frame = 24 * 12
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 eta = f"0:(0.01), 24:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.999), {24 * 12}: (.999), {target_frame}: (0.6)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.999), {24 * 6}: (.999), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
@@ -2782,7 +2782,7 @@ if turbo_mode and animation_mode != "3D":
 # @markdown ####**Coherency Settings:**
 # @markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default is 1500.
 # !play !animate
-frames_scale = 5000  # @param{type: 'integer'}
+frames_scale = init_scale  # @param{type: 'integer'}
 # @markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
 # !play !animate
 

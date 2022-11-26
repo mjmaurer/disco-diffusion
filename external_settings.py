@@ -1,3 +1,3 @@
-vid_input = "18test.mp4"
+vid_input = "_short.mp4"
 
 michael_mode = True
