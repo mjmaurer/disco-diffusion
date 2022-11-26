@@ -1456,7 +1456,7 @@ def do_run():
             image_prompt = []
 
         print(f"Frame {frame_num} Prompt: {frame_prompt}")
-        print(f"Skip steps: {skip_steps}")
+        print(f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}")
 
         model_stats = []
         for clip_model in clip_models:
