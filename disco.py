@@ -1723,6 +1723,7 @@ def do_run():
                                             f"{args.batch_name}({args.batchNum})_{i:04}-{j:03}.png"
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
+                            image.save("preblend.png")
                             frame_step_pct = args.frames_skip_steps_series[frame_num]
                             blend_ramp = args.blend_ramp_series[frame_num]
                             init_img = Image.open(fetch(init_image)).convert("RGB")
@@ -2584,7 +2585,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 300  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 400  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
