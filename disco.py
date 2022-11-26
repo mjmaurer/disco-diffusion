@@ -2130,7 +2130,7 @@ diffusion_model = (  # @param ["256x256_diffusion_uncond", "512x512_diffusion_un
     "512x512_diffusion_uncond_finetune_008100"
 )
 
-use_secondary_model = True  # @param {type: 'boolean'}
+use_secondary_model = False  # @param {type: 'boolean'}
 diffusion_sampling_mode = "ddim"  # @param ['plms','ddim']
 # @markdown #####**Custom model:**
 custom_path = (  # @param {type: 'string'}
@@ -2580,7 +2580,7 @@ clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 0# 10000  # @param{type: 'number'}
 range_scale =0 # 150  # @param{type: 'number'}
 sat_scale = 0# 1000  # @param{type: 'number'}
-cutn_batches = 1  # @param{type: 'number'}
+cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
