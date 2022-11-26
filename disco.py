@@ -1730,11 +1730,10 @@ def do_run():
                             init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
                             init_img.save("initimg.png")
                             image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
-                            if j % args.display_rate == 0 or cur_t == -1:
+                            if j % args.display_rate == 0 or cur_t == -1 and not michael_mode:
                                 image.save("progress.png")
-                                if not michael_mode:
-                                    display.clear_output(wait=True)
-                                    display.display(display.Image("progress.png"))
+                                display.clear_output(wait=True)
+                                display.display(display.Image("progress.png"))
                             if args.steps_per_checkpoint is not None:
                                 if j % args.steps_per_checkpoint == 0 and j > 0:
                                     if args.intermediates_in_subfolder is True:
