@@ -2731,7 +2731,7 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-flow_blend = "0:(.5)"  # @param {type:"string"}
+flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
