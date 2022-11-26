@@ -3572,7 +3572,7 @@ from external_prompts import text_prompts, image_prompts
 # @title Do the Run!
 # @markdown `n_batches` ignored with animation modes.
 display_rate = 10000  # @param{type: 'number'}
-n_batches = 50  # @param{type: 'number'}
+n_batches = 1  # @param{type: 'number'}
 
 if animation_mode == "Video Input":
     steps = video_init_steps
