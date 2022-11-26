@@ -1670,7 +1670,7 @@ def do_run():
                     skip_timesteps=skip_steps,
                     init_image=init,
                     randomize_class=randomize_class,
-                    eta=eta,
+                    eta=args.eta_series[frame_num],
                     transformation_fn=symmetry_transformation_fn,
                     transformation_percent=args.transformation_percent,
                 )
@@ -2732,6 +2732,8 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
+# I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
+eta = "0:(0), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = "0:(.99), 72: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
@@ -2933,6 +2935,20 @@ def split_prompts(prompts):
 # !series
 if key_frames:
     try:
+        eta_series = get_inbetweens(parse_key_frames(eta))
+    except RuntimeError as e:
+        print(
+            "WARNING: You have selected to use key frames, but you have not "
+            "formatted `eta` correctly for key frames.\n"
+            "Attempting to interpret `flow_blend` as "
+            f'"0: ({flow_blend})"\n'
+            "Please read the instructions to find out how to use key frames "
+            "correctly.\n"
+        )
+        eta = f"0: ({eta})"
+        eta_series = get_inbetweens(parse_key_frames(eta))
+
+    try:
         frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
     except RuntimeError as e:
         print(
@@ -2945,6 +2961,7 @@ if key_frames:
         )
         frames_skip_steps = f"0: ({frames_skip_steps})"
         frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
+
     try:
         flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
     except RuntimeError as e:
@@ -3428,7 +3445,6 @@ if intermediate_saves and intermediates_in_subfolder is True:
 perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
 set_seed = "random_seed"  # @param{type: 'string'}
-eta = 0.8  # @param{type: 'number'}
 clamp_grad = True  # @param{type: 'boolean'}
 clamp_max = 0.05  # @param{type: 'number'}
 
@@ -3642,7 +3658,7 @@ if michael_mode:
     folder = batch_name  # @param
     run = latest_run  # @param
     filepath = f"{outDirPath}/{folder}/{folder}({run}).mp4"
-    image_path = f"{outDirPath}/{folder}/{folder}({run})_%04d.png"
+    image_path = f"{batchFolder}/{folder}({run})_%04d.png"
 
     cmd = [
         "ffmpeg",
@@ -3723,6 +3739,7 @@ args = {
     "fov": fov,
     "flow_padding_mode": flow_padding_mode,
     "sampling_mode": sampling_mode,
+    "eta_series": eta_series,
     "flow_blend_series": flow_blend_series,
     "frames_skip_steps_series": frames_skip_steps_series,
     "angle_series": angle_series,
