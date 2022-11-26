@@ -2590,7 +2590,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 10  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 200  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 15000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
@@ -2759,7 +2759,7 @@ target_frame = 24 * 8
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.05)"
+frames_skip_steps = f"0:(.90)"
 blend_ramp = f"0:(1)"
 eta = "0:(0.5)"
 flow_blend = "0:(.999)"  # @param {type:"string"}
