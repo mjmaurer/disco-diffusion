@@ -2589,7 +2589,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 300  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 200  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
@@ -3483,7 +3483,7 @@ perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
 set_seed = "random_seed"  # @param{type: 'string'}
 clamp_grad = True  # @param{type: 'boolean'}
-clamp_max = 0.05  # @param{type: 'number'}
+clamp_max = 0.08  # @param{type: 'number'}
 
 
 ### EXTRA ADVANCED SETTINGS:
