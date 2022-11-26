@@ -2596,7 +2596,7 @@ clip_guidance_scale = 20000  # @param{type: 'number'}
 tv_scale = 10000  # @param{type: 'number'}
 range_scale = 50  # @param{type: 'number'}
 sat_scale = 2000  # @param{type: 'number'}
-cutn_batches = 1  # @param{type: 'number'}
+cutn_batches = 2  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
@@ -3504,7 +3504,7 @@ rand_mag = 0.05
 
 cut_overview = "[12]*400+[4]*600"  # @param {type: 'string'}
 cut_innercut = "[4]*400+[12]*600"  # @param {type: 'string'}
-cut_ic_pow = "[1]*1000"  # @param {type: 'string'}
+cut_ic_pow = "[0.75]*1000"  # @param {type: 'string'}
 cut_icgray_p = "[0.2]*400+[0]*600"  # @param {type: 'string'}
 
 # @markdown KaliYuga model settings. Refer to [cut_ic_pow](https://ezcharts.miraheze.org/wiki/Category:Cut_ic_pow) as a guide. Values between 1 and 100 all work.
