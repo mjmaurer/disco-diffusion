@@ -1,9 +1,9 @@
-main_style = "vibrant, oil painting, psychedelic, by kilian eng"
+main_style = "vibrant, oil painting, by kilian eng"
 
 text_prompts = {
     0: [
         (
-            "A bipedal bear and a human lying in the fall foilage of a forest, "
+            "A web of tree branches and fall foilage in a psychedelic forest, "
             + main_style
         ),
     ],
