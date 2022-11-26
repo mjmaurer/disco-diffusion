@@ -1741,6 +1741,9 @@ def do_run():
                             if cur_t == -1:
                                 if frame_num == 0:
                                     save_settings()
+
+                                if frame_num == 12:
+                                    image.save("12.png")
                                 if args.animation_mode != "None":
                                     image.save("prevFrame.png")
                                 image.save(f"{batchFolder}/{filename}")
