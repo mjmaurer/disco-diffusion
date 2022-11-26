@@ -1422,7 +1422,7 @@ def do_run():
                         weights_path=weights_path,
                         forward_clip=0,
                         pad_pct=args.padding_ratio,
-                        padding_mode=args.padding_mode,
+                        padding_mode=args.flow_padding_mode,
                     ).save(init_image)
 
             else:
@@ -2566,7 +2566,7 @@ import PIL
 #@markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
 padding_ratio = 0.5  # @param {type:"slider", min:0, max:1, step:0.1}
-padding_mode = "reflect"  # @param ['reflect','edge','wrap']
+flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
@@ -3667,7 +3667,7 @@ if michael_mode:
 args = {
     "batchNum": batchNum,
     "padding_ratio": padding_ratio,
-    "padding_mode": padding_mode,
+    "flow_padding_mode": flow_padding_mode,
     "prompts_series": split_prompts(text_prompts) if text_prompts else None,
     "image_prompts_series": split_prompts(image_prompts) if image_prompts else None,
     "seed": seed,
@@ -3712,7 +3712,7 @@ args = {
     "near_plane": near_plane,
     "far_plane": far_plane,
     "fov": fov,
-    "padding_mode": padding_mode,
+    "flow_padding_mode": flow_padding_mode,
     "sampling_mode": sampling_mode,
     "flow_blend_series": flow_blend_series,
     "angle_series": angle_series,
@@ -3900,7 +3900,7 @@ else:
                 blend=blend,
                 weights_path=weights_path,
                 pad_pct=padding_ratio,
-                padding_mode=padding_mode,
+                padding_mode=flow_padding_mode,
                 inpaint_blend=0,
                 video_mode=True,
             ).save(batchFolder + f"/flow/{folder}({run})_{i:04}.png")
