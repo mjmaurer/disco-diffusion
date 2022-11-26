@@ -1457,7 +1457,7 @@ def do_run():
             image_prompt = []
 
         print(f"Frame {frame_num} Prompt: {frame_prompt}")
-        print(f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}")
+        print(f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}. blend ramp: {args.blend_ramp_series[frame_num]}")
 
         model_stats = []
         for clip_model in clip_models:
@@ -1724,9 +1724,10 @@ def do_run():
                                         )
                             image = TF.to_pil_image(image.add(1).div(2).clamp(0, 1))
                             frame_step_pct = args.frames_skip_steps_series[frame_num]
+                            blend_ramp = args.blend_ramp_series[frame_num]
                             init_img = Image.open(fetch(init_image)).convert("RGB")
                             init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
-                            image = Image.blend(image, init_img, frame_step_pct ** 2)
+                            image = Image.blend(image, init_img, frame_step_pct ** blend_ramp)
                             if j % args.display_rate == 0 or cur_t == -1:
                                 image.save("progress.png")
                                 display.clear_output(wait=True)
@@ -1839,6 +1840,7 @@ def save_settings():
         # 'zoom_per_frame': zoom_per_frame,
         "frames_scale": frames_scale,
         "frames_skip_steps": frames_skip_steps,
+        "blend_ramp": blend_ramp,
         "perlin_init": perlin_init,
         "perlin_mode": perlin_mode,
         "skip_augs": skip_augs,
@@ -2747,6 +2749,7 @@ target_frame = 24 * 8
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.45)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+blend_ramp = f"0:(1), {24 * 4}: (1), {24 * 6}: (2.5), {target_frame}: (5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 flow_blend = "0:(.999)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
@@ -2946,6 +2949,20 @@ def split_prompts(prompts):
 
 # !series
 if key_frames:
+    try:
+        blend_ramp_series = get_inbetweens(parse_key_frames(blend_ramp))
+    except RuntimeError as e:
+        print(
+            "WARNING: You have selected to use key frames, but you have not "
+            "formatted `blend_ramp` correctly for key frames.\n"
+            "Attempting to interpret `flow_blend` as "
+            f'"0: ({flow_blend})"\n'
+            "Please read the instructions to find out how to use key frames "
+            "correctly.\n"
+        )
+        blend_ramp = f"0: ({blend_ramp})"
+        blend_ramp_series = get_inbetweens(parse_key_frames(blend_ramp))
+
     try:
         eta_series = get_inbetweens(parse_key_frames(eta))
     except RuntimeError as e:
@@ -3753,6 +3770,7 @@ args = {
     "sampling_mode": sampling_mode,
     "eta_series": eta_series,
     "flow_blend_series": flow_blend_series,
+    "blend_ramp": blend_ramp,
     "frames_skip_steps_series": frames_skip_steps_series,
     "angle_series": angle_series,
     "zoom_series": zoom_series,
