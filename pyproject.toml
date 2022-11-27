@@ -5,6 +5,10 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
+[tool.poe.tasks]
+format = "black --line-length=100 --experimental-string-processing"
+formatall = "poe format ."
+
 [tool.pyright]
 include = ["keyframes.py"]
 exclude = [
