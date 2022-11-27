@@ -2588,7 +2588,7 @@ import PIL
 # @markdown ####**Basic Settings:**
 #@markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
-padding_ratio = 0.3  # @param {type:"slider", min:0, max:1, step:0.1}
+padding_ratio = 0.1  # @param {type:"slider", min:0, max:1, step:0.1}
 flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
