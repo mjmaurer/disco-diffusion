@@ -5217,7 +5217,11 @@ if (animation_mode == "Video Input") and (flow_warp):
             pathlib.Path(temp_flo).mkdir(parents=True, exist_ok=True)
             cc_path = f"{root_dir}/flow_tools/check_consistency.py"
             with torch.no_grad():
+                fr_i = 0
                 for frame1, frame2 in tqdm(zip(frames[:-1], frames[1:]), total=len(frames) - 1):
+                    fr_i += 1
+                    if fr_i % 100 == 0:
+                        print(f"Flow i: {fr_i}")
                     frame1 = frame1.replace("\\", "/")
                     out_flow21_fn = f"{flo_fwd_folder}/{frame1.split('/')[-1]}"
 
