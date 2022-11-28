@@ -493,6 +493,7 @@ else:
 if not os.path.exists("stable-diffusion"):
     print("Cloning Stable Diffusion")
     gitclone("https://github.com/Doggettx/stable-diffusion")
+sys.path.append("./stable-diffusion")
 file_path = "./stable-diffusion/ldm/modules/attention.py"
 file_content = """#https://github.com/TheLastBen/fast-stable-diffusion/blob/main/precompiled/attention.py
 import gc
@@ -853,10 +854,10 @@ if is_colab or (platform.system() == "Linux"):
     print("Installing xformers.")
     if not os.path.exists("triton"):
         gitclone("https://github.com/openai/triton.git")
-        pip_res = subprocess.run(
-            ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
-        ).stdout.decode("utf-8")
-        print(pip_res)
+    pip_res = subprocess.run(
+        ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
+    ).stdout.decode("utf-8")
+    print(pip_res)
 
     from subprocess import getoutput
     from IPython.display import HTML
