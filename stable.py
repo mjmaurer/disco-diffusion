@@ -919,11 +919,18 @@ except:
     # !git clone https://github.com/CompVis/stable-diffusion
     if not os.path.exists("stable-diffusion"):
         gitclone("https://github.com/Doggettx/stable-diffusion")
-    print(
-        subprocess.run(
-            ["pip", "install", "-e", "./stable-diffusion"], stdout=subprocess.PIPE
-        ).stdout.decode("utf-8")
-    )
+
+    try:
+        import ldm
+    except:
+        print("Installing stable-diffusion")
+        print(
+            subprocess.run(
+                ["pip", "install", "-e", "./stable-diffusion"], stdout=subprocess.PIPE
+            ).stdout.decode("utf-8")
+        )
+
+    sys.path.append(f"{root_dir}/stable-diffusion")
 
     multipip_res = subprocess.run(
         [
@@ -945,23 +952,34 @@ except:
     ).stdout.decode("utf-8")
     print(multipip_res)
 
-    print(
-        subprocess.run(
-            [
-                "pip",
-                "install",
-                "-e",
-                "git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers",
-            ],
-            stdout=subprocess.PIPE,
-        ).stdout.decode("utf-8")
-    )
-    print(
-        subprocess.run(
-            ["pip", "install", "-e", "git+https://github.com/openai/CLIP.git@main#egg=clip"],
-            stdout=subprocess.PIPE,
-        ).stdout.decode("utf-8")
-    )
+    try:
+        import taming
+    except:
+        print("Installing taming")
+        print(
+            subprocess.run(
+                [
+                    "pip",
+                    "install",
+                    "-e",
+                    "git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers",
+                ],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
+        )
+    sys.path.append(f"{root_dir}/src/taming-transformers")
+
+    try:
+        import clip
+    except:
+        print("Installing clip")
+        print(
+            subprocess.run(
+                ["pip", "install", "-e", "git+https://github.com/openai/CLIP.git@main#egg=clip"],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
+        )
+    sys.path.append(f"{root_dir}/src/clip")
 
     multipip_res = subprocess.run(
         [
@@ -974,7 +992,8 @@ except:
     ).stdout.decode("utf-8")
     print(multipip_res)
 
-    gitclone("https://github.com/crowsonkb/k-diffusion/")
+    if not os.path.exists("k-diffusion"):
+        gitclone("https://github.com/crowsonkb/k-diffusion/")
     os.chdir(f"./k-diffusion")
     print(
         subprocess.run(["pip", "install", "-e", "."], stdout=subprocess.PIPE).stdout.decode("utf-8")
@@ -3119,7 +3138,6 @@ from contextlib import nullcontext
 import time
 from pytorch_lightning import seed_everything
 
-os.chdir(f"{root_dir}/stable-diffusion")
 from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
