@@ -856,6 +856,7 @@ if is_colab or (platform.system() == "Linux"):
         gitclone("https://github.com/openai/triton.git")
     try:
         import xformers 
+        import xformers.ops
     except:
         pip_res = subprocess.run(
             ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
