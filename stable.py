@@ -407,6 +407,7 @@
 # %%
 # @title 1.1 Prepare Folders
 import subprocess, os, sys, ipykernel
+from external_settings import michael_mode, vid_input, force_vid_extract
 
 
 def gitclone(url):
@@ -1958,7 +1959,13 @@ def do_run():
         if args.animation_mode == "Video Input Legacy":
             init_scale = args.frames_scale
             init_latent_scale = args.frames_latent_scale
-            skip_steps = args.calc_frames_skip_steps
+            steps = int(get_scheduled_arg(frame_num, steps_schedule))
+            frame_skip_steps = args.frames_skip_steps_series[frame_num]
+            calc_frames_skip_steps = math.floor(steps * frame_skip_steps)
+            if steps <= calc_frames_skip_steps:
+                sys.exit("ERROR: You can't skip more steps than your total steps")
+
+            skip_steps = calc_frames_skip_steps
             if not video_init_seed_continuity:
                 seed += 1
             if flow_warp:
@@ -2602,7 +2609,7 @@ def do_run():
                         image = image_masked
 
                 if frame_num == 0:
-                    save_settings()
+                    save_settings(args)
                 if args.animation_mode != "None":
                     # sys.exit(os.getcwd(), 'cwd')
                     if warp_mode == "use_image":
@@ -2744,7 +2751,7 @@ def do_run():
     batchBar.close()
 
 
-def save_settings():
+def save_settings(args_in):
     setting_list = {
         "text_prompts": text_prompts,
         "user_comment": user_comment,
@@ -2889,6 +2896,7 @@ def save_settings():
         "init_grad": init_grad,
         "grad_denoised": grad_denoised,
     }
+    setting_list.update(args_in)
     # print('Settings:', setting_list)
     with open(f"{batchFolder}/{batch_name}({batchNum})_settings.txt", "w+") as f:  # save settings
         json.dump(setting_list, f, ensure_ascii=False, indent=4)
@@ -3893,18 +3901,21 @@ if diffusion_model == "custom":
 
 # %%
 # @markdown ####**Basic Settings:**
-batch_name = "stable_warpfusion_0.5.21"  # @param{type: 'string'}
-steps = 50
+# !settings
+# TODO video_init_path and other vid_input downstrems
+batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
+steps = 250
 ##@param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 # stop_early = 0  #@param{type: 'number'}
 stop_early = 0
 stop_early = min(steps - 1, stop_early)
 # @markdown Specify desired output size here.\
 # @markdown Don't forget to rerun all steps after changing the width height (including forcing optical flow generation)
-width_height = [1280, 720]  # @param{type: 'raw'}
-clip_guidance_scale = 0  #
-tv_scale = 0
-range_scale = 0
+width_height = [1024, 576]  # @param{type: 'raw'}
+clip_guidance_scale = 13000  # @param{type: 'number'}
+tv_scale = 15000  # @param{type: 'number'}
+range_scale = 1  # @param{type: 'number'}
+sat_scale = 2000  # @param{type: 'number'}
 cutn_batches = 4
 skip_augs = False
 
@@ -3940,6 +3951,19 @@ model_config.update(
 batchFolder = f"{outDirPath}/{batch_name}"
 createPath(batchFolder)
 
+vidFolder = f"{outDirPath}/{batch_name}"
+batchFolder = vidFolder
+settingsFile = "settings.txt"
+if michael_mode:
+    # TODO mode to continue batch
+    # Prefix settings file so it's easier to find at top of dir list
+    settingsFile = "_settings.txt"
+    num_dirs = 0
+    if os.path.exists(vidFolder):
+        lst = os.listdir(vidFolder)
+        num_dirs = len(lst)
+    batchFolder = os.path.join(vidFolder, time.strftime(f"_{9999 - num_dirs}_%m_%d__%H_%M"))
+
 # %% [markdown]
 # ### Animation Settings
 
@@ -3971,7 +3995,7 @@ animation_mode = "Video Input"
 
 # @markdown ####**Video Input Settings:**
 
-video_init_path = ""  # @param {type: 'string'}
+video_init_path = os.path.join(initDirPath, vid_input)
 
 extract_nth_frame = 1  # @param {type: 'number'}
 # @markdown *Specify frame range. end_frame=0 means fill the end of video*
@@ -3987,7 +4011,7 @@ if flow_video_init_path == "":
     flow_video_init_path = None
 
 store_frames_on_google_drive = False  # @param {type: 'boolean'}
-video_init_seed_continuity = False
+video_init_seed_continuity = True
 # @markdown #####**Video Optical Flow Settings:**
 flow_warp = True  # @param {type: 'boolean'}
 # cal optical flow from video frames and warp prev frame with flow
@@ -3998,8 +4022,18 @@ check_consistency = True  # @param {type: 'boolean'}
 
 
 def extractFrames(video_path, output_path, nth_frame, start_frame, end_frame):
-    createPath(output_path)
-    print(f"Exporting Video Frames (1 every {nth_frame})...")
+    if not os.path.exists(output_path):
+        createPath(output_path)
+
+    lst = os.listdir(videoFramesFolder)
+    folder_size = len(lst)
+
+    if folder_size > 1 and not force_vid_extract:
+        print(f"Vid already extracted to: {video_path}")
+        return
+    else:
+        print(f"Exporting Video Frames (1 every {nth_frame})...")
+
     try:
         for f in [o.replace("\\", "/") for o in glob(output_path + "/*.jpg")]:
             # for f in pathlib.Path(f'{output_path}').glob('*.jpg'):
@@ -4051,7 +4085,7 @@ def extractFrames(video_path, output_path, nth_frame, start_frame, end_frame):
     else:
         sys.exit(f"\nERROR!\n\nVideo not found: {video_path}.\nPlease check your video path.\n")
 
-
+videoFramesFolder = "//\\"
 if animation_mode == "Video Input":
     if store_frames_on_google_drive:  # suggested by Chris the Wizard#8082 at discord
         videoFramesFolder = f"{batchFolder}/videoFrames"
@@ -4067,6 +4101,11 @@ if animation_mode == "Video Input":
         videoFramesFolder = f"{batchFolder}/videoFrames"
         flowVideoFramesFolder = (
             f"{batchFolder}/flowVideoFrames" if flow_video_init_path else videoFramesFolder
+        )
+    if michael_mode:
+        videoFramesFolder = f"{vidFolder}/videoFrames"
+        flowVideoFramesFolder = (
+            f"{vidFolder}/flowVideoFrames" if flow_video_init_path else videoFramesFolder
         )
 
     extractFrames(video_init_path, videoFramesFolder, extract_nth_frame, start_frame, end_frame)
@@ -4097,6 +4136,12 @@ if animation_mode == "Video Input":
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
+##@markdown ####**Coherency Settings:**
+##@markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default for Stable Diffusion is 0.
+frames_scale = 0
+##@markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
+frames_skip_steps = "0: (0.75)" # This is only used in Video Input Legacy
+# I don't think any of these are used
 angle = "0:(0)"
 zoom = "0: (1), 10: (1.05)"
 translation_x = "0: (0)"
@@ -4133,13 +4178,6 @@ if turbo_mode and animation_mode != "Video Input":
 
 # @markdown ---
 
-##@markdown ####**Coherency Settings:**
-##@markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default for Stable Diffusion is 0.
-frames_scale = 0
-##@param{type: 'integer'}
-##@markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-frames_skip_steps = "70%"
-##@param ['40%', '50%', '60%', '70%', '80%', '90%','95%'] {type: 'string'}
 
 vr_mode = False
 
@@ -4278,6 +4316,15 @@ def split_prompts(prompts):
 
 
 if key_frames:
+    try:
+        frames_skip_steps_series= get_inbetweens(parse_key_frames(frames_skip_steps))
+    except RuntimeError as e:
+        print(
+            f'{frames_skip_steps} not formatted as keyframe'
+        )
+        frames_skip_steps = f"0: ({frames_skip_steps})"
+        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
+
     try:
         angle_series = get_inbetweens(parse_key_frames(angle))
     except RuntimeError as e:
@@ -5513,7 +5560,7 @@ if intermediate_saves and intermediates_in_subfolder is True:
 
 perlin_init = False
 perlin_mode = "mixed"
-set_seed = "4275770367"  # @param{type: 'string'}
+set_seed = "random_seed"  # @param{type: 'string'}
 
 
 # @markdown *Clamp grad is used with any of the init_scales or sat_scale above 0*\
@@ -5522,7 +5569,7 @@ set_seed = "4275770367"  # @param{type: 'string'}
 # @markdown 0.7 is a good clamp_max value.
 eta = 0.55
 clamp_grad = True  # @param{type: 'boolean'}
-clamp_max = 2  # @param{type: 'number'}
+clamp_max = 0.7  # @param{type: 'number'}
 
 
 # EXTRA ADVANCED SETTINGS:
@@ -5550,32 +5597,7 @@ cut_icgray_p = "[0.2]*100+[0]*900"
 # `animation_mode: None` will only use the first set. `animation_mode: 2D / Video` will run through them per the set frames and hold on the last one.
 
 # %%
-text_prompts = {
-    0: [
-        "a beautiful breathtaking highly-detailed intricate portrait painting of a young woman with"
-        " long hair, against a backdrop of stars in the style of alphonse mucha and ilya kuvshinov"
-        " and peter mohrbacher, ross tran rossdraws, watercolor, featured on artstation, 70mm,"
-        " rendered in octane"
-    ],
-    550: [
-        "a highly detailed matte painting of a robot, No Man's Sky Screenshot, tall grass field,"
-        " broken machinery, Simon Stalenhag , featured on Artstation."
-    ],
-    1000: [
-        "a beautiful breathtaking highly-detailed intricate portrait painting of a blissful"
-        " ignorant enlightened young sxelaqwertyop dancing against a backdrop of stars in the style"
-        " of alphonse mucha and ilya kuvshinov and peter mohrbacker, ross tran rossdraws,"
-        " watercolor, featured on artstation, 70mm, rendered in octane"
-    ],
-    1500: [
-        "a highly detailed matte painting of a robot sxelaqwertyop, No Man's Sky Screenshot, tall"
-        " grass field, broken machinery, Simon Stalenhag , featured on Artstation."
-    ],
-}
-
-negative_prompts = {0: ["text, logo, cropped, two heads, four arms, lazy eye, blurry, unfocused"]}
-
-image_prompts = {}
+from external_prompts import text_prompts, negative_prompts, image_prompts
 
 
 # %% [markdown]
@@ -5684,7 +5706,7 @@ min_brightness_threshold = 1  # @param {'type':'number'}
 # %%
 # @title Video mask settings
 # @markdown Check to enable background masking during render. Not recommended, better use masking when creating the output video for more control and faster testing.
-use_background_mask = True  # @param {'type':'boolean'}
+use_background_mask = False  # @param {'type':'boolean'}
 # @markdown Check to invert the mask.
 invert_mask = False  # @param {'type':'boolean'}
 # @markdown Apply mask right before feeding init image to the model. Unchecking will only mask current raw init frame.
@@ -5720,24 +5742,22 @@ init_scale_schedule = [
     0,
     0,
 ]  # controls coherency with previous frame in pixel space. 0 - off, 1000 - a good starting value if you decide to turn it on.
-sat_scale = 0
 init_grad = True  # True - compare result to real frame, False - to stylized frame
 
 grad_denoised = True  # fastest, on by default, calc grad towards denoised x instead of input x
 
 # %%
+# !sched
 steps_schedule = {
-    0: 50,
-    1: 200,
+    0: steps,
 }  # schedules total steps. useful with low strength, when you end up with only 10 steps at 0.2 strength x50 steps. Increasing max steps for low strength gives model more time to get to your text prompt
 style_strength_schedule = [
-    0.3,
-    0.1,
+    0.6,
 ]  # [0.5]+[0.2]*149+[0.3]*3+[0.2] #use this instead of skip steps. It means how many steps we should do. 0.8 = we diffuse for 80% steps, so we skip 20%. So for skip steps 70% use 0.3
 flow_blend_schedule = [
     0.8
 ]  # for example [0.1]*3+[0.999]*18+[0.3] will fade-in for 3 frames, keep style for 18 frames, and fade-out for the rest
-cfg_scale_schedule = [15]  # text2image strength, 7.5 is a good default
+cfg_scale_schedule = [7.5]  # text2image strength, 7.5 is a good default
 blend_json_schedules = (
     True  # True - interpolate values between keyframes. False - use latest keyframe
 )
@@ -5831,7 +5851,7 @@ def load_img_lpips(path, size=(512, 512)):
 
 
 diff = None
-analyze_video = False  # @param {'type':'boolean'}
+analyze_video = True  # @param {'type':'boolean'}
 
 diff_function = "lpips"  # @param ['rmse','lpips','rmse+lpips']
 
@@ -6060,8 +6080,6 @@ if retain_overwritten_frames is True:
     createPath(retainFolder)
 
 
-skip_step_ratio = int(frames_skip_steps.rstrip("%")) / 100
-calc_frames_skip_steps = math.floor(steps * skip_step_ratio)
 
 if animation_mode == "Video Input":
     frames = sorted(glob(in_path + "/*.*"))
@@ -6075,15 +6093,12 @@ if animation_mode == "Video Input":
         sys.exit("ERROR: 0 flow files found.\nPlease rerun the flow generation cell.")
 
 
-if steps <= calc_frames_skip_steps:
-    sys.exit("ERROR: You can't skip more steps than your total steps")
-
 if resume_run:
     if run_to_resume == "latest":
         try:
             batchNum
         except:
-            batchNum = len(glob(f"{batchFolder}/{batch_name}(*)_settings.txt")) - 1
+            batchNum = len(glob(f"{batchFolder}/{batch_name}(*)_{settingsFile}")) - 1
     else:
         batchNum = int(run_to_resume)
     if resume_from_frame == "latest":
@@ -6113,8 +6128,8 @@ else:
     start_frame = 0
     batchNum = len(glob(batchFolder + "/*.txt"))
     while (
-        os.path.isfile(f"{batchFolder}/{batch_name}({batchNum})_settings.txt") is True
-        or os.path.isfile(f"{batchFolder}/{batch_name}-{batchNum}_settings.txt") is True
+        os.path.isfile(f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}") is True
+        or os.path.isfile(f"{batchFolder}/{batch_name}-{batchNum}_{settingsFile}") is True
     ):
         batchNum += 1
 
@@ -6184,9 +6199,8 @@ args = {
     "rotation_3d_y_series": rotation_3d_y_series,
     "rotation_3d_z_series": rotation_3d_z_series,
     "frames_scale": frames_scale,
-    "calc_frames_skip_steps": calc_frames_skip_steps,
-    "skip_step_ratio": skip_step_ratio,
-    "calc_frames_skip_steps": calc_frames_skip_steps,
+    "frames_skip_steps_series": frames_skip_steps_series,
+    "frames_skip_steps": frames_skip_steps,
     "text_prompts": text_prompts,
     "image_prompts": image_prompts,
     "cut_overview": eval(cut_overview),
