@@ -854,10 +854,13 @@ if is_colab or (platform.system() == "Linux"):
     print("Installing xformers.")
     if not os.path.exists("triton"):
         gitclone("https://github.com/openai/triton.git")
-    pip_res = subprocess.run(
-        ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
-    ).stdout.decode("utf-8")
-    print(pip_res)
+    try:
+        import xformers 
+    except:
+        pip_res = subprocess.run(
+            ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
+        print(pip_res)
 
     from subprocess import getoutput
     from IPython.display import HTML
@@ -4044,11 +4047,11 @@ def extractFrames(video_path, output_path, nth_frame, start_frame, end_frame):
     if not os.path.exists(output_path):
         createPath(output_path)
 
-    lst = os.listdir(videoFramesFolder)
+    lst = os.listdir(output_path)
     folder_size = len(lst)
 
     if folder_size > 1 and not force_vid_extract:
-        print(f"Vid already extracted to: {video_path}")
+        print(f"Vid already extracted to: {output_path}")
         return
     else:
         print(f"Exporting Video Frames (1 every {nth_frame})...")
