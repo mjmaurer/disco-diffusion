@@ -5168,7 +5168,7 @@ if is_colab:
         file.write(filedata)
 import gc
 
-force_flow_generation = True  # @param {type:'boolean'}
+force_flow_generation = False  # @param {type:'boolean'}
 # @markdown Use lower quality model (half-precision).\
 # @markdown Uses half the vram, allows fitting 1500x1500+ frames into 16gigs, which the original full-precision RAFT can't do.
 flow_lq = True  # @param {type:'boolean'}
