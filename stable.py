@@ -407,7 +407,7 @@
 # %%
 # @title 1.1 Prepare Folders
 import subprocess, os, sys, ipykernel
-from external_settings import michael_mode, vid_input, force_vid_extract
+from external_settings import michael_mode, vid_input, force_vid_extract, sd_model_path
 
 
 def gitclone(url):
@@ -855,7 +855,7 @@ if is_colab or (platform.system() == "Linux"):
     if not os.path.exists("triton"):
         gitclone("https://github.com/openai/triton.git")
     try:
-        import xformers 
+        import xformers
         import xformers.ops
     except:
         pip_res = subprocess.run(
@@ -4108,6 +4108,7 @@ def extractFrames(video_path, output_path, nth_frame, start_frame, end_frame):
     else:
         sys.exit(f"\nERROR!\n\nVideo not found: {video_path}.\nPlease check your video path.\n")
 
+
 videoFramesFolder = "//\\"
 if animation_mode == "Video Input":
     if store_frames_on_google_drive:  # suggested by Chris the Wizard#8082 at discord
@@ -4163,7 +4164,7 @@ interp_spline = (  # Do not change, currently will not look good. param ['Linear
 ##@markdown `frame_scale` tries to guide the new frame to looking like the old one. A good default for Stable Diffusion is 0.
 frames_scale = 0
 ##@markdown `frame_skip_steps` will blur the previous frame - higher values will flicker less but struggle to add enough new detail to zoom into.
-frames_skip_steps = "0: (0.75)" # This is only used in Video Input Legacy
+frames_skip_steps = "0: (0.75)"  # This is only used in Video Input Legacy
 # I don't think any of these are used
 angle = "0:(0)"
 zoom = "0: (1), 10: (1.05)"
@@ -4340,11 +4341,9 @@ def split_prompts(prompts):
 
 if key_frames:
     try:
-        frames_skip_steps_series= get_inbetweens(parse_key_frames(frames_skip_steps))
+        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
     except RuntimeError as e:
-        print(
-            f'{frames_skip_steps} not formatted as keyframe'
-        )
+        print(f"{frames_skip_steps} not formatted as keyframe")
         frames_skip_steps = f"0: ({frames_skip_steps})"
         frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
 
@@ -5264,8 +5263,8 @@ if (animation_mode == "Video Input") and (flow_warp):
                             "--flow_bwd",
                             bwd,
                             "--output",
-                            flo_fwd_folder,
-                            "--image-output",
+                            f"{flo_fwd_folder}/",
+                            "--image_output",
                             "--output_postfix='-21_cc'",
                             "--blur=0.",
                             "--save_separate_channels",
@@ -5285,8 +5284,8 @@ if (animation_mode == "Video Input") and (flow_warp):
                             "--flow_bwd",
                             fwd,
                             "--output",
-                            flo_fwd_folder,
-                            "--image-output",
+                            f"{flo_fwd_folder}/",
+                            "--image_output",
                             "--output_postfix='-21_cc'",
                             "--blur=0.",
                             "--save_separate_channels",
@@ -5474,7 +5473,7 @@ def load_img_sd(path, size):
 dynamic_thresh = 2.0
 device = "cuda"
 config_path = f"{root_dir}/stable-diffusion/configs/stable-diffusion/v1-inference.yaml"
-model_path = "/content/drive/MyDrive/models/sd-v1-4.ckpt"  # @param {'type':'string'}
+model_path = sd_model_path 
 import pickle
 
 if model_path.endswith(".pkl"):
@@ -6105,7 +6104,6 @@ retain_overwritten_frames = False  # @param{type: 'boolean'}
 if retain_overwritten_frames is True:
     retainFolder = f"{batchFolder}/retained"
     createPath(retainFolder)
-
 
 
 if animation_mode == "Video Input":
