@@ -851,17 +851,17 @@ if platform.system() != "Linux":
     )
     # !pip install https://github.com/C43H66N12O12S2/stable-diffusion-webui/releases/download/f/xformers-0.0.14.dev0-cp310-cp310-win_amd64.whl
 if is_colab or (platform.system() == "Linux"):
-    print("Installing xformers.")
     if not os.path.exists("triton"):
         gitclone("https://github.com/openai/triton.git")
     try:
         import xformers
         import xformers.ops
     except:
+        print("Installing xformers.")
         pip_res = subprocess.run(
             ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
         ).stdout.decode("utf-8")
-        print(pip_res)
+        # print(pip_res)
 
     from subprocess import getoutput
     from IPython.display import HTML
@@ -930,14 +930,13 @@ except:
         import ldm
     except:
         print("Installing stable-diffusion")
-        print(
-            subprocess.run(
-                ["pip", "install", "-e", "./stable-diffusion"], stdout=subprocess.PIPE
-            ).stdout.decode("utf-8")
-        )
+        subprocess.run(
+            ["pip", "install", "-e", "./stable-diffusion"], stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
 
     sys.path.append(f"{root_dir}/stable-diffusion")
 
+    print("Installing pip deps")
     multipip_res = subprocess.run(
         [
             "pip",
@@ -956,35 +955,30 @@ except:
         ],
         stdout=subprocess.PIPE,
     ).stdout.decode("utf-8")
-    print(multipip_res)
 
     try:
         import taming
     except:
         print("Installing taming")
-        print(
-            subprocess.run(
-                [
-                    "pip",
-                    "install",
-                    "-e",
-                    "git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers",
-                ],
-                stdout=subprocess.PIPE,
-            ).stdout.decode("utf-8")
-        )
+        subprocess.run(
+            [
+                "pip",
+                "install",
+                "-e",
+                "git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers",
+            ],
+            stdout=subprocess.PIPE,
+        ).stdout.decode("utf-8")
     sys.path.append(f"{root_dir}/src/taming-transformers")
 
     try:
         import clip
     except:
         print("Installing clip")
-        print(
-            subprocess.run(
-                ["pip", "install", "-e", "git+https://github.com/openai/CLIP.git@main#egg=clip"],
-                stdout=subprocess.PIPE,
-            ).stdout.decode("utf-8")
-        )
+        subprocess.run(
+            ["pip", "install", "-e", "git+https://github.com/openai/CLIP.git@main#egg=clip"],
+            stdout=subprocess.PIPE,
+        ).stdout.decode("utf-8")
     sys.path.append(f"{root_dir}/src/clip")
 
     multipip_res = subprocess.run(
@@ -2922,8 +2916,9 @@ def save_settings(args_in):
         "init_grad": init_grad,
         "grad_denoised": grad_denoised,
     }
-    setting_list.update(args_in.__dict__)
-    # print('Settings:', setting_list)
+    for arg_key, arg_value in args_in.__dict__.items():
+        if type(arg_value) is str or type(arg_value) is int or type(arg_value) is float:
+            setting_list[arg_key] = arg_value
     with open(f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}", "w+") as f:  # save settings
         json.dump(setting_list, f, ensure_ascii=False, indent=4)
 
@@ -5476,7 +5471,7 @@ def load_img_sd(path, size):
 dynamic_thresh = 2.0
 device = "cuda"
 config_path = f"{root_dir}/stable-diffusion/configs/stable-diffusion/v1-inference.yaml"
-model_path = sd_model_path 
+model_path = sd_model_path
 import pickle
 
 if model_path.endswith(".pkl"):
