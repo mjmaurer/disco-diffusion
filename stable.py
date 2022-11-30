@@ -2920,7 +2920,7 @@ def save_settings(args_in):
         "init_grad": init_grad,
         "grad_denoised": grad_denoised,
     }
-    setting_list.update(args_in)
+    setting_list.update(args_in.__dict__)
     # print('Settings:', setting_list)
     with open(f"{batchFolder}/{batch_name}({batchNum})_settings.txt", "w+") as f:  # save settings
         json.dump(setting_list, f, ensure_ascii=False, indent=4)
@@ -5254,6 +5254,7 @@ if (animation_mode == "Video Input") and (flow_warp):
                     # old version, may be incorrect
                     print("Doing bwd->fwd cc check")
 
+                    # python flow_tools/check_consistency.py --flow_fwd "/notebooks/images_out/_short2/videoFrames_out_flo_fwd/*.jpg.npy" --flow_bwd "/notebooks/images_out/_short2/videoFrames_out_flo_fwd/*jpg_12.npy" --output /notebooks/images_out/_short2/videoFrames_out_flo_fwd/ --image_output --output_postfix='-21_cc' --blur=0. --save_separate_channels --skip_numpy_output
                     pip_res = subprocess.run(
                         [
                             "python",
