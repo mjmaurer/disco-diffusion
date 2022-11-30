@@ -880,6 +880,7 @@ if is_colab or (platform.system() == "Linux"):
     elif "A100" in s:
         gpu = "A100"
 
+    print("Gpu: " + gpu)
     while True:
         try:
             gpu == "T4" or gpu == "P100" or gpu == "V100" or gpu == "A100"
@@ -901,6 +902,7 @@ if is_colab or (platform.system() == "Linux"):
 
     elif gpu == "A100":
         gpu_wheel = "https://github.com/TheLastBen/fast-stable-diffusion/raw/main/precompiled/A100/xformers-0.0.13.dev0-py3-none-any.whl"
+    print("Gpu wheel: " + gpu_wheel)
 
     print(
         subprocess.run(["pip", "install", gpu_wheel], stdout=subprocess.PIPE).stdout.decode("utf-8")
@@ -2922,7 +2924,7 @@ def save_settings(args_in):
     }
     setting_list.update(args_in.__dict__)
     # print('Settings:', setting_list)
-    with open(f"{batchFolder}/{batch_name}({batchNum})_settings.txt", "w+") as f:  # save settings
+    with open(f"{batchFolder}/{batch_name}({batchNum})_{settingsFile}", "w+") as f:  # save settings
         json.dump(setting_list, f, ensure_ascii=False, indent=4)
 
 
@@ -3972,7 +3974,6 @@ model_config.update(
 
 # Make folder for batch
 batchFolder = f"{outDirPath}/{batch_name}"
-createPath(batchFolder)
 
 vidFolder = f"{outDirPath}/{batch_name}"
 batchFolder = vidFolder
@@ -3986,6 +3987,7 @@ if michael_mode:
         lst = os.listdir(vidFolder)
         num_dirs = len(lst)
     batchFolder = os.path.join(vidFolder, time.strftime(f"_{9999 - num_dirs}_%m_%d__%H_%M"))
+createPath(batchFolder)
 
 # %% [markdown]
 # ### Animation Settings
