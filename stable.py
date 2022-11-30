@@ -981,6 +981,7 @@ except:
         ).stdout.decode("utf-8")
     sys.path.append(f"{root_dir}/src/clip")
 
+    print("Installing pip deps 2")
     multipip_res = subprocess.run(
         [
             "pip",
@@ -990,7 +991,6 @@ except:
         ],
         stdout=subprocess.PIPE,
     ).stdout.decode("utf-8")
-    print(multipip_res)
 
     if not os.path.exists("k-diffusion"):
         gitclone("https://github.com/crowsonkb/k-diffusion/")
@@ -1650,9 +1650,9 @@ def do_3d_step(img_filepath, frame_num, forward_clip):
     forward_clip = forward_weights_clip
     if check_consistency:
         if reverse_cc_order:
-            weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg"
+            weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}'-21_cc'.jpg"
         else:
-            weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12-21_cc.jpg"
+            weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12'-21_cc'.jpg"
 
     if turbo_mode & (frame_num % int(turbo_steps) != 0):
         if forward_weights_clip_turbo_step:
@@ -2011,7 +2011,7 @@ def do_run():
                     weights_path = None
                     forward_clip = forward_weights_clip
                     if check_consistency:
-                        weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg"
+                        weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}'-21_cc'.jpg"
                     if turbo_mode & (frame_num % int(turbo_steps) != 0):
                         if forward_weights_clip_turbo_step:
                             forward_clip = forward_weights_clip_turbo_step
@@ -2375,9 +2375,9 @@ def do_run():
             if check_consistency and frame_num > 0:
                 frame1_path = f"{videoFramesFolder}/{frame_num:06}.jpg"
                 if reverse_cc_order:
-                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg"
+                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}'-21_cc'.jpg"
                 else:
-                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12-21_cc.jpg"
+                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12'-21_cc'.jpg"
                 consistency_mask = load_cc(weights_path, blur=consistency_blur)
             if diffusion_model != "stable_diffusion":
                 if args.diffusion_sampling_mode == "ddim":
@@ -2576,7 +2576,7 @@ def do_run():
                     if VERBOSE:
                         print("imitating inpaint")
                     frame1_path = f"{videoFramesFolder}/{frame_num:06}.jpg"
-                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg"
+                    weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}'-21_cc'.jpg"
                     consistency_mask = load_cc(weights_path, blur=consistency_blur)
                     consistency_mask = cv2.GaussianBlur(
                         consistency_mask,
@@ -6381,9 +6381,9 @@ else:
             weights_path = None
             if check_consistency:
                 if reverse_cc_order:
-                    weights_path = f"{flo_folder}/{frame1_stem}-21_cc.jpg"
+                    weights_path = f"{flo_folder}/{frame1_stem}'-21_cc'.jpg"
                 else:
-                    weights_path = f"{flo_folder}/{frame1_stem}_12-21_cc.jpg"
+                    weights_path = f"{flo_folder}/{frame1_stem}_12'-21_cc'.jpg"
             # print(i, frame1_path, frame2_path, flo_path)
             frame = warp(
                 frame1,
