@@ -2385,7 +2385,7 @@ def do_run():
                         init_image=init,
                         randomize_class=randomize_class,
                         eta=eta,
-                        mask=consistency_mask,
+                        # mask=consistency_mask, !changed
                         inpainting_stop=inpainting_stop,
                         early_stop=early_stop,
                     )
