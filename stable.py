@@ -1624,7 +1624,7 @@ def do_3d_step(img_filepath, frame_num, forward_clip):
     flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}.npy"
 
     if flow_override_map not in [[], "", None]:
-        mapped_frame_num = get_scheduled_arg(frame_num, flow_override_map)
+        mapped_frame_num = int(get_scheduled_arg(frame_num, flow_override_map))
         frame_override_path = f"{videoFramesFolder}/{mapped_frame_num:06}.jpg"
         flo_path = f"{flo_folder}/{frame_override_path.split('/')[-1]}.npy"
 
@@ -4594,14 +4594,16 @@ RG = Regrain()
 
 
 def match_color(stylized_img, raw_img, opacity=1.0):
-    img_arr_ref = cv2.cvtColor(np.array(stylized_img).round().astype("uint8"), cv2.COLOR_RGB2BGR)
-    img_arr_in = cv2.cvtColor(np.array(raw_img).round().astype("uint8"), cv2.COLOR_RGB2BGR)
-    # img_arr_in = cv2.resize(img_arr_in, (img_arr_ref.shape[1], img_arr_ref.shape[0]), interpolation=cv2.INTER_CUBIC )
-    img_arr_col = PT.pdf_transfer(img_arr_in=img_arr_in, img_arr_ref=img_arr_ref)
-    img_arr_reg = RG.regrain(img_arr_in=img_arr_col, img_arr_col=img_arr_ref)
-    img_arr_reg = img_arr_reg * opacity + img_arr_in * (1 - opacity)
-    img_arr_reg = cv2.cvtColor(img_arr_reg.round().astype("uint8"), cv2.COLOR_BGR2RGB)
-    return img_arr_reg
+    if opacity > 0:
+        img_arr_ref = cv2.cvtColor(np.array(stylized_img).round().astype("uint8"), cv2.COLOR_RGB2BGR)
+        img_arr_in = cv2.cvtColor(np.array(raw_img).round().astype("uint8"), cv2.COLOR_RGB2BGR)
+        # img_arr_in = cv2.resize(img_arr_in, (img_arr_ref.shape[1], img_arr_ref.shape[0]), interpolation=cv2.INTER_CUBIC )
+        img_arr_col = PT.pdf_transfer(img_arr_in=img_arr_in, img_arr_ref=img_arr_ref)
+        img_arr_reg = RG.regrain(img_arr_in=img_arr_col, img_arr_col=img_arr_ref)
+        img_arr_reg = img_arr_reg * opacity + img_arr_in * (1 - opacity)
+        img_arr_reg = cv2.cvtColor(img_arr_reg.round().astype("uint8"), cv2.COLOR_BGR2RGB)
+        return img_arr_reg
+    else: return raw_img
 
 
 from PIL import Image, ImageOps, ImageStat, ImageEnhance
@@ -5168,7 +5170,7 @@ import gc
 force_flow_generation = False  # @param {type:'boolean'}
 # @markdown Use lower quality model (half-precision).\
 # @markdown Uses half the vram, allows fitting 1500x1500+ frames into 16gigs, which the original full-precision RAFT can't do.
-flow_lq = False # !changed # True  # @param {type:'boolean'}
+flow_lq = True # @param {type:'boolean'}
 # @markdown Save human-readable flow images along with motion vectors. Check /{your output dir}/videoFrames/out_flo_fwd folder.
 flow_save_img_preview = True  # @param {type:'boolean'}
 in_path = videoFramesFolder if not flow_video_init_path else flowVideoFramesFolder
@@ -6499,7 +6501,7 @@ if shut_down_after_run_all:
 # @title Insert paths to two settings.txt files to compare
 file1 = ""  # @param {'type':'string'}
 file2 = ""  # @param {'type':'string'}
-if file1 != "" and files2 != "":
+if file1 != "" and file2 != "":
     import json
 
     with open(file1, "rb") as f:
