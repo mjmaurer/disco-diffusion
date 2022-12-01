@@ -5168,7 +5168,7 @@ import gc
 force_flow_generation = False  # @param {type:'boolean'}
 # @markdown Use lower quality model (half-precision).\
 # @markdown Uses half the vram, allows fitting 1500x1500+ frames into 16gigs, which the original full-precision RAFT can't do.
-flow_lq = True  # @param {type:'boolean'}
+flow_lq = False # !changed # True  # @param {type:'boolean'}
 # @markdown Save human-readable flow images along with motion vectors. Check /{your output dir}/videoFrames/out_flo_fwd folder.
 flow_save_img_preview = True  # @param {type:'boolean'}
 in_path = videoFramesFolder if not flow_video_init_path else flowVideoFramesFolder
@@ -5824,7 +5824,7 @@ blend_latent_to_init = 0
 # @markdown ###Latent matching
 # @markdown Match the range of latent vector towards the 1st frame or a user defined range. Doesn't restrict colors, but may limit contrast.
 normalize_latent = (  # @param ['off', 'first_latent', 'user_defined', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
-    "off" # "init_frame_offset"
+    "init_frame_offset"
 )
 # @markdown in offset mode, specifies the offset back from current frame, and 0 means current frame. In non-offset mode specifies the fixed frame number. 0 means the 1st frame.
 
