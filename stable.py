@@ -4029,11 +4029,11 @@ if flow_video_init_path == "":
 store_frames_on_google_drive = False  # @param {type: 'boolean'}
 video_init_seed_continuity = True
 # @markdown #####**Video Optical Flow Settings:**
-flow_warp = True  # @param {type: 'boolean'}
+flow_warp = False # !changed  # @param {type: 'boolean'}
 # cal optical flow from video frames and warp prev frame with flow
 flow_blend = 0.999
 ##@param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
-check_consistency = False # !changed  # @param {type: 'boolean'}
+check_consistency = True # @param {type: 'boolean'}
 # cal optical flow from video frames and warp prev frame with flow
 
 
