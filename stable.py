@@ -2386,8 +2386,8 @@ def do_run():
                         randomize_class=randomize_class,
                         eta=eta,
                         # mask=consistency_mask, !changed
-                        inpainting_stop=inpainting_stop,
-                        early_stop=early_stop,
+                        # inpainting_stop=inpainting_stop,
+                        # early_stop=early_stop,
                     )
                 else:
                     samples = sample_fn(
