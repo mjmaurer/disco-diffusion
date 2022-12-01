@@ -1104,6 +1104,7 @@ multipip_res = subprocess.run(
 if is_colab:
     subprocess.run(["apt", "install", "imagemagick"], stdout=subprocess.PIPE).stdout.decode("utf-8")
 
+import clip
 # try:
 #   from CLIP import clip
 # except:
@@ -5390,7 +5391,6 @@ def load_model_from_config(config, ckpt, verbose=False):
     return model
 
 
-import clip
 from kornia import augmentation as KA
 from torch.nn import functional as F
 from resize_right import resize
