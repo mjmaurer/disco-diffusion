@@ -886,7 +886,7 @@ if is_colab or (platform.system() == "Linux"):
         print(" it seems that your GPU is not supported at the moment")
         time.sleep(5)
 
-    gpu_wheel = ""
+    gpu_wheel = "xformers"
     if gpu == "T4":
         gpu_wheel = "https://github.com/TheLastBen/fast-stable-diffusion/raw/main/precompiled/T4/xformers-0.0.13.dev0-py3-none-any.whl"
 
@@ -5464,7 +5464,6 @@ def load_img_sd(path, size):
 dynamic_thresh = 2.0
 device = "cuda"
 config_path = f"{root_dir}/stable-diffusion/configs/stable-diffusion/v1-inference.yaml"
-model_path = sd_model_path
 import pickle
 
 if model_path.endswith(".pkl"):
@@ -5472,7 +5471,7 @@ if model_path.endswith(".pkl"):
         sd_model = pickle.load(f).cuda().eval()
 else:
     config = OmegaConf.load(config_path)
-    sd_model = load_model_from_config(config, model_path)
+    sd_model = load_model_from_config(config, sd_model_path)
 
 model_wrap = K.external.CompVisDenoiser(sd_model)
 sigma_min, sigma_max = model_wrap.sigmas[0].item(), model_wrap.sigmas[-1].item()
