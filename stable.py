@@ -3662,19 +3662,19 @@ def run_sd(
 # %%
 # @markdown ####**Models Settings:**
 # @markdown #####temporarily off
-diffusion_model = "stable_diffusion"
+diffusion_model = "512x512_diffusion_uncond_finetune_008100" # "stable_diffusion"
 use_secondary_model = False
 diffusion_sampling_mode = "ddim"
 ##@markdown #####**Custom model:**
 custom_path = ""
 
 ##@markdown #####**CLIP settings:**
-ViTB32 = False
-ViTB16 = False
+ViTB32 = True
+ViTB16 = True
 ViTL14 = False
 ViTL14_336 = False
 RN101 = False
-RN50 = False
+RN50 = True
 RN50x4 = False
 RN50x16 = False
 RN50x64 = False
