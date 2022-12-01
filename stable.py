@@ -5737,7 +5737,7 @@ background_source = "red"  # @param {'type':'string'}
 # # stable-settings
 
 # %%
-warp_mode = "use_image"  # @param ['use_latent', 'use_image']
+warp_mode = "use_latent"  # !changed @param ['use_latent', 'use_image']
 warp_towards_init = "off"  # @param ['stylized', 'off']
 
 if warp_towards_init != "off":
