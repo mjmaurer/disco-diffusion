@@ -3924,14 +3924,14 @@ if diffusion_model == "custom":
 # !settings
 # TODO video_init_path and other vid_input downstrems
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 250
+steps = 100
 ##@param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 # stop_early = 0  #@param{type: 'number'}
 stop_early = 0
 stop_early = min(steps - 1, stop_early)
 # @markdown Specify desired output size here.\
 # @markdown Don't forget to rerun all steps after changing the width height (including forcing optical flow generation)
-width_height = [1024, 576]  # @param{type: 'raw'}
+width_height = [1024, 768] # [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 13000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
 range_scale = 1  # @param{type: 'number'}
