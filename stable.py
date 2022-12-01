@@ -2385,9 +2385,9 @@ def do_run():
                         init_image=init,
                         randomize_class=randomize_class,
                         eta=eta,
-                        # mask=consistency_mask, !changed
-                        # inpainting_stop=inpainting_stop,
-                        # early_stop=early_stop,
+                        mask=consistency_mask, 
+                        inpainting_stop=inpainting_stop,
+                        early_stop=early_stop,
                     )
                 else:
                     samples = sample_fn(
@@ -3663,7 +3663,7 @@ def run_sd(
 # %%
 # @markdown ####**Models Settings:**
 # @markdown #####temporarily off
-diffusion_model = "512x512_diffusion_uncond_finetune_008100" # "stable_diffusion"
+diffusion_model = "stable_diffusion"
 use_secondary_model = False
 diffusion_sampling_mode = "ddim"
 ##@markdown #####**Custom model:**
