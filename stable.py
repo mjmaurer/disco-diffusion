@@ -1012,7 +1012,6 @@ multipip_res = subprocess.run(
     ],
     stdout=subprocess.PIPE,
 ).stdout.decode("utf-8")
-print(multipip_res)
 
 try:
     import open_clip
@@ -1057,7 +1056,6 @@ multipip_res = subprocess.run(
     ],
     stdout=subprocess.PIPE,
 ).stdout.decode("utf-8")
-print(multipip_res)
 multipip_res = subprocess.run(
     [
         "pip",
@@ -1067,7 +1065,6 @@ multipip_res = subprocess.run(
     ],
     stdout=subprocess.PIPE,
 ).stdout.decode("utf-8")
-print(multipip_res)
 
 if is_colab:
     # !git clone https://github.com/vacancy/PyPatchMatch --recursive
@@ -1107,7 +1104,6 @@ multipip_res = subprocess.run(
     ],
     stdout=subprocess.PIPE,
 ).stdout.decode("utf-8")
-print(multipip_res)
 
 if is_colab:
     subprocess.run(["apt", "install", "imagemagick"], stdout=subprocess.PIPE).stdout.decode("utf-8")
@@ -4037,7 +4033,7 @@ flow_warp = True  # @param {type: 'boolean'}
 # cal optical flow from video frames and warp prev frame with flow
 flow_blend = 0.999
 ##@param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
-check_consistency = True  # @param {type: 'boolean'}
+check_consistency = False # !changed  # @param {type: 'boolean'}
 # cal optical flow from video frames and warp prev frame with flow
 
 
@@ -4480,7 +4476,6 @@ if extract_background_mask:
     pip_res = subprocess.run(
         ["pip", "install", "av", "pims"], stdout=subprocess.PIPE
     ).stdout.decode("utf-8")
-    print(pip_res)
     if not os.path.exists("RobustVideoMattingCLI"):
         gitclone("https://github.com/Sxela/RobustVideoMattingCLI")
     if mask_source == "init_video":
