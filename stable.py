@@ -3927,7 +3927,7 @@ stop_early = 0
 stop_early = min(steps - 1, stop_early)
 # @markdown Specify desired output size here.\
 # @markdown Don't forget to rerun all steps after changing the width height (including forcing optical flow generation)
-width_height = [1024, 768] # [1024, 576]  # @param{type: 'raw'}
+width_height = [512, 512] # [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 13000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
 range_scale = 1  # @param{type: 'number'}
