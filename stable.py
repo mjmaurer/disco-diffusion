@@ -853,15 +853,11 @@ if platform.system() != "Linux":
 if is_colab or (platform.system() == "Linux"):
     if not os.path.exists("triton"):
         gitclone("https://github.com/openai/triton.git")
-    try:
-        import xformers
-        import xformers.ops
-    except:
-        print("Installing xformers.")
-        pip_res = subprocess.run(
-            ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
-        ).stdout.decode("utf-8")
-        # print(pip_res)
+    print("Installing xformers.")
+    pip_res = subprocess.run(
+        ["pip", "install", "-e", "./triton/python"], stdout=subprocess.PIPE
+    ).stdout.decode("utf-8")
+    # print(pip_res)
 
     from subprocess import getoutput
     from IPython.display import HTML
