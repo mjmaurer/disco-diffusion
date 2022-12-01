@@ -5824,7 +5824,7 @@ blend_latent_to_init = 0
 # @markdown ###Latent matching
 # @markdown Match the range of latent vector towards the 1st frame or a user defined range. Doesn't restrict colors, but may limit contrast.
 normalize_latent = (  # @param ['off', 'first_latent', 'user_defined', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
-    "init_frame_offset"
+    "off" # "init_frame_offset"
 )
 # @markdown in offset mode, specifies the offset back from current frame, and 0 means current frame. In non-offset mode specifies the fixed frame number. 0 means the 1st frame.
 
