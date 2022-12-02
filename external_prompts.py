@@ -1,21 +1,16 @@
 main_style = "vibrant, octane render" # , by kilian eng"
 
-# text_prompts = {
-#     0: [
-#         (
-#             # "A forest with massive trees engraves with cartoon bears, "
-#             "Massive tree branches and cartoon bears, "
-#             + main_style
-#         ),
-#     ],
-# }
 text_prompts = {
     0: [
-        "a colorful forest"
+        (
+            # "A forest with massive trees engraves with cartoon bears, "
+            "Massive trees engraved with cartoon bears in a psychadelic forest"
+            + main_style
+        ),
     ],
 }
 
-negative_prompts = {0: ["text"]}
+negative_prompts = {0: ["person, human, man, woman, body, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
