@@ -5522,7 +5522,6 @@ if clip_type == "ViT-L-14":
 if clip_type == "ViT-B-32-quickgelu":
     clip_pretrain = "laion400m_e32"
 
-clip_guidance_scale = 0  # @param {'type':"number"}
 if clip_guidance_scale > 0:
     clip_model, _, clip_preprocess = open_clip.create_model_and_transforms(
         clip_type, pretrained=clip_pretrain
