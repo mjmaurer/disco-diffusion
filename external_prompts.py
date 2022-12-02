@@ -4,7 +4,7 @@ text_prompts = {
     0: [
         (
             # "A forest with massive trees engraves with cartoon bears, "
-            "Massive trees engraved with cartoon bears in a psychadelic forest"
+            "Massive trees engraved with cartoon bears in a psychadelic forest, "
             + main_style
         ),
     ],
