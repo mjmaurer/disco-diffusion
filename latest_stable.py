@@ -3,14 +3,15 @@
 # 
 # # This is a beta of WarpFusion. 
 # #### May produce meh results and not be very stable. 
+# [Quickstart Guide fow newcomers](https://docs.google.com/document/d/1gu8qJbRN553SYrYEMScC4i_VA_oThbVZrDVvWkQu3yI). More comprehensive guide - one page below. \
 # Kudos to my [patreon](https://www.patreon.com/sxela)  XL tier supporters: \
-# **Ced Pakusevskij**, **John Haugeland**, **Luc Schurgers**, **Fernando Magalhaes**, **Zlata Ponirovskaya**, **Inverse Alien**, **Andrew Farr**, **Francisco Bucknor**, **Seth Pyrzynski**,  **Territory Technical**, **FearTheDev**, **Nik**, **Nora Al Angari**
+# **Ced Pakusevskij**, **John Haugeland**, **Luc Schurgers**, **Fernando Magalhaes**, **Zlata Ponirovskaya**, **Inverse Alien**, **Andrew Farr**, **Francisco Bucknor**, **Seth Pyrzynski**,  **Territory Technical**, **Nik**, **Nora Al Angari**, **Marquavious Jaxon**, **Russ Gilbert**
 # 
 # 
 #  and all my patreon supporters for their endless support and constructive feedback!\
 # Here's the current [public warp](https://colab.research.google.com/github/Sxela/DiscoDiffusion-Warp/blob/main/Disco_Diffusion_v5_2_Warp.ipynb) for videos with openai diffusion model
 # 
-# # WarpFusion v0.5.21 by [Alex Spirin](https://twitter.com/devdef)
+# # WarpFusion v0.5.23 by [Alex Spirin](https://twitter.com/devdef)
 # ![visitors](https://visitor-badge.glitch.me/badge?page_id=sxela_ddwarp_colab)
 # 
 # This version improves video init. You can now generate optical flow maps from input videos, and use those to:
@@ -35,29 +36,10 @@
 # 
 # --------------------------------------
 # 
-# ### Settings: 
-# (Located in animation settings tab)
-# 
-# Video Optical Flow Settings:
-# - flow_warp - check to warp
-# - flow_blend: 0 - you get raw input, 1 - you get warped diffused previous frame 
-# - check_consistency: check forward-backward flow consistency (uncheck unless getting too many warping artifacts)
-# 
-# ##Output warping
-# This feature is plain simple - we just take any frame, warp in to the next frame, blend with real next frame, get smooth noise-free result.
-# 
-# ### Settings: 
-# (located in create video tab)
-# blend_mode: 
-# - none: just mash frames together in a video
-# - optical flow: take frame, warp, blend with the next frame
-# - check_consistency: use consistency maps (may prevent warping artfacts)
-# - blend: 0 - you get raw 2nd frame, 1 - you get warped 1st frame
-# 
 # #Comprehensive explanation of every cell and setting
 # 
-# Don't forget to check this comprehensive guide created by users for users [here](https://docs.google.com/document/d/11xxHyvkCBBUwT73lWHQx-T_FU_rC7HWzNylftyCExcE) (a backup copy),\
-# and [here](https://docs.google.com/document/d/1JrAvp6xtw0mmxqbPmOCRcjeosDDdsmZLE6zk7rtmKFg) (the live one).
+# Don't forget to check this comprehensive guide created by users for users [here](https://docs.google.com/document/d/11xxHyvkCBBUwT73lWHQx-T_FU_rC7HWzNylftyCExcE) (a backup copy)
+# It also includes a local install guide. 
 # 
 # 
 # --------------------------------------
@@ -72,6 +54,39 @@
 # ### Changelog
 
 # %% [markdown]
+# 7.12.2022
+# - add v2-depth support
+# - add v2 support 
+# - add v1 backwards compatibility
+# - add model selector
+# - add depth source option: prev frame or raw frame
+# - add fix for TIFF bug 
+# - add torch downgrade for colab xformers 
+# - add forward patch-warping option (beta, no consistency support yet)
+# - add *.mov video export thanks to cerspense#3301
+# 
+# 5.12.2022
+# - add force_os for xformers setup 
+# - add load ckpt onto gpu option
+# 
+# 2.12.2022 
+# - add colormatch turbo frames toggle
+# - add colormatch before stylizing toggle
+# - add faster flow generation (up to x4 depending on disk bandwidth)
+# - add faster flow-blended video export (up to x10 depending on disk bandwidth)
+# - add 10 evenly spaced frames' previews for flow and consistency maps
+# - add warning for missing ffmpeg on windows
+# - fix installation not working after being interrupted 
+# - fix xformers install for A*000 series cards.
+# - fix error during RAFT init for non 3.7 python envs 
+# - fix settings comparing typo
+# 
+# 24.11.2022
+# - fix int() casting error for flow remapping
+# - remove int() casting for frames' schedule
+# - turn off inconsistent areas' color matching (was calculated even when off)
+# - fix settings' comparison
+# 
 # 23.11.2022
 # - fix writefile for non-colab interface
 # - add xformers install for linux/windows
@@ -408,9 +423,11 @@
 #@title 1.1 Prepare Folders
 import subprocess, os, sys, ipykernel
 
-def gitclone(url):
-  res = subprocess.run(['git', 'clone', url], stdout=subprocess.PIPE).stdout.decode('utf-8')
+def gitclone(url, recursive=False):
+  if recursive: res = subprocess.run(['git', 'clone', url, '--recursive'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+  else: res = subprocess.run(['git', 'clone', url], stdout=subprocess.PIPE).stdout.decode('utf-8')
   print(res)
+
 
 def pipi(modulestr):
   res = subprocess.run(['pip', 'install', modulestr], stdout=subprocess.PIPE).stdout.decode('utf-8')
@@ -420,7 +437,7 @@ def pipie(modulestr):
   res = subprocess.run(['git', 'install', '-e', modulestr], stdout=subprocess.PIPE).stdout.decode('utf-8')
   print(res)
 
-def wget(url, outputdir):
+def wget_p(url, outputdir):
   res = subprocess.run(['wget', url, '-P', f'{outputdir}'], stdout=subprocess.PIPE).stdout.decode('utf-8')
   print(res)
 
@@ -473,363 +490,27 @@ else:
 # createPath(libraries)
 
 # %%
-#@title writefile ./stable-diffusion/ldm/modules/attention.py
-!git clone https://github.com/Doggettx/stable-diffusion
-file_path = './stable-diffusion/ldm/modules/attention.py'
-file_content = """#https://github.com/TheLastBen/fast-stable-diffusion/blob/main/precompiled/attention.py
-import gc
-from inspect import isfunction
-import math
+#@title Install xformers
+#@markdown Sometimes it detects the os incorrectly. If you see it mention the wrong os, try forcing the correct one and running this cell again.
+#@markdown If torch version needs to be donwgraded, the environment will be restarted. You will need to run all once again.
 import torch
-import torch.nn.functional as F
-from torch import nn, einsum
-from einops import rearrange, repeat
-try:
-  import xformers
-  import xformers.ops
-  print('using xformers')
-except: print('xformers import failed')
 
-from ldm.modules.diffusionmodules.util import checkpoint
-
-
-def exists(val):
-    return val is not None
-
-
-def uniq(arr):
-    return{el: True for el in arr}.keys()
-
-
-def default(val, d):
-    if exists(val):
-        return val
-    return d() if isfunction(d) else d
-
-
-def max_neg_value(t):
-    return -torch.finfo(t.dtype).max
-
-
-def init_(tensor):
-    dim = tensor.shape[-1]
-    std = 1 / math.sqrt(dim)
-    tensor.uniform_(-std, std)
-    return tensor
-
-
-# feedforward
-class GEGLU(nn.Module):
-    def __init__(self, dim_in, dim_out):
-        super().__init__()
-        self.proj = nn.Linear(dim_in, dim_out * 2)
-
-    def forward(self, x):
-        x, gate = self.proj(x).chunk(2, dim=-1)
-        return x * F.gelu(gate)
-
-
-class FeedForward(nn.Module):
-    def __init__(self, dim, dim_out=None, mult=4, glu=False, dropout=0.):
-        super().__init__()
-        inner_dim = int(dim * mult)
-        dim_out = default(dim_out, dim)
-        project_in = nn.Sequential(
-            nn.Linear(dim, inner_dim),
-            nn.GELU()
-        ) if not glu else GEGLU(dim, inner_dim)
-
-        self.net = nn.Sequential(
-            project_in,
-            nn.Dropout(dropout),
-            nn.Linear(inner_dim, dim_out)
-        )
-
-    def forward(self, x):
-        return self.net(x)
-
-
-def zero_module(module):
-
-    for p in module.parameters():
-        p.detach().zero_()
-    return module
-
-
-def Normalize(in_channels):
-    return torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
-
-
-class LinearAttention(nn.Module):
-    def __init__(self, dim, heads=4, dim_head=32):
-        super().__init__()
-        self.heads = heads
-        hidden_dim = dim_head * heads
-        self.to_qkv = nn.Conv2d(dim, hidden_dim * 3, 1, bias = False)
-        self.to_out = nn.Conv2d(hidden_dim, dim, 1)
-
-    def forward(self, x):
-        b, c, h, w = x.shape
-        qkv = self.to_qkv(x)
-        q, k, v = rearrange(qkv, 'b (qkv heads c) h w -> qkv b heads c (h w)', heads = self.heads, qkv=3)
-        k = k.softmax(dim=-1)
-        context = torch.einsum('bhdn,bhen->bhde', k, v)
-        out = torch.einsum('bhde,bhdn->bhen', context, q)
-        out = rearrange(out, 'b heads c (h w) -> b (heads c) h w', heads=self.heads, h=h, w=w)
-        return self.to_out(out)
-
-
-class SpatialSelfAttention(nn.Module):
-    def __init__(self, in_channels):
-        super().__init__()
-        self.in_channels = in_channels
-
-        self.norm = Normalize(in_channels)
-        self.q = torch.nn.Conv2d(in_channels,
-                                 in_channels,
-                                 kernel_size=1,
-                                 stride=1,
-                                 padding=0)
-        self.k = torch.nn.Conv2d(in_channels,
-                                 in_channels,
-                                 kernel_size=1,
-                                 stride=1,
-                                 padding=0)
-        self.v = torch.nn.Conv2d(in_channels,
-                                 in_channels,
-                                 kernel_size=1,
-                                 stride=1,
-                                 padding=0)
-        self.proj_out = torch.nn.Conv2d(in_channels,
-                                        in_channels,
-                                        kernel_size=1,
-                                        stride=1,
-                                        padding=0)
-
-    def forward(self, x):
-        h_ = x
-        h_ = self.norm(h_)
-        q = self.q(h_)
-        k = self.k(h_)
-        v = self.v(h_)
-
-        # compute attention
-        b,c,h,w = q.shape
-        q = rearrange(q, 'b c h w -> b (h w) c')
-        k = rearrange(k, 'b c h w -> b c (h w)')
-        w_ = torch.einsum('bij,bjk->bik', q, k)
-
-        w_ = w_ * (int(c)**(-0.5))
-        w_ = torch.nn.functional.softmax(w_, dim=2)
-
-        # attend to values
-        v = rearrange(v, 'b c h w -> b c (h w)')
-        w_ = rearrange(w_, 'b i j -> b j i')
-        h_ = torch.einsum('bij,bjk->bik', v, w_)
-        h_ = rearrange(h_, 'b c (h w) -> b c h w', h=h)
-        h_ = self.proj_out(h_)
-
-        return x+h_
-
-
-class CrossAttention(nn.Module):
-    def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.):
-        super().__init__()
-        inner_dim = dim_head * heads
-        context_dim = default(context_dim, query_dim)
-
-        self.scale = dim_head ** -0.5
-        self.heads = heads
-        self.dim_head = dim_head
-
-        self.to_q = nn.Linear(query_dim, inner_dim, bias=False)
-        self.to_k = nn.Linear(context_dim, inner_dim, bias=False)
-        self.to_v = nn.Linear(context_dim, inner_dim, bias=False)
-        self.to_out = nn.Sequential(
-            nn.Linear(inner_dim, query_dim),
-            nn.Dropout(dropout)
-        )
-        self.attention_op = None
-        try:
-          import xformers 
-          self.use_xformers = True
-          
-          #print('Using xformers')
-        except: 
-          self.use_xformers = False
-          #print('Disabling xformers')
-
-    def _maybe_init(self, x):
-
-          if self.attention_op is not None:
-              return
-
-          _, M, K = x.shape
-          try:
-              self.attention_op = xformers.ops.AttentionOpDispatch(
-                  dtype=x.dtype,
-                  device=x.device,
-                  k=K,
-                  attn_bias_type=type(None),
-                  has_dropout=False,
-                  kv_len=M,
-                  q_len=M,
-              ).op
-
-          except NotImplementedError as err:
-              raise NotImplementedError(f"Please install xformers with the flash attention / cutlass components.{err}")
-
-    def forward(self, x, context=None, mask=None):
-        h = self.heads
-
-        q_in = self.to_q(x)
-        context = default(context, x)
-        k_in = self.to_k(context)
-        v_in = self.to_v(context)
-        del context, x
-        b, _, _ = q_in.shape
-        q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h=h), (q_in, k_in, v_in))
-        del q_in, k_in, v_in
-
-        try: 
-          self._maybe_init(q)
-          self.use_xformers = True
-        except:
-          self.use_xformers = False
-
-        if self.use_xformers:
-          # init the attention op, if required, using the proper dimensions
-
-
-          # actually compute the attention, what we cannot get enough of
-          out = xformers.ops.memory_efficient_attention(q, k, v, attn_bias=None, op=self.attention_op)
-          out = (
-            out.unsqueeze(0)
-            .reshape(b, self.heads, out.shape[1], self.dim_head)
-            .permute(0, 2, 1, 3)
-            .reshape(b, out.shape[1], self.heads * self.dim_head)
-          )
-          return self.to_out(out)
-
-        if not self.use_xformers:
-          r1 = torch.zeros(q.shape[0], q.shape[1], v.shape[2], device=q.device)
-
-          stats = torch.cuda.memory_stats(q.device)
-          mem_active = stats['active_bytes.all.current']
-          mem_reserved = stats['reserved_bytes.all.current']
-          mem_free_cuda, _ = torch.cuda.mem_get_info(torch.cuda.current_device())
-          mem_free_torch = mem_reserved - mem_active
-          mem_free_total = mem_free_cuda + mem_free_torch
-
-          gb = 1024 ** 3
-          tensor_size = q.shape[0] * q.shape[1] * k.shape[1] * q.element_size()
-          modifier = 3 if q.element_size() == 2 else 2.5
-          mem_required = tensor_size * modifier
-          steps = 1
-
-
-          if mem_required > mem_free_total:
-              steps = 2**(math.ceil(math.log(mem_required / mem_free_total, 2)))
-              # print(f"Expected tensor size:{tensor_size/gb:0.1f}GB, cuda free:{mem_free_cuda/gb:0.1f}GB "
-              #      f"torch free:{mem_free_torch/gb:0.1f} total:{mem_free_total/gb:0.1f} steps:{steps}")
-
-          if steps > 64:
-              max_res = math.floor(math.sqrt(math.sqrt(mem_free_total / 2.5)) / 8) * 64
-              raise RuntimeError(f'Not enough memory, use lower resolution (max approx. {max_res}x{max_res}). '
-                                f'Need: {mem_required/64/gb:0.1f}GB free, Have:{mem_free_total/gb:0.1f}GB free')
-
-          slice_size = q.shape[1] // steps if (q.shape[1] % steps) == 0 else q.shape[1]
-          for i in range(0, q.shape[1], slice_size):
-              end = i + slice_size
-              s1 = einsum('b i d, b j d -> b i j', q[:, i:end], k) * self.scale
-
-              s2 = s1.softmax(dim=-1, dtype=q.dtype)
-              del s1
-
-              r1[:, i:end] = einsum('b i j, b j d -> b i d', s2, v)
-              del s2
-
-          del q, k, v
-
-          r2 = rearrange(r1, '(b h) n d -> b n (h d)', h=h)
-          del r1
-
-          return self.to_out(r2)
-
-
-class BasicTransformerBlock(nn.Module):
-    def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True):
-        super().__init__()
-        self.attn1 = CrossAttention(query_dim=dim, heads=n_heads, dim_head=d_head, dropout=dropout)  # is a self-attention
-        self.ff = FeedForward(dim, dropout=dropout, glu=gated_ff)
-        self.attn2 = CrossAttention(query_dim=dim, context_dim=context_dim,
-                                    heads=n_heads, dim_head=d_head, dropout=dropout)  # is self-attn if context is none
-        self.norm1 = nn.LayerNorm(dim)
-        self.norm2 = nn.LayerNorm(dim)
-        self.norm3 = nn.LayerNorm(dim)
-        self.checkpoint = checkpoint
-
-    def forward(self, x, context=None):
-        return checkpoint(self._forward, (x, context), self.parameters(), self.checkpoint)
-
-    def _forward(self, x, context=None):
-        x = self.attn1(self.norm1(x)) + x
-        x = self.attn2(self.norm2(x), context=context) + x
-        x = self.ff(self.norm3(x)) + x
-        return x
-
-
-class SpatialTransformer(nn.Module):
-
-    def __init__(self, in_channels, n_heads, d_head,
-                 depth=1, dropout=0., context_dim=None):
-        super().__init__()
-        self.in_channels = in_channels
-        inner_dim = n_heads * d_head
-        self.norm = Normalize(in_channels)
-
-        self.proj_in = nn.Conv2d(in_channels,
-                                 inner_dim,
-                                 kernel_size=1,
-                                 stride=1,
-                                 padding=0)
-
-        self.transformer_blocks = nn.ModuleList(
-            [BasicTransformerBlock(inner_dim, n_heads, d_head, dropout=dropout, context_dim=context_dim)
-                for d in range(depth)]
-        )
-
-        self.proj_out = zero_module(nn.Conv2d(inner_dim,
-                                              in_channels,
-                                              kernel_size=1,
-                                              stride=1,
-                                              padding=0))
-
-    def forward(self, x, context=None):
-        # note: if no context is given, cross-attention defaults to self-attention
-        b, c, h, w = x.shape
-        x_in = x
-        x = self.norm(x)
-        x = self.proj_in(x)
-        x = rearrange(x, 'b c h w -> b (h w) c')
-        for block in self.transformer_blocks:
-            x = block(x, context=context)
-        x = rearrange(x, 'b (h w) c -> b c h w', h=h, w=w)
-        x = self.proj_out(x)
-        return x + x_in"""
-
-with open(file_path, 'w') as f:
-  f.write(file_content)
-
-# %%
-#@title 1.2 Install SD Dependencies
 import os, platform
-if platform.system() != 'Linux':
+gpu = ''
+force_os = 'off' #@param ['off','Windows','Linux']
+if platform.system() != 'Linux' or force_os == 'Windows':
   print('Trying to install local xformers on Windows. Works only with pytorch 1.12.* and python 3.10.')
   !pip install https://github.com/C43H66N12O12S2/stable-diffusion-webui/releases/download/f/xformers-0.0.14.dev0-cp310-cp310-win_amd64.whl
-if is_colab or (platform.system() == 'Linux'):
-  print('Installing xformers.')
-  !git clone https://github.com/openai/triton.git
+if is_colab or (platform.system() == 'Linux') or force_os == 'Linux':
+  if is_colab and "1.12.1" not in torch.__version__:
+    print('downgrading pytorch to 1.12.1 on Linux/Colab.')
+    !pip uninstall torch torchtext torchvision torchaudio -y
+    !pip install torch==1.12.1 torchvision==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu113
+    import os
+    print('The env will now be resarted. Please run all afterwards.')
+    os.kill(os.getpid(), 9)
+  print('Installing xformers on Linux/Colab.')
+  gitclone('https://github.com/openai/triton.git')
   !pip install -e ./triton/python
 
 
@@ -847,6 +528,14 @@ if is_colab or (platform.system() == 'Linux'):
     gpu = 'V100'
   elif 'A100' in s:
     gpu = 'A100'
+  
+  for g in ['A4000','A5000','A6000']:
+    if g in s:
+      gpu = 'A100'
+
+  for g in ['2080','2070','2060']:
+    if g in s:
+      gpu = 'T4'
 
   while True:
       try: 
@@ -872,16 +561,19 @@ if is_colab or (platform.system() == 'Linux'):
   clear_output()
   print(' DONE !')
 
-try: 
-  os.chdir( f'./k-diffusion')
-  import k_diffusion as K
-  os.chdir( f'../')
-except: 
+# %%
+#@title 1.2 Install SD Dependencies
+import os
+gitclone('https://github.com/Sxela/sxela-stablediffusion')
+try:
+  os.rename('./sxela-stablediffusion', './stablediffusion')
+except Exception as e: 
+  print(e)
+
+if True:
   
   !pip install --ignore-installed Pillow==9.0.0
-  # !git clone https://github.com/CompVis/stable-diffusion
-  !git clone https://github.com/Doggettx/stable-diffusion
-  !pip install -e ./stable-diffusion
+  !pip install -e ./stablediffusion
   !pip install ipywidgets==7.7.1
   !pip install transformers==4.19.2
 
@@ -900,8 +592,8 @@ except:
 
   !pip install lpips
   !pip install keras
-
-  !git clone https://github.com/crowsonkb/k-diffusion/
+  
+  gitclone('https://github.com/crowsonkb/k-diffusion/')
   os.chdir( f'./k-diffusion')
   !pip install -e .
   os.chdir( f'../')
@@ -939,7 +631,7 @@ else:
 !pip install pandas matplotlib
 
 if is_colab:
-  !git clone https://github.com/vacancy/PyPatchMatch --recursive
+  gitclone('https://github.com/vacancy/PyPatchMatch', recursive=True)
   !make ./PyPatchMatch
   from PyPatchMatch import patch_match
 
@@ -1391,8 +1083,11 @@ def warp_towards_init_fn(sample_pil, init_image):
   return warped
 
 
+
+
 def do_3d_step(img_filepath, frame_num, forward_clip):
-            global warp_mode  
+            global warp_mode, filename, match_frame, first_frame
+            global first_frame_source
             if warp_mode == 'use_image':
               prev = PIL.Image.open(img_filepath)
             # if warp_mode == 'use_latent':
@@ -1435,9 +1130,36 @@ def do_3d_step(img_filepath, frame_num, forward_clip):
                 weights_path = None
             if warp_mode == 'use_image':
               prev = PIL.Image.open(img_filepath)
-              warped = warp(prev, frame2, flo_path, blend=flow_blend, weights_path=weights_path, 
+              if colormatch_frame != 'off' and not colormatch_after:
+                if not turbo_mode & (frame_num % int(turbo_steps) != 0) or colormatch_turbo:
+                  try:
+                    print('Matching color before warp to:')
+                    filename = get_frame_from_color_mode(colormatch_frame, colormatch_offset)
+                    match_frame = PIL.Image.open(filename)
+                    first_frame = match_frame
+                    first_frame_source = filename
+
+                  except: 
+                    print(traceback.format_exc())
+                    print(f'Frame with offset/position {colormatch_offset} not found')
+                    if 'init' in colormatch_frame:
+                      try: 
+                        filename = f'{videoFramesFolder}/{0:06}.jpg'
+                        match_frame = PIL.Image.open(filename)
+                        first_frame = match_frame
+                        first_frame_source = filename
+                      except: pass
+                  print(f'Color matching the 1st frame before warp.')
+                  print('Colormatch source - ', first_frame_source)
+                  prev = PIL.Image.fromarray(match_color_var(first_frame, prev, opacity=color_match_frame_str, f=colormatch_method_fn, regrain=colormatch_regrain))
+              if not warp_forward:
+                warped = warp(prev, frame2, flo_path, blend=flow_blend, weights_path=weights_path, 
                           forward_clip=forward_clip, pad_pct=padding_ratio, padding_mode=padding_mode, 
                           inpaint_blend=inpaint_blend, warp_mul=warp_strength)
+              else: 
+                flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12.npy"
+                flo = np.load(flo_path)
+                warped = k_means_warp(flo, prev, warp_num_k)
             if warp_mode == 'use_latent':
               prev = torch.load(img_filepath[:-4]+'_lat.pt')
               warped = warp_lat(prev, frame2, flo_path, blend=flow_blend, weights_path=weights_path, 
@@ -1460,6 +1182,21 @@ def do_3d_step(img_filepath, frame_num, forward_clip):
             return warped
    
 from tqdm.notebook import trange
+
+def get_frame_from_color_mode(mode, offset):
+  if mode == 'stylized_frame_offset':
+    if VERBOSE:print(f'the stylized frame with offset {offset}.')
+    filename = f'{batchFolder}/{args.batch_name}({args.batchNum})_{frame_num-offset:06}.png'
+  if mode == 'stylized_frame':
+    if VERBOSE:print(f'the stylized frame number {offset}.')
+    filename = f'{batchFolder}/{args.batch_name}({args.batchNum})_{offset:06}.png'
+  if mode == 'init_frame_offset':
+    if VERBOSE:print(f'the raw init frame with offset {offset}.')
+    filename = f'{videoFramesFolder}/{frame_num-offset:06}.jpg'
+  if mode == 'init_frame':
+    if VERBOSE:print(f'the raw init frame number {offset}.')
+    filename = f'{videoFramesFolder}/{offset:06}.jpg'
+  return filename
 
 def apply_mask(init_image, frame_num, background, background_source, invert_mask=False, warp_mode='use_image'):
 
@@ -1664,55 +1401,55 @@ def do_run():
           init_latent_scale = get_scheduled_arg(frame_num, latent_scale_schedule)
           
 
-      if  args.animation_mode == "Video Input Legacy":
-        init_scale = args.frames_scale
-        init_latent_scale = args.frames_latent_scale
-        skip_steps = args.calc_frames_skip_steps
-        if not video_init_seed_continuity:
-          seed += 1
-        if flow_warp:
-          if frame_num == 0: 
-            skip_steps = args.skip_steps
-            init_image = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
+      # if  args.animation_mode == "Video Input Legacy":
+      #   init_scale = args.frames_scale
+      #   init_latent_scale = args.frames_latent_scale
+      #   skip_steps = args.calc_frames_skip_steps
+      #   if not video_init_seed_continuity:
+      #     seed += 1
+      #   if flow_warp:
+      #     if frame_num == 0: 
+      #       skip_steps = args.skip_steps
+      #       init_image = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
           
-          if frame_num > 0: 
-            first_frame = PIL.Image.open(batchFolder+f"/{batch_name}({batchNum})_{0:06}.png")
-            first_frame_source = batchFolder+f"/{batch_name}({batchNum})_{0:06}.png"
-            prev = PIL.Image.open(batchFolder+f"/{batch_name}({batchNum})_{frame_num-1:06}.png")
+      #     if frame_num > 0: 
+      #       first_frame = PIL.Image.open(batchFolder+f"/{batch_name}({batchNum})_{0:06}.png")
+      #       first_frame_source = batchFolder+f"/{batch_name}({batchNum})_{0:06}.png"
+      #       prev = PIL.Image.open(batchFolder+f"/{batch_name}({batchNum})_{frame_num-1:06}.png")
             
-            frame1_path = f'{videoFramesFolder}/{frame_num:06}.jpg'
-            frame2 = PIL.Image.open(f'{videoFramesFolder}/{frame_num+1:06}.jpg')
-            flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}.npy"
+      #       frame1_path = f'{videoFramesFolder}/{frame_num:06}.jpg'
+      #       frame2 = PIL.Image.open(f'{videoFramesFolder}/{frame_num+1:06}.jpg')
+      #       flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}.npy"
             
-            init_image = 'warped.png'
-            print(flow_blend)
-            weights_path = None
-            forward_clip = forward_weights_clip
-            if check_consistency: weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg" 
-            if turbo_mode & (frame_num % int(turbo_steps) != 0):
-              if forward_weights_clip_turbo_step: 
-                forward_clip = forward_weights_clip_turbo_step
-              if disable_cc_for_turbo_frames:
-                print('disabling cc for turbo frames')
-                weights_path = None
-            warped = warp(prev, frame2, flo_path, blend=flow_blend, weights_path=weights_path,
-                          forward_clip=forward_clip, pad_pct=padding_ratio, padding_mode=padding_mode, 
-                          inpaint_blend=inpaint_blend, warp_mul=warp_strength)
-            if turbo_mode:
-              if frame_num % int(turbo_steps) != 0: 
-                if not turbo_frame_skips_steps:
-                  print('turbo skip this frame: skipping clip diffusion steps')
-                  warped = warped.resize((side_x,side_y), warp_interp)
-                  warped.save(batchFolder+f"/{batch_name}({batchNum})_{frame_num:06}.png")
-                  continue
-                if turbo_frame_skips_steps:
-                  skip_steps = turbo_frame_skips_steps
-            warped.save(init_image)
+      #       init_image = 'warped.png'
+      #       print(flow_blend)
+      #       weights_path = None
+      #       forward_clip = forward_weights_clip
+      #       if check_consistency: weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg" 
+      #       if turbo_mode & (frame_num % int(turbo_steps) != 0):
+      #         if forward_weights_clip_turbo_step: 
+      #           forward_clip = forward_weights_clip_turbo_step
+      #         if disable_cc_for_turbo_frames:
+      #           print('disabling cc for turbo frames')
+      #           weights_path = None
+      #       warped = warp(prev, frame2, flo_path, blend=flow_blend, weights_path=weights_path,
+      #                     forward_clip=forward_clip, pad_pct=padding_ratio, padding_mode=padding_mode, 
+      #                     inpaint_blend=inpaint_blend, warp_mul=warp_strength)
+      #       if turbo_mode:
+      #         if frame_num % int(turbo_steps) != 0: 
+      #           if not turbo_frame_skips_steps:
+      #             print('turbo skip this frame: skipping clip diffusion steps')
+      #             warped = warped.resize((side_x,side_y), warp_interp)
+      #             warped.save(batchFolder+f"/{batch_name}({batchNum})_{frame_num:06}.png")
+      #             continue
+      #           if turbo_frame_skips_steps:
+      #             skip_steps = turbo_frame_skips_steps
+      #       warped.save(init_image)
             
             
             
-        else:
-          init_image = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
+      #   else:
+      #     init_image = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
         
 
       loss_values = []
@@ -2042,10 +1779,14 @@ def do_run():
 
             init_grad_img = None
             if init_grad: init_grad_img = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
-            sample, latent = run_sd(args, init_image=init_image, skip_timesteps=skip_steps, H=args.side_y, 
+            if depth_source == 'init': depth_init = f'{videoFramesFolder}/{frame_num+1:06}.jpg'
+            if depth_source == 'stylized': depth_init = init_image
+            sample, latent, depth_img = run_sd(args, init_image=init_image, skip_timesteps=skip_steps, H=args.side_y, 
                              W=args.side_x, text_prompt=text_prompt, neg_prompt=neg_prompt, steps=steps, 
-                             seed=seed, init_scale = init_scale, init_latent_scale=init_latent_scale, cfg_scale=cfg_scale, cond_fn=None, init_grad_img=init_grad_img)
-            
+                             seed=seed, init_scale = init_scale, init_latent_scale=init_latent_scale, depth_init=depth_init, cfg_scale=cfg_scale, cond_fn=None, init_grad_img=init_grad_img)
+
+
+            # depth_img.save(f'{root_dir}/depth_{frame_num}.png')
             filename = f'{args.batch_name}({args.batchNum})_{frame_num:06}.png'
             # if warp_mode == 'use_raw':torch.save(sample,f'{batchFolder}/{filename[:-4]}_raw.pt')
             if warp_mode == 'use_latent':
@@ -2115,26 +1856,27 @@ def do_run():
                       except: pass
                     print(f'Color matching the 1st frame.')
 
-                if colormatch_frame != 'off':
-                  try:
-                    print('Matching color to:')
-                    filename = get_frame_from_color_mode(colormatch_frame, colormatch_offset)
-                    match_frame = PIL.Image.open(filename)
-                    first_frame = match_frame
-                    first_frame_source = filename
+                if colormatch_frame != 'off' and colormatch_after:
+                  if not turbo_mode & (frame_num % int(turbo_steps) != 0) or colormatch_turbo:
+                    try:
+                      print('Matching color to:')
+                      filename = get_frame_from_color_mode(colormatch_frame, colormatch_offset)
+                      match_frame = PIL.Image.open(filename)
+                      first_frame = match_frame
+                      first_frame_source = filename
 
-                  except: 
-                    print(f'Frame with offset/position {colormatch_offset} not found')
-                    if 'init' in colormatch_frame:
-                      try: 
-                        filename = f'{videoFramesFolder}/{0:06}.jpg'
-                        match_frame = PIL.Image.open(filename)
-                        first_frame = match_frame
-                        first_frame_source = filename
-                      except: pass
-                    print(f'Color matching the 1st frame.')
-                  print('Colormatch source - ', first_frame_source)
-                  image = PIL.Image.fromarray(match_color_var(first_frame, image, opacity=color_match_frame_str, f=colormatch_method_fn, regrain=colormatch_regrain))
+                    except: 
+                      print(f'Frame with offset/position {colormatch_offset} not found')
+                      if 'init' in colormatch_frame:
+                        try: 
+                          filename = f'{videoFramesFolder}/{0:06}.jpg'
+                          match_frame = PIL.Image.open(filename)
+                          first_frame = match_frame
+                          first_frame_source = filename
+                        except: pass
+                      print(f'Color matching the 1st frame.')
+                    print('Colormatch source - ', first_frame_source)
+                    image = PIL.Image.fromarray(match_color_var(first_frame, image, opacity=color_match_frame_str, f=colormatch_method_fn, regrain=colormatch_regrain))
 
             if mask_result and check_consistency and frame_num>0:
                         diffuse_inpaint_mask_blur = 15
@@ -2469,7 +2211,13 @@ def save_settings():
     'blend_latent_to_init':blend_latent_to_init,
     'warp_towards_init':warp_towards_init,
     'init_grad':init_grad,
-    'grad_denoised':grad_denoised
+    'grad_denoised':grad_denoised,
+    'colormatch_after':colormatch_after,
+    'colormatch_turbo':colormatch_turbo,
+    'model_version':model_version,
+    'depth_source':depth_source,
+    'warp_num_k':warp_num_k,
+    'warp_forward':warp_forward
   }
   # print('Settings:', setting_list)
   with open(f"{batchFolder}/{batch_name}({batchNum})_settings.txt", "w+") as f:   #save settings
@@ -2671,7 +2419,7 @@ from contextlib import nullcontext
 import time
 from pytorch_lightning import seed_everything
 
-os.chdir(f"{root_dir}/stable-diffusion")
+os.chdir(f"{root_dir}/stablediffusion")
 from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
@@ -2750,7 +2498,7 @@ try:
   from python_color_transfer.color_transfer import ColorTransfer, Regrain
 except: 
   os.chdir(root_dir)
-  !git clone https://github.com/pengbo-learn/python-color-transfer
+  gitclone('https://github.com/pengbo-learn/python-color-transfer')
 
 %cd "{root_dir}/python-color-transfer"
 from python_color_transfer.color_transfer import ColorTransfer, Regrain
@@ -2794,6 +2542,55 @@ def pil_img_to_latent(model, img, batch_size=1, device='cuda', half=True):
     if half:
         return model.get_first_stage_encoding(model.encode_first_stage(init_image.half()))
     return model.get_first_stage_encoding(model.encode_first_stage(init_image))
+
+import torch
+from ldm.modules.midas.api import load_midas_transform
+midas_tfm = load_midas_transform("dpt_hybrid")
+
+def midas_tfm_fn(x):
+  x = x = ((x + 1.0) * .5).detach().cpu().numpy()
+  return midas_tfm({"image": x})["image"]
+
+def pil2midas(pil_image):
+  image = np.array(pil_image.convert("RGB"))
+  image = torch.from_numpy(image).to(dtype=torch.float32) / 127.5 - 1.0
+  image = midas_tfm_fn(image)
+  return torch.from_numpy(image[None, ...])
+
+def make_depth_cond(pil_image, x):
+          global frame_num
+          pil_image = PIL.Image.open(pil_image).convert('RGB')
+          c_cat = list()
+          cc = pil2midas(pil_image).cuda().half()
+          cc = sd_model.depth_model(cc)
+          depth_min, depth_max = torch.amin(cc, dim=[1, 2, 3], keepdim=True), torch.amax(cc, dim=[1, 2, 3],
+                                                                                            keepdim=True)
+          display_depth = (cc - depth_min) / (depth_max - depth_min)
+          depth_image = PIL.Image.fromarray(
+                  (display_depth[0, 0, ...].cpu().numpy() * 255.).astype(np.uint8))
+          display_depth = (cc - depth_min) / (depth_max - depth_min)
+          depth_image = Image.fromarray(
+                              (display_depth[0, 0, ...].cpu().numpy() * 255.).astype(np.uint8))
+          if cc.shape[2:]!=x.shape[2:]:
+            cc = torch.nn.functional.interpolate(
+                    cc,
+                    size=x.shape[2:],
+                    mode="bicubic",
+                    align_corners=False,
+                )
+          depth_min, depth_max = torch.amin(cc, dim=[1, 2, 3], keepdim=True), torch.amax(cc, dim=[1, 2, 3],
+                                                                                            keepdim=True)
+          
+          
+          cc = 2. * (cc - depth_min) / (depth_max - depth_min) - 1.
+          c_cat.append(cc)
+          c_cat = torch.cat(c_cat, dim=1)
+          # cond
+          # cond = {"c_concat": [c_cat], "c_crossattn": [c]}
+
+          # # uncond cond
+          # uc_full = {"c_concat": [c_cat], "c_crossattn": [uc]}
+          return c_cat, depth_image
 
 def find_noise_for_image(model, x, prompt, steps, cond_scale=0.0, verbose=False, normalize=True):
 
@@ -2861,7 +2658,7 @@ def get_premature_sigma_min(
 
 pred_noise = None
 def run_sd(opt, init_image, skip_timesteps, H, W, text_prompt, neg_prompt, steps, seed, 
-           init_scale,  init_latent_scale, cfg_scale, cond_fn=None, init_grad_img=None):
+           init_scale,  init_latent_scale, depth_init, cfg_scale, cond_fn=None, init_grad_img=None):
   seed_everything(seed)
   # global cfg_scale
   if VERBOSE:
@@ -2912,17 +2709,21 @@ def run_sd(opt, init_image, skip_timesteps, H, W, text_prompt, neg_prompt, steps
     if isinstance(init_image, str):
       if not init_image.endswith('_lat.pt'):
         with torch.no_grad():
-          init_image_sd = load_img_sd(init_image, size=(W,H)).cuda().half()
-          init_latent = sd_model.get_first_stage_encoding(sd_model.encode_first_stage(init_image_sd)).half()
+          init_image_sd = load_img_sd(init_image, size=(W,H)).cuda()
+          if gpu != 'A100': init_image_sd = init_image_sd.half()
+          init_latent = sd_model.get_first_stage_encoding(sd_model.encode_first_stage(init_image_sd))
+          if gpu != 'A100': init_latent = init_latent.half()
           x0 = init_latent
       if init_image.endswith('_lat.pt'):
-        init_latent = torch.load(init_image).cuda().half()
+        init_latent = torch.load(init_image).cuda()
+        if gpu != 'A100': init_latent = init_latent.half()
         init_image_sd = None
         x0 = init_latent
 
   if init_grad_img is not None:
     print('Replacing init image for cond fn')
-    init_image_sd = load_img_sd(init_grad_img, size=(W,H)).cuda().half()
+    init_image_sd = load_img_sd(init_grad_img, size=(W,H)).cuda()
+    if gpu != 'A100': init_image_sd = init_image_sd.half()
       
   if blend_latent_to_init > 0. and first_latent is not None:
     print('Blending to latent ', first_latent_source)
@@ -3011,7 +2812,13 @@ def run_sd(opt, init_image, skip_timesteps, H, W, text_prompt, neg_prompt, steps
                                                           )
                         else:
                           sigmas = model_wrap.get_sigmas(ddim_steps)
-                        extra_args = {'cond': c, 'uncond': uc, 'cond_scale': scale}
+                        depth_cond = depth_img = None
+                        if model_version == 'v2_depth':
+                          print('using depth')
+                          depth_cond, depth_img = make_depth_cond(depth_init, x0)
+                          
+                         
+                        extra_args = {'cond': c, 'uncond': uc, 'cond_scale': scale, 'image_cond':depth_cond}
                         if skip_timesteps>0:
                               #using non-random start code 
                           if fixed_code:
@@ -3055,10 +2862,13 @@ def run_sd(opt, init_image, skip_timesteps, H, W, text_prompt, neg_prompt, steps
 
                           else:
                             noise = torch.randn_like(x0) * sigmas[ddim_steps - t_enc -1]
-                          xi = x0 + noise
-                          # print(xi.mean(), xi.std(), xi.min(), xi.max())
-                          sigma_sched = sigmas[ddim_steps - t_enc - 1:]
-                          samples_ddim = K.sampling.sample_euler(model_fn, xi, sigma_sched, extra_args=extra_args)
+                          if t_enc != 0:
+                            xi = x0 + noise
+                            # print(xi.mean(), xi.std(), xi.min(), xi.max())
+                            sigma_sched = sigmas[ddim_steps - t_enc - 1:]
+                            samples_ddim = K.sampling.sample_euler(model_fn, xi, sigma_sched, extra_args=extra_args)
+                          else:
+                            samples_ddim = x0
                         else: 
                           x = torch.randn([batch_size, *shape], device=device) * sigmas[0]
                           samples_ddim = K.sampling.sample_lms(model_fn, x, sigmas, extra_args=extra_args)
@@ -3080,7 +2890,7 @@ def run_sd(opt, init_image, skip_timesteps, H, W, text_prompt, neg_prompt, steps
                       
 
                         all_samples.append(x_samples_ddim)
-  return all_samples, samples_ddim 
+  return all_samples, samples_ddim, depth_img
 
 # %%
 #@markdown ####**Models Settings:**
@@ -3301,7 +3111,7 @@ if diffusion_model == 'custom':
 
 # %%
 #@markdown ####**Basic Settings:**
-batch_name = 'stable_warpfusion_0.5.21' #@param{type: 'string'}
+batch_name = 'stable_warpfusion_0.5.23' #@param{type: 'string'}
 steps =  50
 ##@param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 # stop_early = 0  #@param{type: 'number'}
@@ -3365,14 +3175,15 @@ if use_looped_init_image:
 ##@markdown ####**Animation Mode:**
 animation_mode = 'Video Input' 
 
-
+if platform.system() != 'Linux' and not os.path.exists("ffmpeg.exe"):
+  print("Warning! ffmpeg.exe not found. Please download ffmpeg and place it in current working dir.")
 
 
 #@markdown ---
 
 #@markdown ####**Video Input Settings:**
 
-video_init_path = "" #@param {type: 'string'}
+video_init_path = "/content/wednesday dance.mp4" #@param {type: 'string'}
 
 extract_nth_frame =  1#@param {type: 'number'}
 #@markdown *Specify frame range. end_frame=0 means fill the end of video*
@@ -3747,19 +3558,20 @@ else:
     rotation_3d_y = float(rotation_3d_y)
     rotation_3d_z = float(rotation_3d_z)
 
+
 # %%
 #@title Video Masking
 
 #@markdown Generate background mask from your init video or use a video as a mask
 mask_source = 'init_video' #@param ['init_video','mask_video']
 #@markdown Check to rotoscope the video and create a mask from it. If unchecked, the raw monochrome video will be used as a mask.
-extract_background_mask = True #@param {'type':'boolean'}
+extract_background_mask = False #@param {'type':'boolean'}
 #@markdown Specify path to a mask video for mask_video mode.
 mask_video_path = '' #@param {'type':'string'}
 if extract_background_mask:
   os.chdir(root_dir)
   !pip install av pims
-  !git clone https://github.com/Sxela/RobustVideoMattingCLI
+  gitclone('https://github.com/Sxela/RobustVideoMattingCLI')
   if mask_source == 'init_video':
     videoFramesAlpha = videoFramesFolder+'Alpha'
     createPath(videoFramesAlpha)
@@ -3786,6 +3598,10 @@ else:
 
 
 
+# %% [markdown]
+# # Optical map settings
+# 
+
 # %%
 #@title Install Color Transfer and RAFT
 ##@markdown Run once per session. Doesn't download again if model path exists.
@@ -3801,20 +3617,20 @@ if (os.path.exists(f'{root_dir}/raft')) and force_download:
       print('error deleting existing RAFT model')
 if (not (os.path.exists(f'{root_dir}/raft'))) or force_download:
   os.chdir(root_dir)
-  !git clone https://github.com/Sxela/WarpFusion
+  gitclone('https://github.com/Sxela/WarpFusion')
 
 try: 
   from python_color_transfer.color_transfer import ColorTransfer, Regrain
 except: 
   os.chdir(root_dir)
-  !git clone https://github.com/pengbo-learn/python-color-transfer
+  gitclone('https://github.com/pengbo-learn/python-color-transfer')
 
 os.chdir(root_dir)
 sys.path.append('./python-color-transfer')
 
 if animation_mode == 'Video Input':
   os.chdir(root_dir)
-  !git clone https://github.com/Sxela/flow_tools
+  gitclone('https://github.com/Sxela/flow_tools')
     
   # %cd "{root_dir}/"
   # !git clone https://github.com/princeton-vl/RAFT
@@ -4212,7 +4028,7 @@ if animation_mode == 'Video Input':
       forward_weights = load_cc(weights_path, blur=consistency_blur)
       # print('forward_weights')
       # print(forward_weights.shape)
-      if not video_mode: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+      if not video_mode and match_color_strength>0.: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
         
       forward_weights = forward_weights.clip(forward_clip,1.)
       if use_patchmatch_inpaiting>0 and warp_mode == 'use_image':
@@ -4225,7 +4041,7 @@ if animation_mode == 'Video Input':
               # blended_w = PIL.Image.fromarray(blended_w)
       blended_w = frame2pil*(1-blend) + blend*(frame1_warped21*forward_weights+frame2pil*(1-forward_weights))
     else: 
-      if not video_mode: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+      if not video_mode and match_color_strength>0.: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
       blended_w = frame2pil*(1-blend) + frame1_warped21*(blend)
 
     
@@ -4285,7 +4101,7 @@ if animation_mode == 'Video Input':
       if warp_downscaled: forward_weights = forward_weights[::8,::8,:]; print(forward_weights.shape, 'forward_weights.shape')
       blended_w = frame2pil*(1-blend) + blend*(frame1_warped21*forward_weights+frame2pil*(1-forward_weights))
     else: 
-      if not video_mode and not warp_mode == 'use_latent': frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+      if not video_mode and not warp_mode == 'use_latent' and match_color_strength>0.: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
       blended_w = frame2pil*(1-blend) + frame1_warped21*(blend)
     blended_w = blended_w.transpose(2,0,1)[None,...]
     blended_w = torch.from_numpy(blended_w)
@@ -4314,21 +4130,178 @@ if animation_mode == 'Video Input':
 #@markdown just click **"Runtime" - "Restart and Run All"** once per session.
 #hack to get pillow to work w\o restarting
 #if you're running locally, just restart this runtime, no need to edit PIL files.
-if is_colab:
-  filedata = None
-  with open('/usr/local/lib/python3.7/dist-packages/PIL/TiffImagePlugin.py', 'r') as file :
-    filedata = file.read()
-  filedata = filedata.replace('(TiffTags.IFD, "L", "long"),', '#(TiffTags.IFD, "L", "long"),')
-  with open('/usr/local/lib/python3.7/dist-packages/PIL/TiffImagePlugin.py', 'w') as file :
-    file.write(filedata)
-import gc
+force_flow_generation = False #@param {type:'boolean'}
+def hstack(images):
+  if isinstance(next(iter(images)), str):
+    images = [PIL.Image.open(image).convert('RGB') for image in images]
+  widths, heights = zip(*(i.size for i in images))
+  for image in images: 
+    draw = PIL.ImageDraw.Draw(image)
+    draw.rectangle(((0, 00), (image.size[0], image.size[1])), outline="black", width=3)
+  total_width = sum(widths)
+  max_height = max(heights)
 
-force_flow_generation = True #@param {type:'boolean'}
+  new_im = PIL.Image.new('RGB', (total_width, max_height))
+
+  x_offset = 0
+  for im in images:
+    new_im.paste(im, (x_offset,0))
+    x_offset += im.size[0]
+  return new_im
+
+def vstack(images):
+  if isinstance(next(iter(images)), str):
+    images = [PIL.Image.open(image).convert('RGB') for image in images]
+  widths, heights = zip(*(i.size for i in images))
+
+  total_height = sum(heights)
+  max_width = max(widths)
+
+  new_im = PIL.Image.new('RGB', (max_width, total_height))
+
+  y_offset = 0
+  for im in images:
+    new_im.paste(im, (0, y_offset))
+    y_offset += im.size[1]
+  return new_im
+
+if is_colab:
+  for i in [7,8,9,10]:
+    try:
+      filedata = None
+      with open(f'/usr/local/lib/python3.{i}/dist-packages/PIL/TiffImagePlugin.py', 'r') as file :
+        filedata = file.read()
+      filedata = filedata.replace('(TiffTags.IFD, "L", "long"),', '#(TiffTags.IFD, "L", "long"),')
+      with open(f'/usr/local/lib/python3.{i}/dist-packages/PIL/TiffImagePlugin.py', 'w') as file :
+        file.write(filedata)
+      with open(f'/usr/local/lib/python3.7/dist-packages/PIL/TiffImagePlugin.py', 'w') as file :
+        file.write(filedata)
+    except:
+      pass
+      # print(f'Error writing /usr/local/lib/python3.{i}/dist-packages/PIL/TiffImagePlugin.py')
+
+class flowDataset():
+  def __init__(self, in_path, half=True):
+    frames = sorted(glob(in_path+'/*.*'));
+    assert len(frames)>2, f'WARNING!\nCannot create flow maps: Found {len(frames)} frames extracted from your video input.\nPlease check your video path.'
+    self.frames = frames
+      
+  def __len__(self):
+    return len(self.frames)-1 
+
+  def load_img(self, img, size):
+    img = PIL.Image.open(img).convert('RGB').resize(size, warp_interp)
+    return torch.from_numpy(np.array(img)).permute(2,0,1).float()[None,...]
+
+  def __getitem__(self, i):
+    frame1, frame2 = self.frames[i], self.frames[i+1]
+    frame1 = self.load_img(frame1, width_height)
+    frame2 = self.load_img(frame2, width_height)
+    padder = InputPadder(frame1.shape)
+    frame1, frame2 = padder.pad(frame1, frame2)
+    return torch.cat([frame1, frame2])
+
+from torch.utils.data import DataLoader
+
+def save_preview(flow21, out_flow21_fn):
+  PIL.Image.fromarray(flow_to_image(flow21)).save(out_flow21_fn, quality=90)
+
+#copyright Alex Spirin @ 2022
+def blended_roll(img_copy, shift, axis):
+  if int(shift) == shift: 
+    return np.roll(img_copy, int(shift), axis=axis)
+
+  max = math.ceil(shift)
+  min = math.floor(shift)
+  if min != 0 :
+    img_min = np.roll(img_copy, min, axis=axis)
+  else: 
+    img_min = img_copy
+  img_max = np.roll(img_copy, max, axis=axis)
+  blend = max-shift
+  img_blend = img_min*blend + img_max*(1-blend)
+  return img_blend
+
+#copyright Alex Spirin @ 2022
+def move_cluster(img,i,res2, center, mode='blended_roll'):
+  img_copy = img.copy()
+  motion = center[i]
+  mask = np.where(res2==motion, 1, 0)[...,0][...,None]
+  y, x = motion
+  if mode=='blended_roll':
+    img_copy = blended_roll(img_copy, x, 0)
+    img_copy = blended_roll(img_copy, y, 1)
+  if mode=='int_roll':    
+    img_copy = np.roll(img_copy, int(x), axis=0)
+    img_copy = np.roll(img_copy, int(y), axis=1)
+  return img_copy, mask
+
+import cv2
+
+
+def get_k(flow, K):
+  Z = flow.reshape((-1,2))
+  # convert to np.float32
+  Z = np.float32(Z)
+  # define criteria, number of clusters(K) and apply kmeans()
+  criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+  ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+  # Now convert back into uint8, and make original image
+  res = center[label.flatten()]
+  res2 = res.reshape((flow.shape))
+  return res2, center
+
+def k_means_warp(flo, img, num_k):
+  # flo = np.load(flo)
+  img = np.array((img).convert('RGB'))
+  num_k = 8 
+  
+  # print(img.shape)
+  res2, center = get_k(flo, num_k)
+  center = sorted(list(center), key=lambda x: abs(x).mean())
+
+  img = cv2.resize(img, (res2.shape[:-1][::-1]))
+  img_out = np.ones_like(img)*255.
+
+  for i in range(num_k):
+    img_rolled, mask_i = move_cluster(img,i,res2,center)
+    img_out = img_out*(1-mask_i) + img_rolled*(mask_i)
+
+  # cv2_imshow(img_out)
+  return PIL.Image.fromarray(img_out.astype('uint8'))
+
+def flow_batch(i, batch, pool):
+          batch = batch[0]
+          frame_1 = batch[0][None,...].cuda()
+          frame_2 = batch[1][None,...].cuda()
+          frame1 = ds.frames[i]
+          frame1 = frame1.replace('\\','/')
+          out_flow21_fn = f"{flo_fwd_folder}/{frame1.split('/')[-1]}"
+          if flow_lq:   frame_1, frame_2 = frame_1.half(), frame_2.half()
+          _, flow21 = raft_model(frame_2, frame_1)
+          flow21 = flow21[0].permute(1, 2, 0).detach().cpu().numpy()
+          
+          if flow_save_img_preview or i in range(0,len(ds),len(ds)//10): 
+            pool.apply_async(save_preview, (flow21, out_flow21_fn+'.jpg') )
+          pool.apply_async(np.save, (out_flow21_fn, flow21))
+          if check_consistency:
+            _, flow12 = raft_model(frame_1, frame_2)
+            flow12 = flow12[0].permute(1, 2, 0).detach().cpu().numpy()
+            if flow_save_img_preview: 
+              pool.apply_async(save_preview, (flow12, out_flow21_fn+'_12'+'.jpg'))
+            pool.apply_async(np.save, (out_flow21_fn+'_12', flow12))
+
+from multiprocessing.pool import ThreadPool as Pool
+import gc
+threads = 4 #@param {'type':'number'}
+#@markdown If you're having "process died" error on Windows, set num_workers to 0
+num_workers = 4 #@param {'type':'number'}
+
 #@markdown Use lower quality model (half-precision).\
 #@markdown Uses half the vram, allows fitting 1500x1500+ frames into 16gigs, which the original full-precision RAFT can't do.
 flow_lq = True #@param {type:'boolean'}
 #@markdown Save human-readable flow images along with motion vectors. Check /{your output dir}/videoFrames/out_flo_fwd folder.
-flow_save_img_preview = True  #@param {type:'boolean'}
+flow_save_img_preview = False  #@param {type:'boolean'}
 in_path = videoFramesFolder if not flow_video_init_path else flowVideoFramesFolder
 flo_folder = in_path+'_out_flo_fwd'
 #@markdown reverse_cc_order - on - default value (like in older notebooks). off - reverses consistency computation
@@ -4340,61 +4313,91 @@ if (animation_mode == 'Video Input') and (flow_warp):
   if (len(flows)>0) and not force_flow_generation: print(f'Skipping flow generation:\nFound {len(flows)} existing flow files in current working folder: {flo_folder}.\nIf you wish to generate new flow files, check force_flow_generation and run this cell again.')
 
   if (len(flows)==0) or force_flow_generation:
-
+    ds = flowDataset(in_path)
+  
     frames = sorted(glob(in_path+'/*.*'));
     if len(frames)<2: 
       print(f'WARNING!\nCannot create flow maps: Found {len(frames)} frames extracted from your video input.\nPlease check your video path.')
     if len(frames)>=2:
-      if flow_lq:
-        raft_model = torch.jit.load(f'{root_dir}/WarpFusion/raft/raft_half.jit').eval()
-      # raft_model = torch.nn.DataParallel(RAFT(args2))
-      else: raft_model = torch.jit.load(f'{root_dir}/WarpFusion/raft/raft_fp32.jit').eval()
-      # raft_model.load_state_dict(torch.load(f'{root_path}/RAFT/models/raft-things.pth'))
-      # raft_model = raft_model.module.cuda().eval()
+      if __name__ == '__main__':
+        dl = DataLoader(ds, num_workers=num_workers)   
+        if flow_lq:
+          raft_model = torch.jit.load(f'{root_dir}/WarpFusion/raft/raft_half.jit').eval()
+        # raft_model = torch.nn.DataParallel(RAFT(args2))
+        else: raft_model = torch.jit.load(f'{root_dir}/WarpFusion/raft/raft_fp32.jit').eval()
+        # raft_model.load_state_dict(torch.load(f'{root_path}/RAFT/models/raft-things.pth'))
+        # raft_model = raft_model.module.cuda().eval()
 
-      for f in pathlib.Path(f'{flo_fwd_folder}').glob('*.*'):
-        f.unlink()
-
-      temp_flo = in_path+'_temp_flo'
-      flo_fwd_folder = in_path+'_out_flo_fwd'
-
-      !mkdir "{flo_fwd_folder}" --parents
-      !mkdir "{temp_flo}" --parents
-      cc_path = f'{root_dir}/flow_tools/check_consistency.py'
-      with torch.no_grad():
-        for frame1, frame2 in tqdm(zip(frames[:-1], frames[1:]), total=len(frames)-1):
-          frame1 = frame1.replace('\\','/')
-          out_flow21_fn = f"{flo_fwd_folder}/{frame1.split('/')[-1]}"
-
-          frame1 = load_img(frame1, width_height)
-          frame2 = load_img(frame2, width_height)
-
-          flow21 = get_flow(frame2, frame1, raft_model, half=flow_lq)
-          if flow_save_img_preview: PIL.Image.fromarray(flow_to_image(flow21)).save(out_flow21_fn+'.jpg', quality=90)
-          np.save(out_flow21_fn, flow21)
-
-          if check_consistency:
-            flow12 = get_flow(frame1, frame2, raft_model, half=flow_lq)
-            if flow_save_img_preview: PIL.Image.fromarray(flow_to_image(flow12)).save(out_flow21_fn+'_12'+'.jpg', quality=90)
-            np.save(out_flow21_fn+'_12', flow12)
-            gc.collect()
-
-      del raft_model 
-      gc.collect()
-      if check_consistency:
-        fwd = f"{flo_fwd_folder}/*jpg.npy"
-        bwd = f"{flo_fwd_folder}/*jpg_12.npy"
-        
-        if reverse_cc_order:
-          #old version, may be incorrect
-          print('Doing bwd->fwd cc check')
-          !python "{cc_path}" --flow_fwd "{fwd}" --flow_bwd "{bwd}" --output "{flo_fwd_folder}/" --image_output --output_postfix="-21_cc" --blur=0. --save_separate_channels --skip_numpy_output
-        else:
-          print('Doing fwd->bwd cc check')
-          !python "{cc_path}" --flow_fwd "{bwd}" --flow_bwd "{fwd}" --output "{flo_fwd_folder}/" --image_output --output_postfix="-21_cc" --blur=0. --save_separate_channels --skip_numpy_output
-        for f in pathlib.Path(flo_fwd_folder).glob('*jpg_12.npy'):
+        for f in pathlib.Path(f'{flo_fwd_folder}').glob('*.*'):
           f.unlink()
 
+        temp_flo = in_path+'_temp_flo'
+        flo_fwd_folder = in_path+'_out_flo_fwd'
+
+        os.makedirs(flo_fwd_folder, exist_ok=True)
+        os.makedirs(temp_flo, exist_ok=True)
+        cc_path = f'{root_dir}/flow_tools/check_consistency.py'
+        with torch.no_grad():
+          with Pool(threads) as p:
+            for i,batch in enumerate(tqdm(dl)):
+              flow_batch(i, batch, p)
+
+        del raft_model 
+        gc.collect()
+        if check_consistency:
+          fwd = f"{flo_fwd_folder}/*jpg.npy"
+          bwd = f"{flo_fwd_folder}/*jpg_12.npy"
+          
+          if reverse_cc_order:
+            #old version, may be incorrect
+            print('Doing bwd->fwd cc check')
+            !python "{cc_path}" --flow_fwd "{fwd}" --flow_bwd "{bwd}" --output "{flo_fwd_folder}/" --image_output --output_postfix="-21_cc" --blur=0. --save_separate_channels --skip_numpy_output
+          else:
+            print('Doing fwd->bwd cc check')
+            !python "{cc_path}" --flow_fwd "{bwd}" --flow_bwd "{fwd}" --output "{flo_fwd_folder}/" --image_output --output_postfix="-21_cc" --blur=0. --save_separate_channels --skip_numpy_output
+          # delete forward flow
+          # for f in pathlib.Path(flo_fwd_folder).glob('*jpg_12.npy'):
+          #   f.unlink()
+
+# previews_flow = glob(f'{flo_fwd_folder}/*.jpg.jpg'); len(previews_flow)
+# rowsz = 5
+# imgs_flow = vstack([hstack(previews_flow[i*rowsz:(i+1)*rowsz]) for i in range(len(previews_flow)//rowsz)])
+
+# previews_cc = glob(f'{flo_fwd_folder}/*.jpg-21_cc.jpg')
+# previews_cc = previews_cc[::len(previews_cc)//10]; len(previews_cc)
+# rowsz = 5
+# imgs_cc = vstack([hstack(previews_cc[i*rowsz:(i+1)*rowsz]) for i in range(len(previews_cc)//rowsz)])
+
+# imgs = vstack([imgs_flow, imgs_cc.convert('L')])
+print('Samples from raw. alpha, consistency, and flow maps')
+# fit(imgs, 1024)
+
+flo_imgs = glob(flo_fwd_folder+'/*.jpg.jpg')[:5]
+vframes = []
+for flo_img in flo_imgs:
+  hframes = []
+  flo_img = flo_img.replace('\\','/')
+  frame = PIL.Image.open(videoFramesFolder + '/' + flo_img.split('/')[-1][:-4])
+  hframes.append(frame)
+  try:
+    alpha = PIL.Image.open(videoFramesAlpha + '/' + flo_img.split('/')[-1][:-4]).resize(frame.size)
+    hframes.append(alpha)
+  except: 
+    pass
+  try:
+    cc_img = PIL.Image.open(flo_img[:-4]+'-21_cc.jpg').convert('L').resize(frame.size)
+    hframes.append(cc_img)
+  except: 
+    pass
+  try:  
+    flo_img = PIL.Image.open(flo_img).resize(frame.size)
+    hframes.append(flo_img)
+  except: 
+    pass
+  v_imgs = vstack(hframes)
+  vframes.append(v_imgs)
+preview = hstack(vframes)
+fit(preview, 1024)
 
 
 # %%
@@ -4426,6 +4429,9 @@ edges_consistency_weight = 1 #@param {'type':'slider', 'min':'0', 'max':'1', 'st
 # 
 # You can pick 1.2 or 1.3 as well, just be sure to grab the "original" flavor.
 # 
+# For v2 go here: 
+# https://huggingface.co/stabilityai/stable-diffusion-2-depth
+# https://huggingface.co/stabilityai/stable-diffusion-2-base
 
 # %%
 #@markdown specify path to your Stable Diffusion checkpoint (the "original" flavor)
@@ -4433,7 +4439,6 @@ edges_consistency_weight = 1 #@param {'type':'slider', 'min':'0', 'max':'1', 'st
 
 import argparse
 import math,os,time
-
 os.chdir( f'{root_dir}/src/taming-transformers')
 import taming
 os.chdir( f'{root_dir}')
@@ -4458,39 +4463,46 @@ from torchvision.utils import make_grid
 import PIL.Image
 from torchvision import transforms
 
-class CFGDenoiser(nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.inner_model = model
+import wget
+model_version = 'v1'#@param ['v1','v2_512','v2_depth']
+if model_version == 'v1':
+  config_path = f"{root_dir}/stablediffusion/configs/stable-diffusion/v1-inference.yaml"
+if model_version == 'v2_512':
+  config_path = f"{root_dir}/stablediffusion/configs/stable-diffusion/v2-inference.yaml"
+if model_version == 'v2_depth':
+  config_path = f"{root_dir}/stablediffusion/configs/stable-diffusion/v2-midas-inference.yaml"
+  os.makedirs(f'{root_dir}/midas_models', exist_ok=True)
+  if not os.path.exists(f"{root_dir}/midas_models/dpt_hybrid-midas-501f0c75.pt"):
+    midas_url = 'https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt '
+    os.makedirs(f'{root_dir}/midas_models', exist_ok=True)
+    wget.download(midas_url,  f"{root_dir}/midas_models/dpt_hybrid-midas-501f0c75.pt")
+    # !wget -O  "{root_dir}/midas_models/dpt_hybrid-midas-501f0c75.pt" https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt 
 
-    def forward(self, x, sigma, uncond, cond, cond_scale):
-        x_in = torch.cat([x] * 2)
-        sigma_in = torch.cat([sigma] * 2)
-        cond_in = torch.cat([uncond, cond])
-        uncond, cond = self.inner_model(x_in, sigma_in, cond=cond_in).chunk(2)
-        return uncond + (cond - uncond) * cond_scale
-        
+load_to = 'gpu' #@param ['cpu','gpu']
+if load_to == 'gpu': load_to = 'cuda'
 import gc 
 def load_model_from_config(config, ckpt, verbose=False):
-    print(f"Loading model from {ckpt}")
-    pl_sd = torch.load(ckpt, map_location="cpu")
-    if "global_step" in pl_sd:
-        print(f"Global Step: {pl_sd['global_step']}")
-    sd = pl_sd["state_dict"]
-    del pl_sd
-    gc.collect()
-    model = instantiate_from_config(config.model)
-    m, u = model.load_state_dict(sd, strict=False)
-    if len(m) > 0 and verbose:
-        print("missing keys:")
-        print(m)
-    if len(u) > 0 and verbose:
-        print("unexpected keys:")
-        print(u)
+  # with torch.inference_mode():
+    with torch.no_grad():
+      print(f"Loading model from {ckpt}")
+      pl_sd = torch.load(ckpt, map_location=load_to)
+      if "global_step" in pl_sd:
+          print(f"Global Step: {pl_sd['global_step']}")
+      sd = pl_sd["state_dict"]
+      del pl_sd
+      gc.collect()
+      model = instantiate_from_config(config.model).eval().cuda()
+      if gpu != 'A100':
+        model = model.half()
+      m, u = model.load_state_dict(sd, strict=False)
+      if len(m) > 0 and verbose:
+          print("missing keys:")
+          print(m)
+      if len(u) > 0 and verbose:
+          print("unexpected keys:")
+          print(u)
 
-    model.cuda().half()
-    model.eval()
-    return model
+      return model
 
 
 
@@ -4556,8 +4568,8 @@ def load_img_sd(path, size):
 
 dynamic_thresh = 2.
 device = 'cuda'
-config_path = f"{root_dir}/stable-diffusion/configs/stable-diffusion/v1-inference.yaml"
-model_path = "/content/drive/MyDrive/models/sd-v1-4.ckpt" #@param {'type':'string'}
+# config_path = f"{root_dir}/stable-diffusion/configs/stable-diffusion/v1-inference.yaml"
+model_path = "/content/drive/MyDrive/sd-v1-3-full-ema.ckpt" #@param {'type':'string'}
 import pickle
 if model_path.endswith('.pkl'):
   with open(model_path, 'rb') as f:
@@ -4566,10 +4578,26 @@ else:
   config = OmegaConf.load(config_path)
   sd_model = load_model_from_config(config, model_path)
 
+
+class CFGDenoiser(nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.inner_model = model
+
+    def forward(self, x, sigma, uncond, cond, cond_scale, image_cond=None):
+        x_in = torch.cat([x] * 2)
+        sigma_in = torch.cat([sigma] * 2)
+        cond_in = torch.cat([uncond, cond])
+        
+        if image_cond is None: uncond, cond = self.inner_model(x_in, sigma_in, cond=cond_in).chunk(2)
+        else: 
+          img_in = torch.cat([image_cond]*2)
+          uncond, cond = self.inner_model(x_in, sigma_in, cond={"c_crossattn": [cond_in], 'c_concat': [img_in]}).chunk(2)
+        return uncond + (cond - uncond) * cond_scale
+
 model_wrap = K.external.CompVisDenoiser(sd_model)
 sigma_min, sigma_max = model_wrap.sigmas[0].item(), model_wrap.sigmas[-1].item()
 model_wrap_cfg = CFGDenoiser(model_wrap)
-
 # import pickle
 # with open('sd_v1_4.pkl', 'wb') as f:
 #   pickle.dump(sd_model, f)
@@ -4577,9 +4605,6 @@ model_wrap_cfg = CFGDenoiser(model_wrap)
 #@markdown If you're having crashes (CPU out of memory errors) while running this cell on standard colab env, consider saving the model as pickle.\
 #@markdown You can save the pickled model on your google drive and use it instead of the usual stable diffusion model.\
 #@markdown To do that, run the notebook with a high-ram env, run all cells before and including this cell as well, and save pickle in the next cell. Then you can switch to a low-ram env and load the pickled model.
-
-# %%
-
 
 # %%
 #@title Save loaded model 
@@ -4702,20 +4727,15 @@ cut_icgray_p = "[0.2]*100+[0]*900"
 # %%
 text_prompts = {
     0: [
-            "a beautiful breathtaking highly-detailed intricate portrait painting of a young woman with long hair, against a backdrop of stars in the style of alphonse mucha and ilya kuvshinov and peter mohrbacher, ross tran rossdraws, watercolor, featured on artstation, 70mm, rendered in octane"       ],
-    550: [  
-         "a highly detailed matte painting of a robot, No Man's Sky Screenshot, tall grass field, broken machinery, Simon Stalenhag , featured on Artstation."
+            "a beautiful highly detailed helena bonham carter as corpse bride directed by tim burton, in the style of alphonse mucha and ilya kuvshinov and peter mohrbacker, ross tran rossdraws, watercolor, featured on artstation, 70mm, rendered in octane"       ],
+    1000: [  
+         "a highly detailed matte painting, No Man's Sky Screenshot, tall grass field, broken machinery, Simon Stalenhag , featured on Artstation."
     ],
-    1000: [
-            "a beautiful breathtaking highly-detailed intricate portrait painting of a blissful ignorant enlightened young sxelaqwertyop dancing against a backdrop of stars in the style of alphonse mucha and ilya kuvshinov and peter mohrbacker, ross tran rossdraws, watercolor, featured on artstation, 70mm, rendered in octane"
-        ],
-    1500: [  
-         "a highly detailed matte painting of a robot sxelaqwertyop, No Man's Sky Screenshot, tall grass field, broken machinery, Simon Stalenhag , featured on Artstation."
-    ],
+
         }
 
 negative_prompts = {
-    0: ["text, logo, cropped, two heads, four arms, lazy eye, blurry, unfocused"]
+    0: ["text, naked, nude, logo, cropped, two heads, four arms, lazy eye, blurry, unfocused"]
 }
 
 image_prompts = {}
@@ -4827,7 +4847,7 @@ min_brightness_threshold = 1 #@param {'type':'number'}
 # %%
 #@title Video mask settings
 #@markdown Check to enable background masking during render. Not recommended, better use masking when creating the output video for more control and faster testing.
-use_background_mask = True #@param {'type':'boolean'}
+use_background_mask = False #@param {'type':'boolean'}
 #@markdown Check to invert the mask.
 invert_mask = False #@param {'type':'boolean'}
 #@markdown Apply mask right before feeding init image to the model. Unchecking will only mask current raw init frame.
@@ -4851,34 +4871,41 @@ if warp_towards_init != 'off':
         # raft_model = torch.nn.DataParallel(RAFT(args2))
   else: raft_model = torch.jit.load(f'{root_dir}/WarpFusion/raft/raft_fp32.jit').eval()
 
+depth_source = 'init' #@param ['init', 'stylized']
+
 # %%
 # DD-style losses, renders 2 times slower (!) and more memory intensive :D
 
 latent_scale_schedule = [0,0] #controls coherency with previous frame in latent space. 0 is a good starting value. 1+ render slower, but may improve image coherency. 100 is a good value if you decide to turn it on.
 init_scale_schedule = [0,0] #controls coherency with previous frame in pixel space. 0 - off, 1000 - a good starting value if you decide to turn it on.
 sat_scale = 0
-init_grad = True #True - compare result to real frame, False - to stylized frame
 
+init_grad = False #True - compare result to real frame, False - to stylized frame
 grad_denoised = True #fastest, on by default, calc grad towards denoised x instead of input x
 
 # %%
 steps_schedule = {
     0: 50, 
-    1: 200
+    1: 50
 } #schedules total steps. useful with low strength, when you end up with only 10 steps at 0.2 strength x50 steps. Increasing max steps for low strength gives model more time to get to your text prompt
-style_strength_schedule = [0.3,0.1]#[0.5]+[0.2]*149+[0.3]*3+[0.2] #use this instead of skip steps. It means how many steps we should do. 0.8 = we diffuse for 80% steps, so we skip 20%. So for skip steps 70% use 0.3
+style_strength_schedule = [0.5,0.3]#[0.5]+[0.2]*149+[0.3]*3+[0.2] #use this instead of skip steps. It means how many steps we should do. 0.8 = we diffuse for 80% steps, so we skip 20%. So for skip steps 70% use 0.3
 flow_blend_schedule = [0.8] #for example [0.1]*3+[0.999]*18+[0.3] will fade-in for 3 frames, keep style for 18 frames, and fade-out for the rest
 cfg_scale_schedule = [15] #text2image strength, 7.5 is a good default
 blend_json_schedules = True #True - interpolate values between keyframes. False - use latest keyframe 
 
-dynamic_thresh = 50
+dynamic_thresh = 30
 
-fixed_code = False #you can use this with fast moving videos, but be careful with still images 
-blend_code = 0.2 # high values make the output collapse
-normalize_code = True
+fixed_code = False #Aka fixed seed. you can use this with fast moving videos, but be careful with still images 
+blend_code = 0.1 # Only affects fixed code. high values make the output collapse
+normalize_code = True #Only affects fixed code. 
 
 warp_strength = 1 #leave 1 for no change. 1.01 is already a strong value.
 flow_override_map = []#[*range(1,15)]+[16]*10+[*range(17+10,17+10+20)]+[18+10+20]*15+[*range(19+10+20+15,9999)] #map flow to frames. set to [] to disable.  [1]*10+[*range(10,9999)] repeats 1st frame flow 10 times, then continues as usual
+
+blend_latent_to_init = 0
+
+colormatch_after = False #colormatch after stylizing. On in previous notebooks.
+colormatch_turbo = False #apply colormatching for turbo frames. On in previous notebooks
 
 # %%
 # danger (and barely used) zone
@@ -4895,9 +4922,9 @@ VERBOSE = True
 
 use_patchmatch_inpaiting = 0
 
-blend_latent_to_init = 0
+warp_num_k = 128 # number of patches per frame
+warp_forward = False #use k-means patched warping (moves large areas instead of single pixels)
 
-     
 
 # %% [markdown]
 # # Frame correction (latent & color matching)
@@ -4907,7 +4934,7 @@ blend_latent_to_init = 0
 #@markdown Match frame pixels or latent to other frames to preven oversaturation and feedback loop artifacts
 #@markdown ###Latent matching
 #@markdown Match the range of latent vector towards the 1st frame or a user defined range. Doesn't restrict colors, but may limit contrast.
-normalize_latent = 'init_frame_offset' #@param ['off', 'first_latent', 'user_defined', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
+normalize_latent = 'off' #@param ['off', 'first_latent', 'user_defined', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
 #@markdown in offset mode, specifies the offset back from current frame, and 0 means current frame. In non-offset mode specifies the fixed frame number. 0 means the 1st frame. 
 
 normalize_latent_offset = 0  #@param {'type':'number'}
@@ -4918,9 +4945,9 @@ latent_fixed_std = 0.9  #@param {'type':'raw'}
 latent_norm_4d = True  #@param {'type':'boolean'}
 #@markdown ###Color matching
 #@markdown Color match frame towards stylized or raw init frame. Helps prevent images going deep purple. As a drawback, may lock colors to the selected fixed frame. Select stylized_frame with colormatch_offset = 0 to reproduce previous notebooks.
-colormatch_frame = 'off' #@param ['off', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
+colormatch_frame = 'stylized_frame' #@param ['off', 'stylized_frame', 'init_frame', 'stylized_frame_offset', 'init_frame_offset']
 #@markdown Color match strength. 1 mimics legacy behavior
-color_match_frame_str = 1 #@param {'type':'number'}
+color_match_frame_str = 0.2 #@param {'type':'number'}
 #@markdown in offset mode, specifies the offset back from current frame, and 0 means current frame. In non-offset mode specifies the fixed frame number. 0 means the 1st frame. 
 colormatch_offset = 0  #@param {'type':'number'}
 colormatch_method = 'LAB'#@param ['LAB', 'PDF', 'mean']
@@ -5319,7 +5346,7 @@ from tqdm.notebook import trange
 skip_video_for_run_all = False #@param {type: 'boolean'}
 #@markdown ### **Video masking (post-processing)**
 #@markdown Use previously generated background mask during video creation
-use_background_mask_video = True #@param {type: 'boolean'}
+use_background_mask_video = False #@param {type: 'boolean'}
 invert_mask_video = False #@param {type: 'boolean'}
 #@markdown Choose background source: image, color, init video.
 background_video = "init_video" #@param ['image', 'color', 'init_video']
@@ -5332,10 +5359,20 @@ blend_mode = "optical flow" #@param ['None', 'linear', 'optical flow']
 blend =  0.5#@param {type: 'number'}
 check_consistency = True #@param {type: 'boolean'}
 postfix = ''
+
+def try_process_frame(i, func):
+    try:
+        func(i)
+    except:
+        print('Error processing frame ', i)
+
+
+
 if use_background_mask_video:
   postfix+='_mask'
 
 #@markdown ### **Video settings**
+
 if skip_video_for_run_all == True:
   print('Skipping video creation, uncheck skip_video_for_run_all if you want to run it')
 
@@ -5344,18 +5381,27 @@ else:
   import subprocess
   from base64 import b64encode
 
+  from multiprocessing.pool import ThreadPool as Pool
+  
+  pool = Pool(threads)
+
   latest_run = batchNum
 
   folder = batch_name #@param
   run =  latest_run#@param
   final_frame = 'final_frame'
-
+  
 
   init_frame = 1#@param {type:"number"} This is the frame where the video will start
   last_frame = final_frame#@param {type:"number"} You can change i to the number of the last frame you want to generate. It will raise an error if that number of frames does not exist.
   fps = 24#@param {type:"number"}
+  output_format = 'mp4' #@param ['mp4','mov']
   # view_video_in_cell = True #@param {type: 'boolean'}
-
+  #@markdown #### Multithreading settings
+  #@markdown Suggested range - from 1 to number of cores on SSD and double number of cores - on HDD. Mostly limited by your drive bandwidth.
+  #@markdown Results for 500 frames @ 6 cores: 5 threads - 2:38, 10 threads - 0:55, 20 - 0:56, 1: 5:53
+  threads = 12#@param {type:"number"}
+  threads = max(min(threads, 64),1)
   frames = []
   # tqdm.write('Generating video...')
 
@@ -5364,14 +5410,14 @@ else:
     print(f'Total frames: {last_frame}')
 
   image_path = f"{outDirPath}/{folder}/{folder}({run})_%06d.png"
-  filepath = f"{outDirPath}/{folder}/{folder}({run}).mp4"
+  filepath = f"{outDirPath}/{folder}/{folder}({run}).{output_format}"
 
   if (blend_mode == 'optical flow') & (True) :
     image_path = f"{outDirPath}/{folder}/flow/{folder}({run})_%06d.png"
     postfix += '_flow'
     video_out = batchFolder+f"/video"
     os.makedirs(video_out, exist_ok=True)
-    filepath = f"{video_out}/{folder}({run})_{postfix}.mp4"
+    filepath = f"{video_out}/{folder}({run})_{postfix}.{output_format}"
     if last_frame == 'final_frame':
       last_frame = len(glob(batchFolder+f"/flow/{folder}({run})_*.png"))
     flo_out = batchFolder+f"/flow"
@@ -5387,40 +5433,42 @@ else:
       frame0 = apply_mask(frame0, 0, background_video, background_source_video, invert_mask_video)
     frame0.save(flo_out+'/'+frames_in[0].replace('\\','/').split('/')[-1])
 
-    for i in trange(init_frame, min(len(frames_in), last_frame)):
-      
-      frame1_path = frames_in[i-1]
-      frame2_path = frames_in[i]
+    def process_flow_frame(i):
+        frame1_path = frames_in[i-1]
+        frame2_path = frames_in[i]
 
-      frame1 = PIL.Image.open(frame1_path)
-      frame2 = PIL.Image.open(frame2_path)
-      # if use_background_mask_video:
-      #   frame1 = apply_mask(frame1, i-1, background_video, background_source_video)
-      #   frame2 = apply_mask(frame2, i, background_video, background_source_video)
-      frame1_stem = f"{(int(frame1_path.split('/')[-1].split('_')[-1][:-4])+1):06}.jpg"
-      flo_path = f"{flo_folder}/{frame1_stem}.npy"
-      weights_path = None
-      if check_consistency: 
-        if reverse_cc_order:
-          weights_path = f"{flo_folder}/{frame1_stem}-21_cc.jpg" 
-        else: 
-          weights_path = f"{flo_folder}/{frame1_stem}_12-21_cc.jpg" 
-      # print(i, frame1_path, frame2_path, flo_path)
-      frame = warp(frame1, frame2, flo_path, blend=blend, weights_path=weights_path, 
-           pad_pct=padding_ratio, padding_mode=padding_mode, inpaint_blend=0, video_mode=True)
-      if use_background_mask_video:
-        frame = apply_mask(frame, i, background_video, background_source_video, invert_mask_video)
-      frame.save(batchFolder+f"/flow/{folder}({run})_{i:06}.png")
+        frame1 = PIL.Image.open(frame1_path)
+        frame2 = PIL.Image.open(frame2_path)
+        frame1_stem = f"{(int(frame1_path.split('/')[-1].split('_')[-1][:-4])+1):06}.jpg"
+        flo_path = f"{flo_folder}/{frame1_stem}.npy"
+        weights_path = None
+        if check_consistency: 
+          if reverse_cc_order:
+            weights_path = f"{flo_folder}/{frame1_stem}-21_cc.jpg" 
+          else: 
+            weights_path = f"{flo_folder}/{frame1_stem}_12-21_cc.jpg" 
+        tic = time.time()
+        frame = warp(frame1, frame2, flo_path, blend=blend, weights_path=weights_path, 
+            pad_pct=padding_ratio, padding_mode=padding_mode, inpaint_blend=0, video_mode=True)
+        if use_background_mask_video:
+          frame = apply_mask(frame, i, background_video, background_source_video, invert_mask_video)
+        frame.save(batchFolder+f"/flow/{folder}({run})_{i:06}.png")
+
+    with Pool(threads) as p:
+      fn = partial(try_process_frame, func=process_flow_frame)
+      total_frames = range(init_frame, min(len(frames_in), last_frame))
+      result = list(tqdm(p.imap(fn, total_frames), total=len(total_frames)))
+
   if blend_mode == 'linear':
     image_path = f"{outDirPath}/{folder}/blend/{folder}({run})_%06d.png"
     postfix += '_blend'
     video_out = batchFolder+f"/video"
     os.makedirs(video_out, exist_ok=True)
-    filepath = f"{video_out}/{folder}({run})_{postfix}.mp4"
+    filepath = f"{video_out}/{folder}({run})_{postfix}.{output_format}"
     if last_frame == 'final_frame':
       last_frame = len(glob(batchFolder+f"/blend/{folder}({run})_*.png"))
     blend_out = batchFolder+f"/blend"
-    !mkdir {blend_out}
+    os.makedirs(blend_out, exist_ok = True)
     frames_in = glob(batchFolder+f"/{folder}({run})_*.png")
     
     frame0 = PIL.Image.open(frames_in[0])
@@ -5428,29 +5476,49 @@ else:
       frame0 = apply_mask(frame0, 0, background_video, background_source_video, invert_mask_video)
     frame0.save(flo_out+'/'+frames_in[0].replace('\\','/').split('/')[-1])
 
-    for i in trange(1, len(frames_in)):
+    def process_blend_frame(i):
       frame1_path = frames_in[i-1]
       frame2_path = frames_in[i]
 
       frame1 = PIL.Image.open(frame1_path)
       frame2 = PIL.Image.open(frame2_path)
-      # if use_background_mask_video:
-      #   frame1 = apply_mask(frame1, i-1, background_video, background_source_video)
-      #   frame2 = apply_mask(frame2, i, background_video, background_source_video)
       frame = PIL.Image.fromarray((np.array(frame1)*(1-blend) + np.array(frame2)*(blend)).round().astype('uint8'))
       if use_background_mask_video:
         frame = apply_mask(frame, i, background_video, background_source_video, invert_mask_video)
       frame.save(batchFolder+f"/blend/{folder}({run})_{i:06}.png")
 
-
-
-    
-
-
-
-
-
-  cmd = [
+    with Pool(threads) as p:
+      fn = partial(try_process_frame, func=process_blend_frame)
+      total_frames = range(init_frame, min(len(frames_in), last_frame))
+      result = list(tqdm(p.imap(fn, total_frames), total=len(total_frames)))
+  if output_format == 'mp4':
+    cmd = [
+        'ffmpeg',
+        '-y',
+        '-vcodec',
+        'png',
+        '-r',
+        str(fps),
+        '-start_number',
+        str(init_frame),
+        '-i',
+        image_path,
+        '-frames:v',
+        str(last_frame+1),
+        '-c:v',
+        'libx264',
+        '-vf',
+        f'fps={fps}',
+        '-pix_fmt',
+        'yuv420p',
+        '-crf',
+        '17',
+        '-preset',
+        'veryslow',
+        filepath
+    ]
+  if output_format == 'mov':
+      cmd = [
       'ffmpeg',
       '-y',
       '-vcodec',
@@ -5464,17 +5532,12 @@ else:
       '-frames:v',
       str(last_frame+1),
       '-c:v',
-      'libx264',
+      'qtrle',
       '-vf',
       f'fps={fps}',
-      '-pix_fmt',
-      'yuv420p',
-      '-crf',
-      '17',
-      '-preset',
-      'veryslow',
       filepath
   ]
+
 
   process = subprocess.Popen(cmd, cwd=f'{batchFolder}', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   stdout, stderr = process.communicate()
@@ -5521,5 +5584,4 @@ if file1 != '' and file2 != '':
       print(f'{key}: {f1[key]} -> <variable missing>')
     if key not in f1.keys() and key in f2.keys():
       print(f'{key}: <variable missing> -> {f2[key]}')
-
 
