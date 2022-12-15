@@ -1676,8 +1676,8 @@ def do_run():
                     init_image=init,
                     randomize_class=randomize_class,
                     eta=args.eta_series[frame_num],
-                    transformation_fn=symmetry_transformation_fn,
-                    transformation_percent=args.transformation_percent,
+                    # transformation_fn=symmetry_transformation_fn,
+                    # transformation_percent=args.transformation_percent,
                 )
             else:
                 samples = sample_fn(
