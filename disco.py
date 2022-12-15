@@ -3289,7 +3289,7 @@ if animation_mode == "Video Input":
         flow[:, :, 0] += np.arange(w)
         flow[:, :, 1] += np.arange(h)[:, np.newaxis]
         flow *= mul  # new
-        res = cv2.remap(img, flow, None, cv2.INTER_LINEAR)
+        res = cv2.remap(img, flow, None, cv2.INTER_LANCZOS4)
         return res
 
     def makeEven(_x):
