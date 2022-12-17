@@ -36,6 +36,51 @@ def wget(url, outputdir):
     )
     print(res)
 
+def parse_key_frames(string, prompt_parser=None):
+    """Given a string representing frame numbers paired with parameter values at that frame,
+    return a dictionary with the frame numbers as keys and the parameter values as the values.
+
+    Parameters
+    ----------
+    string: string
+        Frame numbers paired with parameter values at that frame number, in the format
+        'framenumber1: (parametervalues1), framenumber2: (parametervalues2), ...'
+    prompt_parser: function or None, optional
+        If provided, prompt_parser will be applied to each string of parameter values.
+
+    Returns
+    -------
+    dict
+        Frame numbers as keys, parameter values at that frame number as values
+
+    Raises
+    ------
+    RuntimeError
+        If the input string does not match the expected format.
+
+    Examples
+    --------
+    >>> parse_key_frames("10:(Apple: 1| Orange: 0), 20: (Apple: 0| Orange: 1| Peach: 1)")
+    {10: 'Apple: 1| Orange: 0', 20: 'Apple: 0| Orange: 1| Peach: 1'}
+
+    >>> parse_key_frames("10:(Apple: 1| Orange: 0), 20: (Apple: 0| Orange: 1| Peach: 1)", prompt_parser=lambda x: x.lower()))
+    {10: 'apple: 1| orange: 0', 20: 'apple: 0| orange: 1| peach: 1'}
+    """
+    import re
+
+    pattern = r"((?P<frame>[0-9]+):[\s]*[\(](?P<param>[\S\s]*?)[\)])"
+    frames = dict()
+    for match_object in re.finditer(pattern, string):
+        frame = int(match_object.groupdict()["frame"])
+        param = match_object.groupdict()["param"]
+        if prompt_parser:
+            frames[frame] = prompt_parser(param)
+        else:
+            frames[frame] = param
+
+    if frames == {} and len(string) != 0:
+        raise RuntimeError("Key Frame string not correctly formatted")
+    return frames
 
 # folder=batchFolder, batchNo=batchNum, animMode=animation_mode, blendMode=video_init_blend_mode,
 # blendSeries = args.flow_blend_series

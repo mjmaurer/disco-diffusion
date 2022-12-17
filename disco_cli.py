@@ -2,8 +2,7 @@ import argparse
 import os
 from pathlib import Path
 import json
-from disco import parse_key_frames
-from disco_utils import make_video
+from disco_utils import make_video, parse_key_frames
 
 
 if __name__=='__main__':
