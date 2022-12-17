@@ -4,6 +4,8 @@ from glob import glob
 import numpy as np
 from tqdm.notebook import trange
 import argparse, PIL, cv2
+from PIL import Image
+
 
 
 def module_exists(module_name):
