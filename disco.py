@@ -2631,7 +2631,7 @@ start_frame = 24 * 6
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.65)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (3)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (4.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(.6)"
 # blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
