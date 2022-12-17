@@ -2609,7 +2609,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
-init_scale = 5000  # @param{type: 'integer'}
+init_scale = 10000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
@@ -2631,10 +2631,10 @@ target_frame = 24 * 8
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.75)"
+frames_skip_steps = f"0:(.6)"
 blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
-flow_blend = "0:(.33)"  # @param {type:"string"}
+flow_blend = "0:(.2)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
@@ -2729,7 +2729,7 @@ extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
 video_init_seed_continuity = True  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
-video_init_flow_warp = True  # @param {type: 'boolean'}
+video_init_flow_warp = False  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
 # video_init_flow_blend = (
 #     0.5  # @param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
@@ -3341,7 +3341,7 @@ rand_mag = 0.05
 
 cut_overview = "[12]*400+[4]*600"  # @param {type: 'string'}
 cut_innercut = "[4]*400+[12]*600"  # @param {type: 'string'}
-cut_ic_pow = "[5]*1000" # !changed this chnage could have increased render times .75  # @param {type: 'string'}
+cut_ic_pow = "[0.75]*1000" # !changed this chnage could have increased render times .75  # @param {type: 'string'}
 cut_icgray_p = "[0.2]*400+[0]*600"  # @param {type: 'string'}
 
 # @markdown KaliYuga model settings. Refer to [cut_ic_pow](https://ezcharts.miraheze.org/wiki/Category:Cut_ic_pow) as a guide. Values between 1 and 100 all work.
