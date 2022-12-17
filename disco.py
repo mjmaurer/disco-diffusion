@@ -2593,7 +2593,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 126  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
@@ -2605,7 +2605,7 @@ skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other 
-init_scale = 5000  # @param{type: 'integer'}
+init_scale = 10000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
@@ -2627,7 +2627,7 @@ target_frame = 24 * 8
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.6)"
+frames_skip_steps = f"0:(.5)"
 blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
 flow_blend = "0:(.999)"  # @param {type:"string"}
