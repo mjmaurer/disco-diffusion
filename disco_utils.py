@@ -5,6 +5,7 @@ import numpy as np
 from tqdm.notebook import trange
 import argparse, PIL, cv2
 from PIL import Image
+from pathlib import Path
 
 
 
@@ -178,6 +179,7 @@ def make_video(
     latest_run = batchNo
 
     batchName = os.path.basename(folder)
+    projectName = os.path.basename(Path(folder).parent)
 
     run = latest_run  # @param
     final_frame = "final_frame"
@@ -190,20 +192,20 @@ def make_video(
     # tqdm.write('Generating video...')
 
     if last_frame == "final_frame":
-        last_frame = len(glob(folder + f"/{batchName}({run})_*.png"))
+        last_frame = len(glob(folder + f"/{projectName}({run})_*.png"))
         print(f"Total frames: {last_frame}")
 
-    image_path = f"{folder}/{batchName}({run})_%04d.png"
-    filepath = f"{folder}/{batchName}({run}).mp4"
+    image_path = f"{folder}/{projectName}({run})_%04d.png"
+    filepath = f"{folder}/{projectName}({run}).mp4"
 
     if (blendMode == "optical flow") and (animMode == "Video Input"):
-        image_path = f"{folder}/flow/{batchName}({run})_%04d.png"
-        filepath = f"{folder}/{batchName}({run})_flow.mp4"
+        image_path = f"{folder}/flow/{projectName}({run})_%04d.png"
+        filepath = f"{folder}/{projectName}({run})_flow.mp4"
         if last_frame == "final_frame":
-            last_frame = len(glob(folder + f"/flow/{batchName}({run})_*.png"))
+            last_frame = len(glob(folder + f"/flow/{projectName}({run})_*.png"))
         flo_out = folder + f"/flow"
         os.makedirs(flo_out, exist_ok=True)
-        frames_in = sorted(glob(folder + f"/{batchName}({run})_*.png"))
+        frames_in = sorted(glob(folder + f"/{projectName}({run})_*.png"))
         shutil.copy(frames_in[0], flo_out)
         for i in trange(init_frame, min(len(frames_in), last_frame)):
             frame1_path = frames_in[i - 1]
@@ -229,15 +231,15 @@ def make_video(
                 padding_mode=paddingMode,
                 inpaint_blend=0,
                 video_mode=True,
-            ).save(folder + f"/flow/{batchName}({run})_{i:04}.png")
+            ).save(folder + f"/flow/{projectName}({run})_{i:04}.png")
     if blendMode == "linear":
-        image_path = f"{folder}/blend/{batchName}({run})_%04d.png"
-        filepath = f"{folder}/{batchName}({run})_blend.mp4"
+        image_path = f"{folder}/blend/{projectName}({run})_%04d.png"
+        filepath = f"{folder}/{projectName}({run})_blend.mp4"
         if last_frame == "final_frame":
-            last_frame = len(glob(folder + f"/blend/{batchName}({run})_*.png"))
+            last_frame = len(glob(folder + f"/blend/{projectName}({run})_*.png"))
         blend_out = folder + f"/blend"
         os.makedirs(blend_out, exist_ok=True)
-        frames_in = glob(folder + f"/{batchName}({run})_*.png")
+        frames_in = glob(folder + f"/{projectName}({run})_*.png")
         shutil.copy(frames_in[0], blend_out)
         blend = 0.5
         for i in trange(1, len(frames_in)):
@@ -249,7 +251,7 @@ def make_video(
 
             frame = PIL.Image.fromarray(
                 (np.array(frame1) * (1 - blend) + np.array(frame2) * (blend)).astype("uint8")
-            ).save(folder + f"/blend/{batchName}({run})_{i:04}.png")
+            ).save(folder + f"/blend/{projectName}({run})_{i:04}.png")
 
     cmd = [
         "ffmpeg",
