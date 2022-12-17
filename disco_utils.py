@@ -1,6 +1,9 @@
 import subprocess
 from importlib import util as importlibutil
 from glob import glob
+import numpy as np
+from tqdm.notebook import trange
+import argparse, PIL, cv2
 
 
 def module_exists(module_name):
@@ -36,6 +39,7 @@ def wget(url, outputdir):
         "utf-8"
     )
     print(res)
+
 
 def parse_key_frames(string, prompt_parser=None):
     """Given a string representing frame numbers paired with parameter values at that frame,
@@ -83,6 +87,75 @@ def parse_key_frames(string, prompt_parser=None):
         raise RuntimeError("Key Frame string not correctly formatted")
     return frames
 
+
+def warp_flow(img, flow, mul=1.0):
+    h, w = flow.shape[:2]
+    flow = flow.copy()
+    flow[:, :, 0] += np.arange(w)
+    flow[:, :, 1] += np.arange(h)[:, np.newaxis]
+    flow *= mul  # new
+    res = cv2.remap(img, flow, None, cv2.INTER_LANCZOS4)
+    return res
+
+
+def warp(
+    frame1,
+    frame2,
+    flo_path,
+    blend=0.5,
+    weights_path=None,
+    forward_clip=0.0,
+    pad_pct=0.1,
+    padding_mode="reflect",
+    inpaint_blend=0.0,
+    video_mode=False,
+    warp_mul=1.0,
+    warp_interp = PIL.Image.LANCZOS
+):
+    flow21 = np.load(flo_path)
+    pad = int(max(flow21.shape) * pad_pct)  # new
+    flow21 = np.pad(flow21, pad_width=((pad, pad), (pad, pad), (0, 0)), mode="constant")  # new
+
+    frame1pil = np.array(frame1.convert("RGB"))  # .resize((flow21.shape[1], flow21.shape[0])))
+    frame1pil = np.pad(
+        frame1pil, pad_width=((pad, pad), (pad, pad), (0, 0)), mode=padding_mode
+    )  # new
+    if video_mode:  # new
+        warp_mul = 1.0
+    frame1_warped21 = warp_flow(frame1pil, flow21, warp_mul)
+    frame1_warped21 = frame1_warped21[
+        pad : frame1_warped21.shape[0] - pad, pad : frame1_warped21.shape[1] - pad, :
+    ]
+    # frame2pil = frame1pil
+    # frame2pil = np.array(frame2.convert("RGB").resize((flow21.shape[1], flow21.shape[0])))
+    frame2pil = np.array(
+        frame2.convert("RGB").resize(
+            (flow21.shape[1] - pad * 2, flow21.shape[0] - pad * 2), warp_interp
+        )
+    )
+
+    if weights_path:
+        # TBD
+        forward_weights = load_cc(weights_path, blur=consistency_blur)
+        # print('forward_weights')
+        # print(forward_weights.shape)
+        if not video_mode:
+            frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+
+        forward_weights = forward_weights.clip(forward_clip, 1.0)
+        blended_w = frame2pil * (1 - blend) + blend * (
+            frame1_warped21 * forward_weights + frame2pil * (1 - forward_weights)
+        )
+    else:
+        # if not video_mode: frame2pil = match_color(frame1_warped21, frame2pil, opacity=match_color_strength)
+        blended_w = frame2pil * (1 - blend) + frame1_warped21 * (blend)
+
+    blended_w = PIL.Image.fromarray(blended_w.round().astype("uint8"))
+    # if not video_mode:
+    #     if enable_adjust_brightness: blended_w = adjust_brightness(blended_w)
+    return blended_w
+
+
 # folder=batchFolder, batchNo=batchNum, animMode=animation_mode, blendMode=video_init_blend_mode,
 # blendSeries = args.flow_blend_series
 def make_video(
@@ -99,7 +172,6 @@ def make_video(
     # import subprocess in case this cell is run without the above cells
     import subprocess, os, shutil
     from base64 import b64encode
-    import PIL
 
     latest_run = batchNo
 
@@ -165,6 +237,7 @@ def make_video(
         os.makedirs(blend_out, exist_ok=True)
         frames_in = glob(folder + f"/{batchName}({run})_*.png")
         shutil.copy(frames_in[0], blend_out)
+        blend = 0.5
         for i in trange(1, len(frames_in)):
             frame1_path = frames_in[i - 1]
             frame2_path = frames_in[i]
