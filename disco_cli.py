@@ -19,8 +19,8 @@ if __name__=='__main__':
     print(settingsFile)
     if args.vid:
         settings = {}
-        with open(settingsFile, "r") as fp:
-            settings = json.loads(fp.read())
+        with open(settingsFile, "r", encoding="utf-8") as fp:
+            settings = json.loads(fp.read(), strict=False)
         make_video(
             folder=batchFolder,
             flowBlendSeries=parse_key_frames(settings["flow_blend_series"]),
