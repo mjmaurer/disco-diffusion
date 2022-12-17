@@ -2,7 +2,7 @@ import argparse
 import os
 from pathlib import Path
 import json
-from disco_utils import make_video, parse_key_frames
+from disco_utils import make_video, parse_key_frames, get_inbetweens
 
 
 if __name__=='__main__':
@@ -27,7 +27,7 @@ if __name__=='__main__':
         make_video(
             folder=batchFolder,
             floFolder=floFolder,
-            flowBlendSeries=parse_key_frames(settings["flow_blend"]),
+            flowBlendSeries=get_inbetweens(parse_key_frames(settings["flow_blend"])),
             blendMode=settings["video_init_blend_mode"],
             paddingRatio=settings["padding_ratio"],
             paddingMode=settings["flow_padding_mode"]
