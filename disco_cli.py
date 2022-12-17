@@ -24,7 +24,7 @@ if __name__=='__main__':
             settings = json.loads(fp.read(), strict=False)
         make_video(
             folder=batchFolder,
-            flowBlendSeries=parse_key_frames(settings["flow_blend_series"]),
+            flowBlendSeries=parse_key_frames(settings["flow_blend"]),
             blendMode=settings["video_init_blend_mode"],
             paddingRatio=settings["padding_ratio"],
             paddingMode=settings["flow_padding_mode"]
