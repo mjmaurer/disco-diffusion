@@ -14,8 +14,9 @@ if __name__=='__main__':
     batchFolder = Path(args.folder)
     batchName = os.path.basename(args.folder)
     projectFolder = Path(args.folder).parent.absolute()
+    projectName = os.path.basename(projectFolder)
     vidFolder = os.path.join(projectFolder, "videoFrames")
-    settingsFile = os.path.join(batchFolder, f"{batchName}(0)__settings.txt")
+    settingsFile = os.path.join(batchFolder, f"{projectName}(0)__settings.txt")
     print(settingsFile)
     if args.vid:
         settings = {}
