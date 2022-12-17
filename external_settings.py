@@ -1,4 +1,4 @@
-vid_input = "_97short.mp4"
+vid_input = "_short2.mp4"
 
 michael_mode = True
 

@@ -2624,15 +2624,16 @@ animation_mode = "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {ty
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-target_frame = 24 * 8
+target_frame = 24 * 16
+start_frame = 24 * 6
 # !eta
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-# frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-# blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.6)"
-blend_ramp = f"0:(10)"
+frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.65)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (3)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# frames_skip_steps = f"0:(.6)"
+# blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
 flow_blend = "0:(.2)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
