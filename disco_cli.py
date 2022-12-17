@@ -11,7 +11,7 @@ if __name__=='__main__':
     parser.add_argument("--vid", help="Make video")
     args = parser.parse_args()
 
-    batchFolder = Path(args.folder)
+    batchFolder = Path(args.folder).absolute()
     batchName = os.path.basename(args.folder)
     projectFolder = Path(args.folder).parent.absolute()
     projectName = os.path.basename(projectFolder)
