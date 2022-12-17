@@ -12,10 +12,12 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     batchFolder = args.folder 
+
     batchName = os.path.basename(args.folder)
     projectFolder = Path(args.folder).parent.absolute()
     projectName = os.path.basename(projectFolder)
     vidFolder = os.path.join(projectFolder, "videoFrames")
+    floFolder = os.path.join(vidFolder, "out_flo_fwd")
     settingsFile = os.path.join(batchFolder, f"{projectName}(0)__settings.txt")
     print(settingsFile)
     if args.vid:
@@ -24,6 +26,7 @@ if __name__=='__main__':
             settings = json.loads(fp.read(), strict=False)
         make_video(
             folder=batchFolder,
+            floFolder=floFolder,
             flowBlendSeries=parse_key_frames(settings["flow_blend"]),
             blendMode=settings["video_init_blend_mode"],
             paddingRatio=settings["padding_ratio"],

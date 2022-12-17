@@ -87,6 +87,7 @@ def parse_key_frames(string, prompt_parser=None):
 # blendSeries = args.flow_blend_series
 def make_video(
     folder,
+    floFolder,
     flowBlendSeries,
     fps=24,
     batchNo=0,
@@ -127,7 +128,7 @@ def make_video(
         if last_frame == "final_frame":
             last_frame = len(glob(folder + f"/flow/{batchName}({run})_*.png"))
         flo_out = folder + f"/flow"
-        createPath(flo_out)
+        os.makedirs(flo_out, exist_ok=True)
         frames_in = sorted(glob(folder + f"/{batchName}({run})_*.png"))
         shutil.copy(frames_in[0], flo_out)
         for i in trange(init_frame, min(len(frames_in), last_frame)):
@@ -137,7 +138,7 @@ def make_video(
             frame1 = PIL.Image.open(frame1_path)
             frame2 = PIL.Image.open(frame2_path)
             frame1_stem = f"{(int(frame1_path.split('/')[-1].split('_')[-1][:-4])+1):04}.jpg"
-            flo_path = f"/{flo_folder}/{frame1_stem}.npy"
+            flo_path = f"/{floFolder}/{frame1_stem}.npy"
             weights_path = None
             # if video_init_check_consistency:
             #     # TBD
@@ -161,7 +162,7 @@ def make_video(
         if last_frame == "final_frame":
             last_frame = len(glob(folder + f"/blend/{batchName}({run})_*.png"))
         blend_out = folder + f"/blend"
-        createPath(blend_out)
+        os.makedirs(blend_out, exist_ok=True)
         frames_in = glob(folder + f"/{batchName}({run})_*.png")
         shutil.copy(frames_in[0], blend_out)
         for i in trange(1, len(frames_in)):
