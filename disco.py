@@ -2631,10 +2631,10 @@ target_frame = 24 * 8
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(.999), {24 * 4}: (.999), {target_frame}: (0.2)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {math.floor(24 * 4)}: (1), {target_frame}: (4)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.5)"
+frames_skip_steps = f"0:(.65)"
 blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
-flow_blend = "0:(.25)"  # @param {type:"string"}
+flow_blend = "0:(.33)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
@@ -3341,7 +3341,7 @@ rand_mag = 0.05
 
 cut_overview = "[12]*400+[4]*600"  # @param {type: 'string'}
 cut_innercut = "[4]*400+[12]*600"  # @param {type: 'string'}
-cut_ic_pow = "[0.75]*1000"  # @param {type: 'string'}
+cut_ic_pow = "[2]*1000" # !changed this chnage could have increased render times .75  # @param {type: 'string'}
 cut_icgray_p = "[0.2]*400+[0]*600"  # @param {type: 'string'}
 
 # @markdown KaliYuga model settings. Refer to [cut_ic_pow](https://ezcharts.miraheze.org/wiki/Category:Cut_ic_pow) as a guide. Values between 1 and 100 all work.

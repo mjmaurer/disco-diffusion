@@ -1,12 +1,13 @@
-main_style = "vibrant, octane render" # , by kilian eng"
+main_style = "vibrant, octane render: 10"  # , by kilian eng"
 
 text_prompts = {
     0: [
         (
             # "A forest with massive trees engraves with cartoon bears, "
-            "Massive trees in a colorful psychadelic forest, "
-            + main_style
+            "Massive fallen trees in a psychadelic forest: 10"
         ),
+        main_style,
+        "blurry, shallow depth of field, bokeh:-4",
     ],
 }
 

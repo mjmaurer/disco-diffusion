@@ -286,7 +286,6 @@ def make_video(
             #     # TBD
             #     pass
 
-            print(flowBlendSeries)
             cur_flow_blend = flowBlendSeries[i]
             warp(
                 frame1,
