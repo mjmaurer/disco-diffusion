@@ -16,9 +16,10 @@ if __name__=='__main__':
     projectFolder = Path(args.folder).parent.absolute()
     vidFolder = os.path.join(projectFolder, "videoFrames")
     settingsFile = os.path.join(batchFolder, f"{batchName}(0)__settings.txt")
+    print(settingsFile)
     if args.vid:
         settings = {}
-        with open(settingsFile, "w") as fp:
+        with open(settingsFile, "r") as fp:
             settings = json.loads(fp.read())
         make_video(
             folder=batchFolder,
