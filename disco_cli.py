@@ -2,7 +2,9 @@ import argparse
 import os
 from pathlib import Path
 import json
-from .disco import make_video, parse_key_frames
+from disco import parse_key_frames
+from disco_utils import make_video
+
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
