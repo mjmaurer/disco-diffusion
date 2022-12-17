@@ -2597,7 +2597,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 136  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
@@ -2729,7 +2729,7 @@ extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
 video_init_seed_continuity = True  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
-video_init_flow_warp = False  # @param {type: 'boolean'}
+video_init_flow_warp = True  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
 # video_init_flow_blend = (
 #     0.5  # @param {type: 'number'} #0 - take next frame, 1 - take prev warped frame
