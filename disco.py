@@ -1457,7 +1457,10 @@ def do_run():
             image_prompt = []
 
         print(f"Frame {frame_num} Prompt: {frame_prompt}")
-        print(f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}. blend ramp: {args.blend_ramp_series[frame_num]}")
+        print(
+            f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}. blend ramp:"
+            f" {args.blend_ramp_series[frame_num]}"
+        )
 
         model_stats = []
         for clip_model in clip_models:
@@ -1693,7 +1696,6 @@ def do_run():
                     order=2,
                 )
 
-
             # with run_display:
             # display.clear_output(wait=True)
             for j, sample in enumerate(samples):
@@ -1749,9 +1751,11 @@ def do_run():
                                 frame_step_pct = args.frames_skip_steps_series[frame_num]
                                 blend_ramp = args.blend_ramp_series[frame_num]
                                 init_img = Image.open(fetch(init_image)).convert("RGB")
-                                init_img = init_img.resize((args.side_x, args.side_y), args.warp_interp)
+                                init_img = init_img.resize(
+                                    (args.side_x, args.side_y), args.warp_interp
+                                )
                                 image.save("lastDiffusion.png")
-                                pct = frame_step_pct ** blend_ramp
+                                pct = frame_step_pct**blend_ramp
                                 print(f"Blend pct: {pct}")
                                 # Higher number favors second image
                                 image = Image.blend(image, init_img, pct)
@@ -1909,7 +1913,7 @@ def save_settings():
         "near_plane": near_plane,
         "far_plane": far_plane,
         "fov": fov,
-        "padding_mode": padding_mode,
+        "flow_padding_mode": flow_padding_mode,
         "sampling_mode": sampling_mode,
         "video_init_path": video_init_path,
         "extract_nth_frame": extract_nth_frame,
@@ -2586,7 +2590,7 @@ import PIL
 # !!   "id": "BasicSettings"
 # !! }}
 # @markdown ####**Basic Settings:**
-#@markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
+# @markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
 padding_ratio = 0.1  # @param {type:"slider", min:0, max:1, step:0.1}
 flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
@@ -2604,7 +2608,7 @@ cutn_batches = 4  # @param{type: 'number'}
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 init_image = None  # @param{type: 'string'}
-# Init scale and CGS must be balanced against each other 
+# Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
@@ -3457,7 +3461,7 @@ if animation_mode == "Video Input":
 # !! }}
 # @markdown ####**Saving:**
 
-intermediate_saves = 0 # @param{type: 'raw'}
+intermediate_saves = 0  # @param{type: 'raw'}
 intermediates_in_subfolder = True  # @param{type: 'boolean'}
 # @markdown Intermediate steps will save a copy at your specified intervals. You can either format it as a single integer or a list of specific steps
 
@@ -3916,40 +3920,52 @@ video_init_check_consistency = False  # @param {type: 'boolean'}
 if skip_video_for_run_all == True:
     print("Skipping video creation, uncheck skip_video_for_run_all if you want to run it")
 
-else:
+# folder=batchFolder, batchNo=batchNum, animMode=animation_mode, blendMode=video_init_blend_mode,
+# blendSeries = args.flow_blend_series
+def make_video(
+    folder,
+    flowBlendSeries,
+    fps=24,
+    batchNo=0,
+    animMode="Video Input",
+    blendMode="optical flow",
+    paddingRatio=0.2,
+    paddingMode="reflect"
+):
     # import subprocess in case this cell is run without the above cells
-    import subprocess
+    import subprocess, os, shutil
     from base64 import b64encode
+    import PIL
 
-    latest_run = batchNum
+    latest_run = batchNo
 
-    folder = batch_name  # @param
+    batchName = os.path.basename(folder)
+
     run = latest_run  # @param
     final_frame = "final_frame"
 
     init_frame = 1  # @param {type:"number"} This is the frame where the video will start
     last_frame = final_frame  # @param {type:"number"} You can change i to the number of the last frame you want to generate. It will raise an error if that number of frames does not exist.
-    fps = 12  # @param {type:"number"}
     # view_video_in_cell = True #@param {type: 'boolean'}
 
     frames = []
     # tqdm.write('Generating video...')
 
     if last_frame == "final_frame":
-        last_frame = len(glob(batchFolder + f"/{folder}({run})_*.png"))
+        last_frame = len(glob(folder + f"/{batchName}({run})_*.png"))
         print(f"Total frames: {last_frame}")
 
-    image_path = f"{outDirPath}/{folder}/{folder}({run})_%04d.png"
-    filepath = f"{outDirPath}/{folder}/{folder}({run}).mp4"
+    image_path = f"{folder}/{batchName}({run})_%04d.png"
+    filepath = f"{folder}/{batchName}({run}).mp4"
 
-    if (video_init_blend_mode == "optical flow") and (animation_mode == "Video Input"):
-        image_path = f"{outDirPath}/{folder}/flow/{folder}({run})_%04d.png"
-        filepath = f"{outDirPath}/{folder}/{folder}({run})_flow.mp4"
+    if (blendMode == "optical flow") and (animMode == "Video Input"):
+        image_path = f"{folder}/flow/{batchName}({run})_%04d.png"
+        filepath = f"{folder}/{batchName}({run})_flow.mp4"
         if last_frame == "final_frame":
-            last_frame = len(glob(batchFolder + f"/flow/{folder}({run})_*.png"))
-        flo_out = batchFolder + f"/flow"
+            last_frame = len(glob(folder + f"/flow/{batchName}({run})_*.png"))
+        flo_out = folder + f"/flow"
         createPath(flo_out)
-        frames_in = sorted(glob(batchFolder + f"/{folder}({run})_*.png"))
+        frames_in = sorted(glob(folder + f"/{batchName}({run})_*.png"))
         shutil.copy(frames_in[0], flo_out)
         for i in trange(init_frame, min(len(frames_in), last_frame)):
             frame1_path = frames_in[i - 1]
@@ -3960,28 +3976,30 @@ else:
             frame1_stem = f"{(int(frame1_path.split('/')[-1].split('_')[-1][:-4])+1):04}.jpg"
             flo_path = f"/{flo_folder}/{frame1_stem}.npy"
             weights_path = None
-            if video_init_check_consistency:
-                # TBD
-                pass
+            # if video_init_check_consistency:
+            #     # TBD
+            #     pass
+
+            cur_flow_blend = flowBlendSeries[i]
             warp(
                 frame1,
                 frame2,
                 flo_path,
-                blend=blend,
+                blend=cur_flow_blend,
                 weights_path=weights_path,
-                pad_pct=padding_ratio,
-                padding_mode=flow_padding_mode,
+                pad_pct=paddingRatio,
+                padding_mode=paddingMode,
                 inpaint_blend=0,
                 video_mode=True,
-            ).save(batchFolder + f"/flow/{folder}({run})_{i:04}.png")
-    if video_init_blend_mode == "linear":
-        image_path = f"{outDirPath}/{folder}/blend/{folder}({run})_%04d.png"
-        filepath = f"{outDirPath}/{folder}/{folder}({run})_blend.mp4"
+            ).save(folder + f"/flow/{batchName}({run})_{i:04}.png")
+    if blendMode == "linear":
+        image_path = f"{folder}/blend/{batchName}({run})_%04d.png"
+        filepath = f"{folder}/{batchName}({run})_blend.mp4"
         if last_frame == "final_frame":
-            last_frame = len(glob(batchFolder + f"/blend/{folder}({run})_*.png"))
-        blend_out = batchFolder + f"/blend"
+            last_frame = len(glob(folder + f"/blend/{batchName}({run})_*.png"))
+        blend_out = folder + f"/blend"
         createPath(blend_out)
-        frames_in = glob(batchFolder + f"/{folder}({run})_*.png")
+        frames_in = glob(folder + f"/{batchName}({run})_*.png")
         shutil.copy(frames_in[0], blend_out)
         for i in trange(1, len(frames_in)):
             frame1_path = frames_in[i - 1]
@@ -3992,7 +4010,7 @@ else:
 
             frame = PIL.Image.fromarray(
                 (np.array(frame1) * (1 - blend) + np.array(frame2) * (blend)).astype("uint8")
-            ).save(batchFolder + f"/blend/{folder}({run})_{i:04}.png")
+            ).save(folder + f"/blend/{batchName}({run})_{i:04}.png")
 
     cmd = [
         "ffmpeg",
@@ -4020,9 +4038,7 @@ else:
         filepath,
     ]
 
-    process = subprocess.Popen(
-        cmd, cwd=f"{batchFolder}", stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    process = subprocess.Popen(cmd, cwd=f"{folder}", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
         print(stderr)
@@ -4035,6 +4051,17 @@ else:
     #     data_url = "data:video/mp4;base64," + b64encode(mp4).decode()
     #     display.HTML(f'<video width=400 controls><source src="{data_url}" type="video/mp4"></video>')
 
+
+make_video(
+    folder=batchFolder,
+    flowBlendSeries=args.flow_blend_series,
+    fps=24,
+    batchNo=batchNum,
+    animMode=animation_mode,
+    blendMode=video_init_blend_mode,
+    paddingRatio=padding_ratio,
+    paddingMode=flow_padding_mode
+)
 # %%
 # !! {"main_metadata":{
 # !!   "anaconda-cloud": {},
