@@ -221,6 +221,7 @@ def make_video(
             #     pass
 
             cur_flow_blend = flowBlendSeries[i]
+            print(flowBlendSeries)
             warp(
                 frame1,
                 frame2,
