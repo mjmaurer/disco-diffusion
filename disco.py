@@ -2610,7 +2610,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = "/notebooks/output/_short2/_997_12_17__23_27/_short2(0)_0499.png"  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .4)  # @param{type: 'integer'}
+skip_steps = math.floor(steps * .8)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2643,7 +2643,7 @@ translation_y = "0: (0)"  # @param {type:"string"}
 translation_z = "0: (10.0)"  # @param {type:"string"}
 rotation_3d_x = "0: (0)"  # @param {type:"string"}
 rotation_3d_y = "0: (0)"  # @param {type:"string"}
-rotation_3d_z = "0: (5)"  # @param {type:"string"}
+rotation_3d_z = "0: (0.1)"  # @param {type:"string"}
 midas_depth_model = "dpt_large"  # @param {type:"string"}
 midas_weight = 0.3  # @param {type:"number"}
 near_plane = 200  # @param {type:"number"}
@@ -2661,7 +2661,7 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 
 turbo_mode = True  # @param {type:"boolean"}
 turbo_steps = "3"  # @param ["2","3","4","5","6"] {type:"string"}
-turbo_preroll = 10  # frames
+turbo_preroll = 0  # frames
 
 # @markdown ####**Video Init Basic Settings:**
 video_init_steps = steps  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
