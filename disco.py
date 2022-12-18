@@ -2654,7 +2654,7 @@ midas_weight = 0.3  # @param {type:"number"}
 near_plane = 200  # @param {type:"number"}
 far_plane = 10000  # @param {type:"number"}
 fov = 40  # @param {type:"number"}
-padding_mode = "reflect"  # @param {type:"string"}
+padding_mode = "reflection"  # @param {type:"string"}
 sampling_mode = "bicubic"  # @param {type:"string"}
 
 # ======= TURBO MODE
