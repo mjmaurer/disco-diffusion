@@ -2597,7 +2597,7 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+steps = 100  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
@@ -2607,7 +2607,7 @@ cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
-init_image = None  # @param{type: 'string'}
+init_image = "/notebooks/output/_short2/_997_12_17__23_27/_short2(0)_0499.png"  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
 skip_steps = steps - 1  # @param{type: 'integer'}
@@ -2619,7 +2619,7 @@ width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
-animation_mode = "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+animation_mode = "3D" #"Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
 
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
@@ -2630,10 +2630,10 @@ start_frame = 24 * 6
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.65)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (4.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-# frames_skip_steps = f"0:(.6)"
-# blend_ramp = f"0:(10)"
+# frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.65)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+# blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (4.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = f"0:(.4)"
+blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
 flow_blend = "0:(.2)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
@@ -2643,7 +2643,7 @@ translation_y = "0: (0)"  # @param {type:"string"}
 translation_z = "0: (10.0)"  # @param {type:"string"}
 rotation_3d_x = "0: (0)"  # @param {type:"string"}
 rotation_3d_y = "0: (0)"  # @param {type:"string"}
-rotation_3d_z = "0: (0)"  # @param {type:"string"}
+rotation_3d_z = "0: (5)"  # @param {type:"string"}
 midas_depth_model = "dpt_large"  # @param {type:"string"}
 midas_weight = 0.3  # @param {type:"number"}
 near_plane = 200  # @param {type:"number"}
@@ -2659,7 +2659,7 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 # @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
 # @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
 
-turbo_mode = False  # @param {type:"boolean"}
+turbo_mode = True  # @param {type:"boolean"}
 turbo_steps = "3"  # @param ["2","3","4","5","6"] {type:"string"}
 turbo_preroll = 10  # frames
 
