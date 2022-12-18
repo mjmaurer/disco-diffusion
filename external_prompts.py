@@ -1,27 +1,18 @@
-main_style = "vibrant, octane render"  # , by kilian eng"
+main_style = "oil painting, psychedelic, vibrant, octane render"  # , by kilian eng"
 
 text_prompts = {
     0: [
         (
             # "A forest with massive trees engraves with cartoon bears, "
             # "Massive fallen trees in a psychadelic forest, " + main_style
-            "Massive fallen trees in a colorful psychadelic forest, " + main_style
+            "Portrait of a smiling psychedelic cartoon bear"
         ),
-        # main_style,
-        # "blurry, shallow depth of field, bokeh:-4",
-    ],
-    60: [
-        (
-            # "A forest with massive trees engraves with cartoon bears, "
-            # "Massive fallen trees in a psychadelic forest, " + main_style
-            "A psychedelic city skyline, " + main_style
-        ),
-        # main_style,
+        main_style,
         # "blurry, shallow depth of field, bokeh:-4",
     ],
 }
 
-negative_prompts = {0: ["person, human, man, woman, body, text, blurry, unfocused"]}
+negative_prompts = {0: ["text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
