@@ -1388,6 +1388,8 @@ def do_run():
                 init_image = "prevFrameScaled.png"
                 init_scale = args.frames_scale
                 skip_steps = args.calc_frames_skip_steps
+                if args.key_frames:
+                    skip_steps = math.floor(args.steps * args.frames_skip_steps_series[frame_num])
 
         if args.animation_mode == "Video Input":
             cur_flow_blend = flow_blend
@@ -2635,7 +2637,7 @@ start_frame = 24 * 6
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.65)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (4.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(.8)"
+frames_skip_steps = f"0:(.8), 36:(0)"
 blend_ramp = f"0:(10)"
 eta = "0:(0.2)"
 flow_blend = "0:(.2)"  # @param {type:"string"}
