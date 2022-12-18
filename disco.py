@@ -2604,10 +2604,10 @@ warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 steps = 200 # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
-clip_guidance_scale = 1000  # @param{type: 'number'}
-tv_scale = 0.1  # @param{type: 'number'}
+clip_guidance_scale = 10000  # @param{type: 'number'}
+tv_scale = 15000  # @param{type: 'number'}
 range_scale = 1  # @param{type: 'number'}
-sat_scale = 200  # @param{type: 'number'}
+sat_scale = 2000  # @param{type: 'number'}
 cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
@@ -2615,7 +2615,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .7)  # @param{type: 'integer'}
+skip_steps = math.floor(steps * .6)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2733,7 +2733,7 @@ else:
     video_init_path = "init.mp4"  # @param {type: 'string'}
 extract_nth_frame = 1  # @param {type: 'number'}
 persistent_frame_output_in_batch_folder = True  # @param {type: 'boolean'}
-video_init_seed_continuity = True  # @param {type: 'boolean'}
+video_init_seed_continuity = False  # @param {type: 'boolean'}
 # @markdown #####**Video Optical Flow Settings:**
 video_init_flow_warp = True  # @param {type: 'boolean'}
 # Call optical flow from video frames and warp prev frame with flow
