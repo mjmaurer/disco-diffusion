@@ -2610,7 +2610,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = "/notebooks/output/_short2/_997_12_17__23_27/_short2(0)_0499.png"  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = steps - 1  # @param{type: 'integer'}
+skip_steps = math.floor(steps * .4)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -3570,6 +3570,7 @@ args = {
     "batchNum": batchNum,
     "padding_ratio": padding_ratio,
     "flow_padding_mode": flow_padding_mode,
+    "padding_mode": padding_mode,
     "prompts_series": split_prompts(text_prompts) if text_prompts else None,
     "image_prompts_series": split_prompts(image_prompts) if image_prompts else None,
     "seed": seed,
