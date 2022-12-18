@@ -1414,7 +1414,7 @@ def do_run():
                     flo_path = f"/{flo_folder}/{frame1_path.split('/')[-1]}.npy"
 
                     init_image = "warped.png"
-                    print(flow_blend)
+                    print(cur_flow_blend)
                     weights_path = None
                     if video_init_check_consistency:
                         # TBD
@@ -2615,7 +2615,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .83)  # @param{type: 'integer'}
+skip_steps = math.floor(steps * .7)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2640,7 +2640,7 @@ start_frame = 24 * 6
 frames_skip_steps = f"0:(0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 eta = "0:(0.2)"
-flow_blend = "0:(.88)"  # @param {type:"string"}
+flow_blend = "0:(.3)"  # @param {type:"string"}
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
