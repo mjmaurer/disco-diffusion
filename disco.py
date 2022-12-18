@@ -1323,6 +1323,10 @@ def do_run():
                 skip_steps = args.calc_frames_skip_steps
 
         if args.animation_mode == "3D":
+            # !added this condition
+            if frame_num == 0:
+                img_filepath = batchFolder + f"/{batch_name}({batchNum})_{start_frame-1:04}.png"
+                shutil.copyfile(img_filepath, "oldFrameScaled.png")
             if frame_num > 0:
                 seed += 1
                 if resume_run and frame_num == start_frame:
