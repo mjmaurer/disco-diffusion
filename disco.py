@@ -1755,15 +1755,17 @@ def do_run():
 
                                 frame_step_pct = args.frames_skip_steps_series[frame_num]
                                 blend_ramp = args.blend_ramp_series[frame_num]
-                                init_img = Image.open(fetch(init_image)).convert("RGB")
-                                init_img = init_img.resize(
+
+                                original_image = f"{videoFramesFolder}/{frame_num+1:04}.jpg"
+                                orig_img = Image.open(fetch(original_image)).convert("RGB")
+                                orig_img = orig_img.resize(
                                     (args.side_x, args.side_y), args.warp_interp
                                 )
                                 image.save("lastDiffusion.png")
                                 pct = frame_step_pct**blend_ramp
                                 print(f"Blend pct: {pct}")
                                 # Higher number favors second image
-                                image = Image.blend(image, init_img, pct)
+                                image = Image.blend(image, orig_img, pct)
 
                                 if frame_num == 12:
                                     image.save("12.png")
@@ -2612,10 +2614,12 @@ cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
-init_image = "/notebooks/output/_short2/_997_12_17__23_27/_short2(0)_0499.png"  # @param{type: 'string'}
+init_image = (  # @param{type: 'string'}
+    "/notebooks/output/_short2/_997_12_17__23_27/_short2(0)_0499.png"
+)
 # Init scale and CGS must be balanced against each other
 init_scale = 40000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .83)  # @param{type: 'integer'}
+skip_steps = math.floor(steps * 0.83)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2624,7 +2628,7 @@ width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
-animation_mode = "3D" #"Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+animation_mode = "3D"  # "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
 
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
@@ -3069,6 +3073,7 @@ if animation_mode == "Video Input":
         os.chdir(PROJECT_DIR)
 
 from disco_utils import warp, warp_flow
+
 # %%
 # !! {"metadata":{
 # !!   "id": "FlowFns1"
@@ -3196,7 +3201,6 @@ if animation_mode == "Video Input":
             size = (makeEven(int(x * ratio)), makeEven(int(y * ratio)))
             img = img.resize(size)
         return img
-
 
     in_path = videoFramesFolder
     flo_folder = f"{in_path}/out_flo_fwd"
@@ -3347,7 +3351,9 @@ rand_mag = 0.05
 
 cut_overview = "[12]*400+[4]*600"  # @param {type: 'string'}
 cut_innercut = "[4]*400+[12]*600"  # @param {type: 'string'}
-cut_ic_pow = "[0.75]*1000" # !changed this chnage could have increased render times .75  # @param {type: 'string'}
+cut_ic_pow = (  # !changed this chnage could have increased render times .75  # @param {type: 'string'}
+    "[0.75]*1000"
+)
 cut_icgray_p = "[0.2]*400+[0]*600"  # @param {type: 'string'}
 
 # @markdown KaliYuga model settings. Refer to [cut_ic_pow](https://ezcharts.miraheze.org/wiki/Category:Cut_ic_pow) as a guide. Values between 1 and 100 all work.
@@ -3765,7 +3771,7 @@ make_video(
     animMode=animation_mode,
     blendMode=video_init_blend_mode,
     paddingRatio=padding_ratio,
-    paddingMode=flow_padding_mode
+    paddingMode=flow_padding_mode,
 )
 # %%
 # !! {"main_metadata":{
