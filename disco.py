@@ -1463,8 +1463,8 @@ def do_run():
 
         print(f"Frame {frame_num} Prompt: {frame_prompt}")
         print(
-            f"Skip steps: {skip_steps}. ETA: {args.eta_series[frame_num]}. blend ramp:"
-            f" {args.blend_ramp_series[frame_num]}"
+            f"Skip steps: {skip_steps} ({args.frames_skip_steps_series[frame_num]}). ETA:"
+            f" {args.eta_series[frame_num]}. blend ramp: {args.blend_ramp_series[frame_num]}"
         )
 
         model_stats = []
