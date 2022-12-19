@@ -2629,8 +2629,8 @@ animation_mode = "Video Input" #"Video Input"  # @param ['None', '2D', '3D', 'Vi
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-target_frame = 24 * 16
-start_frame = 24 * 6
+target_frame = 24 * 12
+start_frame = 24 * 2
 # !eta
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 # if eta is low, step count can be a bit lower
