@@ -2617,7 +2617,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .7)  # @param{type: 'integer'}
+skip_steps = math.floor(steps * .999)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2631,14 +2631,14 @@ animation_mode = "Video Input" #"Video Input"  # @param ['None', '2D', '3D', 'Vi
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
-target_frame = 24 * 12
+target_frame = 24 * 8
 start_frame = 24 * 2
 # !eta
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 eta = "0:(0.2)"
