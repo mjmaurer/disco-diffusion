@@ -1,18 +1,24 @@
 main_style = "oil painting, vibrant, octane render"  # , by kilian eng"
+other = (
+    "A epic , photograph ,  acrylic painting , cartoon bears"
+    " , in  dawn, Artwork by Mark Ryden , Slawek Fedorczuk , trending on"
+    " art station, rococo , filigree , octane render , Hyperrealistic , vibrant"
+)
 
 text_prompts = {
     0: [
-        (
-            # "A forest with massive trees engraves with cartoon bears, "
-            # "Massive fallen trees in a psychadelic forest, " + main_style
-            "Trees and tree branches in a colorful psychadelic forest"
-        ),
-        main_style,
+        other
+        # (
+        #     # "A forest with massive trees engraves with cartoon bears, "
+        #     # "Massive fallen trees in a psychadelic forest, " + main_style
+        #     "Trees and tree branches in a colorful psychadelic forest"
+        # ),
+        # main_style,
         # "blurry, shallow depth of field, bokeh:-4",
     ],
 }
 
-negative_prompts = {0: ["person, human, man, woman, body, text, blurry, unfocused"]}
+negative_prompts = {0: ["text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
