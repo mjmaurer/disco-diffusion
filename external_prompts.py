@@ -1,22 +1,13 @@
-main_style = "vibrant, octane render"  # , by kilian eng"
+main_style = "oil painting, vibrant, octane render"  # , by kilian eng"
 
 text_prompts = {
     0: [
         (
             # "A forest with massive trees engraves with cartoon bears, "
             # "Massive fallen trees in a psychadelic forest, " + main_style
-            "Massive fallen trees in a colorful psychadelic forest, " + main_style
+            "Fallen trees and branches in a colorful psychadelic forest, viewed from above"
         ),
-        # main_style,
-        # "blurry, shallow depth of field, bokeh:-4",
-    ],
-    60: [
-        (
-            # "A forest with massive trees engraves with cartoon bears, "
-            # "Massive fallen trees in a psychadelic forest, " + main_style
-            "A psychedelic city skyline, " + main_style
-        ),
-        # main_style,
+        main_style,
         # "blurry, shallow depth of field, bokeh:-4",
     ],
 }
