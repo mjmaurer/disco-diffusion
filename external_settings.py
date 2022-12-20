@@ -8,6 +8,6 @@ sd_model_path = "/storage/deforumsd/models/sd-v1-4.ckpt"  # @param {'type':'stri
 
 import numpy as np
 
-strength_schedule = [0.5] + list(np.linspace(0.3, 0, 24 * 5))
-steps_schedule = [160]
+strength_schedule = [0.52] + list(np.linspace(0.3, 0, 24 * 5))
+steps_schedule = [180]
 flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * 4)) + list(np.linspace(0.4, 0, 24 * 1))
