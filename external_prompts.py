@@ -1,6 +1,6 @@
 main_style = "oil painting, vibrant, octane render"  # , by kilian eng"
 other = (
-    "fantasy, lush, colorful psychedelic forest, in dawn, epic, photograph , acrylic painting ,"
+    "fantasy, lush, colorful psychedelic forest, in dawn, woodcut, epic, photograph ,"
     " Artwork by Mark Ryden , Slawek Fedorczuk , trending on art station , filigree , octane render"
     " , Hyperrealistic , vibrant"
 )
