@@ -1,9 +1,10 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
     "fantasy, lush bright psychedelic forest, in dawn, sunny, happy, epic, photograph ,"
-    " Artwork by josef thoma, concept art, trending on art station , filigree , octane render"
+    " Artwork by raffaello ossola, luigi spano, concept art, trending on art station , filigree , octane render"
     " , Hyperrealistic"
 )
+# josef thoma
 # woodcut?
 text_prompts = {
     0: [
@@ -18,7 +19,7 @@ text_prompts = {
     ],
 }
 
-negative_prompts = {0: ["purple, red, dead trees, text, blurry, unfocused"]}
+negative_prompts = {0: ["purple, red, humans, people, dead trees, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
