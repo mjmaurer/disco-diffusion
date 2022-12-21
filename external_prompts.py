@@ -1,6 +1,6 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
-    "fantasy, lush, bright psychedelic forest, in dawn, woodcut, sunny, happy, epic, photograph ,"
+    "fantasy, lush bright psychedelic forest, in dawn, woodcut, sunny, happy, epic, photograph ,"
     " Artwork by Mark Ryden , Slawek Fedorczuk , trending on art station , filigree , octane render"
     " , Hyperrealistic"
 )
@@ -18,7 +18,7 @@ text_prompts = {
     ],
 }
 
-negative_prompts = {0: ["purple, red, text, blurry, unfocused"]}
+negative_prompts = {0: ["purple, red, dead trees, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
