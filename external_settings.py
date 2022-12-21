@@ -14,8 +14,10 @@ ramp_seconds = 4
 strength_schedule = (
     [0.55] + [0.27] * (24 * styled_seconds) + list(np.linspace(0.27, 0, 24 * ramp_seconds))
 )
-flow_blend_schedule = [0.999] * (24 * (styled_seconds + ramp_seconds // 2)) + list(
-    np.linspace(0.999, 0, 24 * (ramp_seconds // 2))
+flow_blend_schedule = (
+    [0.999] * (24 * styled_seconds)
+    + list(np.linspace(0.999, 0.7, 24 * (ramp_seconds - 1)))
+    + list(np.linspace(0.7, 0, 24))
 )
 steps_schedule = [180]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(

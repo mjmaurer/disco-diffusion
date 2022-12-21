@@ -1,7 +1,7 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
-    "fantasy, lush bright psychedelic forest, in dawn, woodcut, sunny, happy, epic, photograph ,"
-    " Artwork by Mark Ryden , Slawek Fedorczuk , trending on art station , filigree , octane render"
+    "fantasy, lush bright psychedelic forest, in dawn, sunny, happy, epic, photograph ,"
+    " Artwork by josef thoma, concept art, trending on art station , filigree , octane render"
     " , Hyperrealistic"
 )
 # woodcut?
