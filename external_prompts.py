@@ -1,8 +1,8 @@
-main_style = "oil painting, vibrant, octane render"  # , by kilian eng"
+main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
-    "fantasy, lush, colorful psychedelic forest, in dawn, woodcut, epic, photograph ,"
+    "fantasy, lush, psychedelic forest, in dawn, woodcut, epic, photograph ,"
     " Artwork by Mark Ryden , Slawek Fedorczuk , trending on art station , filigree , octane render"
-    " , Hyperrealistic , vibrant"
+    " , Hyperrealistic"
 )
 # woodcut?
 text_prompts = {
@@ -18,7 +18,7 @@ text_prompts = {
     ],
 }
 
-negative_prompts = {0: ["text, blurry, unfocused"]}
+negative_prompts = {0: ["purple, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
