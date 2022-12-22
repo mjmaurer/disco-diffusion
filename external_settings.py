@@ -12,7 +12,7 @@ import numpy as np
 styled_seconds = 4
 ramp_seconds = 5
 strength_schedule = (
-    [0.55] + [0.22] * (24 * styled_seconds) + list(np.linspace(0.22, 0, 24 * ramp_seconds))
+    [0.55] + [0.25] * (24 * styled_seconds) + list(np.linspace(0.25, 0, 24 * ramp_seconds))
 )
 flow_blend_schedule = (
     [0.999] * (24 * styled_seconds)
