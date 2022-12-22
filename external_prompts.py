@@ -1,7 +1,7 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
-    "lush bright psychedelic forest, surreal, in dawn, sunny, happy, epic, photograph , Artwork by"
-    " vladimir kush, raffaello ossola, luigi spano, concept art, trending on art station , filigree"
+    "abstract psychedelic vines, intricate, surreal, in dawn, sunny, happy, epic, photograph , Artwork by"
+    " Wes Wilson, Tokio Aoyama, vladimir kush, concept art, trending on art station "
     " , octane render , Hyperrealistic"
 )
 # josef thoma
