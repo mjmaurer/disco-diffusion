@@ -1,8 +1,8 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
 other = (
-    "fantasy, lush bright psychedelic forest, in dawn, sunny, happy, epic, photograph ,"
-    " Artwork by raffaello ossola, luigi spano, concept art, trending on art station , filigree , octane render"
-    " , Hyperrealistic"
+    "lush bright psychedelic forest, surreal, in dawn, sunny, happy, epic, photograph , Artwork by"
+    " vladimir kush, raffaello ossola, luigi spano, concept art, trending on art station , filigree"
+    " , octane render , Hyperrealistic"
 )
 # josef thoma
 # woodcut?
