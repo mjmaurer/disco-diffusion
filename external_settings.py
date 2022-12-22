@@ -16,7 +16,7 @@ strength_schedule = (
 )
 flow_blend_schedule = (
     [0.999] * (24 * styled_seconds)
-    + list(np.linspace(0.999, 0.8, 24 * (ramp_seconds - 1)))
+    + list(np.linspace(0.999, 0.55, 24 * (ramp_seconds - 1)))
     + [0]
     # + list(np.linspace(0.8, 0, 24))
 )

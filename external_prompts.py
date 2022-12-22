@@ -19,7 +19,7 @@ text_prompts = {
     ],
 }
 
-negative_prompts = {0: ["purple, red, humans, people, dead trees, text, blurry, unfocused"]}
+negative_prompts = {0: ["purple, red, humans, people, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
