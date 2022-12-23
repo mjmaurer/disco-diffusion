@@ -1,4 +1,8 @@
 vid_input = "_93archtrimlonger.mp4"
+init_image = ""
+
+width = 1024
+height = 576
 
 michael_mode = True
 
