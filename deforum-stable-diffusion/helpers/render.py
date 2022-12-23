@@ -39,11 +39,7 @@ def render_image_batch(args, prompts, root):
     if args.save_settings:
         filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
         with open(filename, "w+", encoding="utf-8") as f:
-            dictlist = dict(args.__dict__)
-            del dictlist['master_args']
-            del dictlist['root']
-            del dictlist['get_output_folder']
-            json.dump(dictlist, f, ensure_ascii=False, indent=4)
+            json.dump(dict(args.__dict__), f, ensure_ascii=False, indent=4)
 
     index = 0
     
@@ -120,7 +116,9 @@ def render_animation(args, anim_args, animation_prompts, root):
     start_frame = 0
     if anim_args.resume_from_timestring:
         for tmp in os.listdir(args.outdir):
-            if tmp.split("_")[0] == anim_args.resume_timestring:
+            filename = tmp.split("_")
+            # don't use saved depth maps to count number of frames
+            if anim_args.resume_timestring in filename and "depth" not in filename:
                 start_frame += 1
         start_frame = start_frame - 1
 
@@ -132,12 +130,6 @@ def render_animation(args, anim_args, animation_prompts, root):
     settings_filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
     with open(settings_filename, "w+", encoding="utf-8") as f:
         s = {**dict(args.__dict__), **dict(anim_args.__dict__)}
-        #DGSpitzer: run.py adds these three parameters 
-        del s['master_args']
-        del s['opt']
-        del s['root']
-        del s['get_output_folder']
-        #print(s)
         json.dump(s, f, ensure_ascii=False, indent=4)
         
     # resume from timestring
@@ -147,7 +139,7 @@ def render_animation(args, anim_args, animation_prompts, root):
     # expand prompts out to per-frame
     prompt_series = pd.Series([np.nan for a in range(anim_args.max_frames)])
     for i, prompt in animation_prompts.items():
-        prompt_series[int(i)] = prompt
+        prompt_series[i] = prompt
     prompt_series = prompt_series.ffill().bfill()
 
     # check for video inits
@@ -157,7 +149,7 @@ def render_animation(args, anim_args, animation_prompts, root):
     predict_depths = (anim_args.animation_mode == '3D' and anim_args.use_depth_warping) or anim_args.save_depth_maps
     if predict_depths:
         depth_model = DepthModel(root.device)
-        depth_model.load_midas(root.models_path)
+        depth_model.load_midas(root.models_path, root.half_precision)
         if anim_args.midas_weight < 1.0:
             depth_model.load_adabins(root.models_path)
     else:
@@ -302,7 +294,6 @@ def render_animation(args, anim_args, animation_prompts, root):
             print(f"Angle: {keys.angle_series[frame_idx]} Zoom: {keys.zoom_series[frame_idx]}")
             print(f"Tx: {keys.translation_x_series[frame_idx]} Ty: {keys.translation_y_series[frame_idx]} Tz: {keys.translation_z_series[frame_idx]}")
             print(f"Rx: {keys.rotation_3d_x_series[frame_idx]} Ry: {keys.rotation_3d_y_series[frame_idx]} Rz: {keys.rotation_3d_z_series[frame_idx]}")
-            print(f"Noise: {keys.noise_schedule_series[frame_idx]}")
 
         # grab init image for current frame
         if using_vid_init:
@@ -378,10 +369,6 @@ def render_interpolation(args, anim_args, animation_prompts, root):
     settings_filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
     with open(settings_filename, "w+", encoding="utf-8") as f:
         s = {**dict(args.__dict__), **dict(anim_args.__dict__)}
-        del s['master_args']
-        del s['opt']
-        del s['root']
-        del s['get_output_folder']
         json.dump(s, f, ensure_ascii=False, indent=4)
     
     # Interpolation Settings
