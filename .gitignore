@@ -2,7 +2,6 @@
 init_images/*
 images_out/*
 MiDaS/
-models/
 pretrained/*
 settings.json
 output
