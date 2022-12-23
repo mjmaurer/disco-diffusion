@@ -1,4 +1,8 @@
 vid_input = "_short2.mp4"
+init_image = ""
+
+width = 1024
+height = 576
 
 michael_mode = True
 
