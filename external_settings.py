@@ -1,5 +1,5 @@
 vid_input = "_93archtrimlonger.mp4"
-init_image = ""
+init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(70)_000002.png"
 
 width = 1024
 height = 576

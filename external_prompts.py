@@ -1,8 +1,12 @@
 main_style = "oil painting, octane render"  # , by kilian eng"
+# other = (
+#     "abstract psychedelic vines, intricate, surreal, in dawn, sunny, happy, epic, photograph ,"
+#     " Artwork by Wes Wilson, Tokio Aoyama, vladimir kush, concept art, trending on art station  ,"
+#     " octane render , Hyperrealistic"
+# )
 other = (
-    "abstract psychedelic vines, intricate, surreal, in dawn, sunny, happy, epic, photograph , Artwork by"
-    " Wes Wilson, Tokio Aoyama, vladimir kush, concept art, trending on art station "
-    " , octane render , Hyperrealistic"
+    "abstract psychedelic jungle, octane render, trending on artstation, cinematic, hyper realism,"
+    " high detail, octane render, 8k"
 )
 # josef thoma
 # woodcut?
