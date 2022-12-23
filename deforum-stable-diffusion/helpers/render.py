@@ -302,6 +302,7 @@ def render_animation(args, anim_args, animation_prompts, root):
             print(f"Angle: {keys.angle_series[frame_idx]} Zoom: {keys.zoom_series[frame_idx]}")
             print(f"Tx: {keys.translation_x_series[frame_idx]} Ty: {keys.translation_y_series[frame_idx]} Tz: {keys.translation_z_series[frame_idx]}")
             print(f"Rx: {keys.rotation_3d_x_series[frame_idx]} Ry: {keys.rotation_3d_y_series[frame_idx]} Rz: {keys.rotation_3d_z_series[frame_idx]}")
+            print(f"Noise: {keys.noise_schedule_series[frame_idx]}")
 
         # grab init image for current frame
         if using_vid_init:
