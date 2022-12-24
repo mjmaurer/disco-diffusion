@@ -4,6 +4,8 @@ from pathlib import Path
 import json
 from disco_utils import make_video, parse_key_frames, get_inbetweens
 import numpy as np
+import requests
+from io import BytesIO
 from PIL import Image, ImageColor
 
 
@@ -71,7 +73,8 @@ if __name__ == "__main__":
             )
             modded = Image.blend(orig, Image.fromarray(np.uint8(array)), 0.4)
         elif args.finit:
-            modded = Image.open(args.finit)
+            response = requests.get(args.finit)
+            modded = Image.open(BytesIO(response.content))
         if not had_orig:
             orig.save(os.path.join(args.folder, "000001_orig.jpg"), quality=95)
 
