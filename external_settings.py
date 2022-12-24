@@ -28,7 +28,7 @@ steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
-turbo_steps_schedule = [3] * (24 * (styled_seconds + ramp_seconds - 1)) + [1]
+turbo_steps_schedule = [5] * (24 * (styled_seconds + ramp_seconds - 1)) + [1]
 # turbo_steps_schedule = [
 #     math.ceil(n) for n in list(np.linspace(5, 2.01, 24 * (styled_seconds + ramp_seconds - 1)))
 # ] + [

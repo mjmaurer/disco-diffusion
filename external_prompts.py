@@ -5,7 +5,7 @@ main_style = "oil painting, octane render"  # , by kilian eng"
 #     " octane render , Hyperrealistic"
 # )
 other = (
-    "70s psychedelic poster art of purple clouds and green trees, octane render, trending on"
+    "a intricate painting of 70s psychedelic poster art, octane render, trending on"
     " artstation, cinematic, hyper realism, high detail, octane render, 8k"
 )
 # josef thoma
