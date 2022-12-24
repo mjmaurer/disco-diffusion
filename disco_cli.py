@@ -52,7 +52,7 @@ if __name__ == "__main__":
             paddingRatio=settings["padding_ratio"],
             paddingMode=settings["flow_padding_mode"],
         )
-    if args.f:  # Takes path to vid folder
+    if args.f or args.finit:  # Takes path to vid folder
         had_orig = False
         if os.path.exists(os.path.join(args.folder, "000001_orig.jpg")):
             had_orig = True
@@ -60,16 +60,19 @@ if __name__ == "__main__":
         else:
             orig = Image.open(os.path.join(args.folder, "000001.jpg"))
         width, height = orig.size
-        array = get_gradient_3d(
-            width,
-            height,
-            ImageColor.getcolor(args.f[0], "RGB"),
-            ImageColor.getcolor(args.f[1], "RGB"),
-            (True, False, False),
-        )
+        if args.f:
+            array = get_gradient_3d(
+                width,
+                height,
+                ImageColor.getcolor(args.f[0], "RGB"),
+                ImageColor.getcolor(args.f[1], "RGB"),
+                (True, False, False),
+            )
+            modded = Image.blend(orig, Image.fromarray(np.uint8(array)), 0.4)
+        elif args.finit:
+            modded = Image.open(args.finit)
         if not had_orig:
             orig.save(os.path.join(args.folder, "000001_orig.jpg"), quality=95)
 
         # Higher number favors second image
-        modded = Image.blend(orig, Image.fromarray(np.uint8(array)), 0.4)
         modded.save(os.path.join(args.folder, "000001.jpg"), quality=95)

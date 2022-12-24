@@ -5,9 +5,14 @@ main_style = "oil painting, octane render"  # , by kilian eng"
 #     " octane render , Hyperrealistic"
 # )
 other = (
-    "a intricate painting of 70s psychedelic poster art, octane render, trending on"
-    " artstation, cinematic, hyper realism, high detail, octane render, 8k"
+    "a close up digital painting of microscopic organisms in the style of 70s psychedelic poster"
+    " art, by Peter Max, bright, sunny, happy, octane render, trending on artstation, cinematic,"
+    " hyper realism, high detail, octane render, 8k"
 )
+# MACRO
+# Peter Max
+# "a digital painting of microscopic organisms in the style of 70s psychedelic poster art, bright, sunny, happy, octane render, trending on"
+# " artstation, cinematic, hyper realism, high detail, octane render, 8k"
 # josef thoma
 # woodcut?
 text_prompts = {
