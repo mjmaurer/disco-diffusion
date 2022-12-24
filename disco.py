@@ -2620,7 +2620,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = frames_skip_steps_schedule[0]  # @param{type: 'integer'}
+skip_steps = int(frames_skip_steps_schedule[0] * steps)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
