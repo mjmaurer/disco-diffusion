@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("folder", type=str)
     parser.add_argument("--vid", help="Make video")
     parser.add_argument("--f", nargs="+", help="Colorize first frame")
+    parser.add_argument("--finit")
     args = parser.parse_args()
 
     if args.vid:
