@@ -2605,6 +2605,8 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
 from external_settings import flow_blend_schedule, frames_skip_steps_schedule, steps_schedule, width, height
+flow_blend = flow_blend_schedule
+frames_skip_steps = frames_skip_steps_schedule 
 steps = steps_schedule[0] # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [width, height]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
