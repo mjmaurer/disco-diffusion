@@ -2604,8 +2604,9 @@ flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-steps = 160 # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
-width_height_for_512x512_models = [1024, 576]  # @param{type: 'raw'}
+from external_settings import flow_blend_schedule, frames_skip_steps_schedule, steps_schedule, width, height
+steps = steps_schedule[0] # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+width_height_for_512x512_models = [width, height]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
 range_scale = 1  # @param{type: 'number'}
@@ -2617,7 +2618,7 @@ skip_augs = False  # @param{type: 'boolean'}
 init_image = None  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
-skip_steps = math.floor(steps * .999)  # @param{type: 'integer'}
+skip_steps = frames_skip_steps_schedule[0]  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
 # @markdown ####**Image dimensions to be used for 256x256 models (e.g. pixelart models):**
@@ -2627,7 +2628,6 @@ key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
 animation_mode = "Video Input" #"Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
-
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
@@ -2638,11 +2638,13 @@ start_frame = 24 * 2
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-blend_ramp = f"0:(1), {start_frame}: (1), {target_frame}: (10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 eta = "0:(0.2)"
-flow_blend = "0:(.999)"  # @param {type:"string"}
+
+frames_skip_steps_series = frames_skip_steps_schedule 
+flow_blend_series = flow_blend_schedule
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
 translation_x = "0: (0)"  # @param {type:"string"}
@@ -2667,7 +2669,7 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 # @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
 
 turbo_mode = False  # @param {type:"boolean"}
-turbo_steps = "3"  # @param ["2","3","4","5","6"] {type:"string"}
+turbo_steps = "5"  # @param ["2","3","4","5","6"] {type:"string"}
 turbo_preroll = 0  # frames
 
 # @markdown ####**Video Init Basic Settings:**
@@ -2894,34 +2896,6 @@ if key_frames:
         )
         eta = f"0: ({eta})"
         eta_series = get_inbetweens(parse_key_frames(eta))
-
-    try:
-        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `frame_skip_steps` correctly for key frames.\n"
-            "Attempting to interpret `flow_blend` as "
-            f'"0: ({flow_blend})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        frames_skip_steps = f"0: ({frames_skip_steps})"
-        frames_skip_steps_series = get_inbetweens(parse_key_frames(frames_skip_steps))
-
-    try:
-        flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `flow_blend` correctly for key frames.\n"
-            "Attempting to interpret `flow_blend` as "
-            f'"0: ({flow_blend})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        flow_blend = f"0: ({flow_blend})"
-        flow_blend_series = get_inbetweens(parse_key_frames(flow_blend))
 
     try:
         angle_series = get_inbetweens(parse_key_frames(angle))

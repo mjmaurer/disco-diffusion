@@ -1,4 +1,4 @@
-main_style = "oil painting, vibrant, octane render"  # , by kilian eng"
+main_style = "by Peter Max, oil painting, vibrant, octane render"  # , by kilian eng"
 
 text_prompts = {
     0: [
