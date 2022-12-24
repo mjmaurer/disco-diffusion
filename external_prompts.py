@@ -6,7 +6,7 @@ main_style = "oil painting, octane render"  # , by kilian eng"
 # )
 other = (
     "a close up digital painting of microscopic organisms in the style of 70s psychedelic poster"
-    " art, by Peter Max, bright, sunny, happy, octane render, trending on artstation, cinematic,"
+    " art, bright, sunny, happy, octane render, trending on artstation, cinematic,"
     " hyper realism, high detail, octane render, 8k"
 )
 # MACRO
