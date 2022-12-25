@@ -23,6 +23,7 @@ strength_schedule = (
 frames_skip_steps_schedule = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
+frames_skip_steps_schedule = frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
 psych_poster_seed = 245114
 seed = 245114  # random.random() * 1000000
 flow_blend_schedule = (
@@ -31,6 +32,7 @@ flow_blend_schedule = (
     + list(np.linspace(0.55, 0, 24))
     # + list(np.linspace(0.8, 0, 24))
 )
+flow_blend_schedule = flow_blend_schedule + [flow_blend_schedule[-1]] * 500
 steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)

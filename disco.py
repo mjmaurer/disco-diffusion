@@ -1186,6 +1186,178 @@ stop_on_next_loop = False  # Make sure GPU memory doesn't get corrupted from can
 TRANSLATION_SCALE = 1.0 / 200.0
 
 
+def apply_mask(
+    init_image, frame_num, background, background_source, invert_mask=False, warp_mode="use_image"
+):
+
+    if warp_mode == "use_image":
+        size = init_image.size
+    if warp_mode == "use_latent":
+        print(init_image.shape)
+        size = init_image.shape[-1], init_image.shape[-2]
+        size = [o * 8 for o in size]
+        print("size", size)
+    init_image_alpha = (
+        PIL.Image.open(f"{videoFramesAlpha}/{frame_num+1:06}.jpg").resize(size).convert("L")
+    )
+    if invert_mask:
+        init_image_alpha = PIL.ImageOps.invert(init_image_alpha)
+    if background == "color":
+        bg = PIL.Image.new("RGB", size, background_source)
+    if background == "image":
+        bg = PIL.Image.open(background_source).convert("RGB").resize(size)
+    if background == "init_video":
+        bg = PIL.Image.open(f"{videoFramesFolder}/{frame_num+1:06}.jpg").resize(size)
+    # init_image.putalpha(init_image_alpha)
+    if warp_mode == "use_image":
+        bg.paste(init_image, (0, 0), init_image_alpha)
+    if warp_mode == "use_latent":
+        # convert bg to latent
+
+        bg = np.array(bg)
+        bg = (bg / 255.0)[None, ...].transpose(0, 3, 1, 2)
+        bg = 2 * torch.from_numpy(bg).cuda().half() - 1.0
+        bg = sd_model.get_first_stage_encoding(sd_model.encode_first_stage(bg)).half()
+        bg = bg.cpu().numpy()  # [0].transpose(1,2,0)
+        init_image_alpha = np.array(init_image_alpha)[::8, ::8][None, None, ...]
+        init_image_alpha = np.repeat(init_image_alpha, 4, axis=1) / 255
+        print(
+            bg.shape,
+            init_image.shape,
+            init_image_alpha.shape,
+            init_image_alpha.max(),
+            init_image_alpha.min(),
+        )
+        bg = init_image * init_image_alpha + bg * (1 - init_image_alpha)
+    return bg
+
+
+def do_vid_3d_step(img_filepath, frame_num, forward_clip=0):
+    global warp_mode, filename, match_frame, first_frame
+    global first_frame_source
+    prev = PIL.Image.open(img_filepath)
+    # if warp_mode == 'use_latent':
+    #   prev = torch.load(img_filepath[:-4]+'_lat.pt')
+
+    frame1_path = f"{videoFramesFolder}/{frame_num:06}.jpg"
+    frame2 = PIL.Image.open(f"{videoFramesFolder}/{frame_num+1:06}.jpg")
+
+    flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}.npy"
+
+    # !michael removed
+    # if flow_override_map not in [[], "", None]:
+    #     mapped_frame_num = int(get_scheduled_arg(frame_num, flow_override_map))
+    #     frame_override_path = f"{videoFramesFolder}/{mapped_frame_num:06}.jpg"
+    #     flo_path = f"{flo_folder}/{frame_override_path.split('/')[-1]}.npy"
+
+    if use_background_mask and not apply_mask_after_warp:
+        # if turbo_mode & (frame_num % int(turbo_steps) != 0):
+        #   print('disabling mask for turbo step, will be applied during turbo blend')
+        # else:
+        if VERBOSE:
+            print("creating bg mask for frame ", frame_num)
+        frame2 = apply_mask(frame2, frame_num, background, background_source, invert_mask)
+        # frame2.save(f'frame2_{frame_num}.jpg')
+    # init_image = 'warped.png'
+    flow_blend = flow_blend_series[frame_num]
+    print(
+        "flow_blend: ",
+        flow_blend,
+        "frame_num:",
+        frame_num,
+        "len(flow_blend_schedule):",
+        len(flow_blend_schedule),
+    )
+    weights_path = None
+    forward_clip = 0  # forward_weights_clip !michael removed
+    # if check_consistency:
+    #     if reverse_cc_order:
+    #         weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}-21_cc.jpg"
+    #     else:
+    #         weights_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12-21_cc.jpg"
+
+    # !michael this was for soften consistency on
+    # if turbo_mode & (frame_num % int(turbo_steps) != 0):
+    # if forward_weights_clip_turbo_step:
+    #     forward_clip = forward_weights_clip_turbo_step
+    # if disable_cc_for_turbo_frames:
+    #     if VERBOSE:
+    #         print("disabling cc for turbo frames")
+    #     weights_path = None
+    prev = PIL.Image.open(img_filepath)
+    # !michael removed colormatch
+    # if colormatch_frame != "off" and not colormatch_after:
+    #     if not turbo_mode & (frame_num % int(turbo_steps) != 0) or colormatch_turbo:
+    #         try:
+    #             print("Matching color before warp to:")
+    #             filename = get_frame_from_color_mode(colormatch_frame, colormatch_offset)
+    #             match_frame = PIL.Image.open(filename)
+    #             first_frame = match_frame
+    #             first_frame_source = filename
+
+    #         except:
+    #             print(traceback.format_exc())
+    #             print(f"Frame with offset/position {colormatch_offset} not found")
+    #             if "init" in colormatch_frame:
+    #                 try:
+    #                     filename = f"{videoFramesFolder}/{0:06}.jpg"
+    #                     match_frame = PIL.Image.open(filename)
+    #                     first_frame = match_frame
+    #                     first_frame_source = filename
+    #                 except:
+    #                     pass
+    #         print(f"Color matching the 1st frame before warp.")
+    #         print("Colormatch source - ", first_frame_source)
+    #         prev = PIL.Image.fromarray(
+    #             match_color_var(
+    #                 first_frame,
+    #                 prev,
+    #                 opacity=color_match_frame_str,
+    #                 f=colormatch_method_fn,
+    #                 regrain=colormatch_regrain,
+    #             )
+    #         )
+    if not warp_forward:
+        warped = warp(
+            prev,
+            frame2,
+            flo_path,
+            blend=flow_blend,
+            weights_path=weights_path,
+            forward_clip=forward_clip,
+            pad_pct=padding_ratio,
+            padding_mode=padding_mode,
+            inpaint_blend=inpaint_blend,
+            warp_mul=warp_strength,
+        )
+    else:
+        flo_path = f"{flo_folder}/{frame1_path.split('/')[-1]}_12.npy"
+        flo = np.load(flo_path)
+        warped = k_means_warp(flo, prev, warp_num_k)
+
+    if use_background_mask and apply_mask_after_warp:
+        # if turbo_mode & (frame_num % int(turbo_steps) != 0):
+        #   print('disabling mask for turbo step, will be applied during turbo blend')
+        #   return warped
+        if VERBOSE:
+            print("creating bg mask for frame ", frame_num)
+        # if warp_mode == "use_latent":
+        #     warped = apply_mask(
+        #         warped, frame_num, background, background_source, invert_mask, warp_mode
+        #     )
+        # else:
+        warped = apply_mask(
+            warped,
+            frame_num,
+            background,
+            background_source,
+            invert_mask,
+        )
+        # warped.save(f'warped_{frame_num}.jpg')
+
+    return warped
+
+
 def do_3d_step(img_filepath, frame_num, midas_model, midas_transform):
     if args.key_frames:
         translation_x = args.translation_x_series[frame_num]
@@ -1253,7 +1425,7 @@ def do_run():
     seed = args.seed
     print(range(args.start_frame, args.max_frames))
 
-    if (args.animation_mode == "3D") and (args.midas_weight > 0.0):
+    if (args.animation_mode in ["3D", "Video Input"]) and (args.midas_weight > 0.0):
         (
             midas_model,
             midas_transform,
@@ -1404,33 +1576,119 @@ def do_run():
                 if frame_num == 0:
                     skip_steps = args.video_init_skip_steps
                     init_image = f"{videoFramesFolder}/{frame_num+1:04}.jpg"
+                    if use_background_mask:
+                        init_image_pil = PIL.Image.open(init_image)
+                        init_image_pil = apply_mask(
+                            init_image_pil, frame_num, background, background_source, invert_mask
+                        )
+                        init_image_pil.save(f"init_alpha_{frame_num}.png")
+                        init_image = f"init_alpha_{frame_num}.png"
+                    if (args.init_image != "") and args.init_image is not None:
+                        init_image = args.init_image
+                        if use_background_mask:
+                            init_image_pil = PIL.Image.open(init_image)
+                            init_image_pil = apply_mask(
+                                init_image_pil,
+                                frame_num,
+                                background,
+                                background_source,
+                                invert_mask,
+                            )
+                            init_image_pil.save(f"init_alpha_{frame_num}.png")
+                            init_image = f"init_alpha_{frame_num}.png"
                 if frame_num > 0:
-                    prev = PIL.Image.open(
-                        batchFolder + f"/{batch_name}({batchNum})_{frame_num-1:04}.png"
+                    first_frame = PIL.Image.open(
+                        batchFolder + f"/{batch_name}({batchNum})_{0:06}.png"
                     )
+                    first_frame_source = batchFolder + f"/{batch_name}({batchNum})_{0:06}.png"
+                    if resume_run and frame_num == start_frame:
+                        print("if resume_run and frame_num == start_frame")
+                        img_filepath = (
+                            batchFolder + f"/{batch_name}({batchNum})_{start_frame-1:06}.png"
+                        )
+                        if turbo_mode and frame_num > turbo_preroll:
+                            shutil.copyfile(img_filepath, "oldFrameScaled.png")
+                        else:
+                            shutil.copyfile(img_filepath, "prevFrame.png")
+                    else:
+                        # img_filepath = '/content/prevFrame.png' if is_colab else 'prevFrame.png'
+                        img_filepath = "prevFrame.png"
 
-                    frame1_path = f"{videoFramesFolder}/{frame_num:04}.jpg"
-                    frame2 = PIL.Image.open(f"{videoFramesFolder}/{frame_num+1:04}.jpg")
-                    flo_path = f"/{flo_folder}/{frame1_path.split('/')[-1]}.npy"
+                    next_step_pil = do_vid_3d_step(img_filepath, frame_num)
+                    next_step_pil.save("prevFrameScaled.png")
 
-                    init_image = "warped.png"
-                    print(flow_blend)
-                    weights_path = None
+                    if turbo_mode:
+                        if frame_num == turbo_preroll:  # start tracking oldframe
+                            next_step_pil.save("oldFrameScaled.png")  # stash for later blending
+                        elif frame_num > turbo_preroll:
+                            # set up 2 warped image sequences, old & new, to blend toward new diff image
+                            old_frame = do_vid_3d_step(
+                                "oldFrameScaled.png",
+                                frame_num,
+                            )
+                            old_frame.save("oldFrameScaled.png")
+                            if frame_num % int(turbo_steps) != 0:
+                                print("turbo skip this frame: skipping clip diffusion steps")
+                                filename = f"{videoFramesFolder}/{frame_num:06}.png"
+                                blend_factor = ((frame_num % int(turbo_steps)) + 1) / int(
+                                    turbo_steps
+                                )
+                                print(
+                                    "turbo skip this frame: skipping clip diffusion steps and"
+                                    " saving blended frame"
+                                )
+                                newWarpedImg = cv2.imread(
+                                    "prevFrameScaled.png"
+                                )  # this is already updated..
+                                oldWarpedImg = cv2.imread("oldFrameScaled.png")
+                                blendedImage = cv2.addWeighted(
+                                    newWarpedImg, blend_factor, oldWarpedImg, 1 - blend_factor, 0.0
+                                )
+                                cv2.imwrite(f"{batchFolder}/{filename}", blendedImage)
+                                next_step_pil.save(
+                                    f"{img_filepath}"
+                                )  # save it also as prev_frame to feed next iteration
+
+                                if turbo_frame_skips_steps is not None:
+                                    oldWarpedImg = cv2.imread("prevFrameScaled.png")
+                                    cv2.imwrite(
+                                        f"oldFrameScaled.png", oldWarpedImg
+                                    )  # swap in for blending later
+                                    print("clip/diff this frame - generate clip diff image")
+                                    skip_steps = math.floor(steps * turbo_frame_skips_steps)
+                                else:
+                                    continue
+                            else:
+                                # if not a skip frame, will run diffusion and need to blend.
+                                oldWarpedImg = cv2.imread("prevFrameScaled.png")
+                                cv2.imwrite(
+                                    f"oldFrameScaled.png", oldWarpedImg
+                                )  # swap in for blending later
+                                print("clip/diff this frame - generate clip diff image")
+                                # oldWarpedImg = cv2.imread('prevFrameScaled.png')
+                                # cv2.imwrite(f'oldFrameScaled.png',oldWarpedImg)#swap in for blending later
+                                # print('clip/diff this frame - generate clip diff image')
+
+                    # prev = PIL.Image.open(
+                    #     batchFolder + f"/{batch_name}({batchNum})_{frame_num-1:04}.png"
+                    # )
+
+                    # frame1_path = f"{videoFramesFolder}/{frame_num:04}.jpg"
+                    # frame2 = PIL.Image.open(f"{videoFramesFolder}/{frame_num+1:04}.jpg")
+                    # flo_path = f"/{flo_folder}/{frame1_path.split('/')[-1]}.npy"
+
+                    init_image = "prevFrameScaled.png"
+                    if use_background_mask:
+                        apply_mask(
+                            PIL.Image.open(init_image),
+                            frame_num,
+                            background,
+                            background_source,
+                            invert_mask,
+                        ).save(init_image)
                     if video_init_check_consistency:
                         # TBD
                         pass
-
-                    # A high flow blend favors the previous output frame
-                    warp(
-                        prev,
-                        frame2,
-                        flo_path,
-                        blend=cur_flow_blend,
-                        weights_path=weights_path,
-                        forward_clip=0,
-                        pad_pct=args.padding_ratio,
-                        padding_mode=args.flow_padding_mode,
-                    ).save(init_image)
 
             else:
                 init_image = f"{videoFramesFolder}/{frame_num+1:04}.jpg"
@@ -1466,6 +1724,7 @@ def do_run():
             f"Skip steps: {skip_steps} ({args.frames_skip_steps_series[frame_num]}). ETA:"
             f" {args.eta_series[frame_num]}. blend ramp: {args.blend_ramp_series[frame_num]}"
         )
+        print(f"Flow blend: {args.flow_blend_series[frame_num]}")
 
         model_stats = []
         for clip_model in clip_models:
@@ -1773,7 +2032,7 @@ def do_run():
                                     image.save("prevFrame.png")
 
                                 image.save(f"{batchFolder}/{filename}")
-                                if args.animation_mode == "3D":
+                                if args.animation_mode in ["3D", "Video Input"]:
                                     # If turbo, save a blended image
                                     if turbo_mode and frame_num > 0:
                                         # Mix new image with prevFrameScaled
@@ -2599,15 +2858,39 @@ import PIL
 # @markdown ####**Basic Settings:**
 # @markdown Increase padding if you have a shaky\moving camera footage and are getting black borders.
 # !settings
+turbo_frame_skips_steps = None
+VERBOSE = True
 padding_ratio = 0.1  # @param {type:"slider", min:0, max:1, step:0.1}
+inpaint_blend = 0
+warp_strength = 1.0
+warp_num_k = 128  # number of patches per frame
+warp_forward = False  # use k-means patched warping (moves large areas instead of single pixels)
+
+use_background_mask = False
+invert_mask = False  # @param {'type':'boolean'}
+# @markdown Apply mask right before feeding init image to the model. Unchecking will only mask current raw init frame.
+apply_mask_after_warp = True  # @param {'type':'boolean'}
+# @markdown Choose background source to paste masked stylized image onto: image, color, init video.
+background = "init_video"  # @param ['image', 'color', 'init_video']
+# @markdown Specify the init image path or color depending on your background source choice.
+background_source = "red"  # @param {'type':'string'}
 flow_padding_mode = "reflect"  # @param ['reflect','edge','wrap']
 # relative to image size, in range 0-1
 warp_interp = PIL.Image.LANCZOS  # TODO change this wherever PIL.Image.XX used
 batch_name = vid_input.split(".")[0]  # @param{type: 'string'}
-from external_settings import flow_blend_schedule, frames_skip_steps_schedule, steps_schedule, width, height
+from external_settings import (
+    flow_blend_schedule,
+    frames_skip_steps_schedule,
+    steps_schedule,
+    width,
+    height,
+)
+
 flow_blend = flow_blend_schedule
-frames_skip_steps = frames_skip_steps_schedule 
-steps = steps_schedule[0] # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
+frames_skip_steps = frames_skip_steps_schedule
+steps = steps_schedule[
+    0
+]  # 120  # @param [25,50,100,150,250,500,1000]{type: 'raw', allow-input: true}
 width_height_for_512x512_models = [width, height]  # @param{type: 'raw'}
 clip_guidance_scale = 10000  # @param{type: 'number'}
 tv_scale = 15000  # @param{type: 'number'}
@@ -2629,7 +2912,9 @@ width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
-animation_mode = "Video Input" #"Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+animation_mode = (  # "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
+    "Video Input"
+)
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
@@ -2639,13 +2924,15 @@ start_frame = 24 * 2
 # I'm pretty sure eta is the amount of noise added to an image (and is also probably seeded cause it would appear the same in tests)
 # if eta is low, step count can be a bit lower
 # eta = f"0:(0.01), {24 * 5}:(0.01), {target_frame}: (0.5)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-frames_skip_steps = f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+frames_skip_steps = (  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
+    f"0:(0.999), {start_frame}: (.999), {target_frame}: (0.7)"
+)
 blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 eta = "0:(0.2)"
 
-frames_skip_steps_series = frames_skip_steps_schedule 
+frames_skip_steps_series = frames_skip_steps_schedule
 flow_blend_series = flow_blend_schedule
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
@@ -3458,6 +3745,7 @@ if steps <= calc_frames_skip_steps:
     sys.exit("ERROR: You can't skip more steps than your total steps")
 
 if resume_run:
+    # this won't work with video input turbo
     if run_to_resume == "latest":
         try:
             batchNum
