@@ -85,7 +85,7 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph, remarkable , digital painting , elves smoking weed "
+        "A photograph, remarkable , digital painting , cartoon of santas elves smoking a bong "
         " , in  dawn, art by Peter Max , "
         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
