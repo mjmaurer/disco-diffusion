@@ -5,9 +5,10 @@ text_prompts = {
         (
             # "A forest with massive trees engraves with cartoon bears, "
             # "Massive fallen trees in a psychadelic forest, " + main_style
-            "Fallen trees and branches in a colorful psychadelic forest, viewed from above"
+            "A close up digital painting of microscopic organisms in the style of a 70s"
+            " psychedelic poster by Peter Max, vibrant, octane render, hyperrealistic"
         ),
-        main_style,
+        # main_style,
         # "blurry, shallow depth of field, bokeh:-4",
     ],
 }
