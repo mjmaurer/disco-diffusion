@@ -92,7 +92,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable , woodcut art , sitting around a fire with friends "
+        "A photograph, remarkable , woodcut art , opening presents on christmas with friends and family "
         " , in  dawn, by Jon Marro, Vladimir Kush "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
