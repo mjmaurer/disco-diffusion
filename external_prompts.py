@@ -17,31 +17,34 @@ other = (
 # woodcut?
 cadence = 54
 text_prompts = {
-    0 * cadence: (
-        "A photograph, amazing cinematic film still , cartoon bear made of yarn in a lush forest "
-        " , in  dawn,  art by peter max , RHADS , "
-        " colorful, psychedelic , Internal glow , large expressive eyes , large expressive eyes , large"
+    0
+    * cadence: (
+        "A photograph, amazing cinematic film still , cartoon bear made of yarn in a forest "
+        " , art by RHADS , "
+        " colorful, Internal glow , large expressive eyes , large expressive eyes , large"
         " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
     ),
     cadence: (
-        "A photograph, remarkable  oil painting , greek marble statue of cartoon bears "
-        " in space ,  in  dawn,  art by  Moebius Jean Giraud , "
+        "A photograph, remarkable , greek marble statue of muscular cartoon bears "
+        " in a gym ,  in  dawn,  art by  Moebius Jean Giraud , "
         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
-    2 * cadence: (
-        "A photograph, remarkable   oil painting , muscular cartoon bear astronauts  "
+    2
+    * cadence: (
+        "A photograph, remarkable  oil painting , cartoon bear astronauts  "
         " in space ,  in  dawn,  art by Peter Max , Jon Marro "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
-    3 * cadence: (
-        "A photograph, remarkable   oil painting , cartoon bears wearing suits "
+    3
+    * cadence: (
+        "A photograph, remarkable planet scale , cartoon bears wearing suits "
         " in a futuristic city ,  in  dawn,  art by Vladimir Kush , Mark Ryden "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
