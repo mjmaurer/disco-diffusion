@@ -15,6 +15,7 @@ other = (
 # " artstation, cinematic, hyper realism, high detail, octane render, 8k"
 # josef thoma
 # woodcut?
+# organisms
 cadence = 54
 text_prompts = {
     0
