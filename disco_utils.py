@@ -50,7 +50,7 @@ def check_is_number(value):
     return re.match(float_pattern, value)
 
 
-def get_inbetweens(key_frames, max_frames, integer=False, interp_method="Linear"):
+def get_inbetweens(key_frames, max_frames=500, integer=False, interp_method="Linear"):
     import numexpr
 
     key_frame_series = pd.Series([np.nan for a in range(max_frames)])
