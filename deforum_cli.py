@@ -35,10 +35,15 @@ if __name__ == "__main__":
     parser.add_argument("--f", nargs="+", help="Colorize first frame")
     parser.add_argument("--finit")
     args = parser.parse_args()
+    imgFile = os.path.basename(Path(args.folder))
+    timestr = imgFile.split("_")[0]
+    batchFolder = str(Path(args.folder).parent.absolute())
+    print(batchFolder)
+    print(timestr)
 
     if args.vid:
         skip_video_for_run_all = True  # @param {type: 'boolean'}
-        fps = int(args.vid) if args.vid.isdigit() else 24 # @param {type:"number"}
+        fps = int(args.vid) if args.vid.isdigit() else 24  # @param {type:"number"}
         # @markdown **Manual Settings**
         use_manual_settings = False  # @param {type:"boolean"}
         image_path = (  # @param {type:"string"}
@@ -73,9 +78,9 @@ if __name__ == "__main__":
                 mp4_path = os.path.join(newest_dir, f"{args.timestring}_{path_name_modifier}.mp4")
                 max_frames = str(args.steps)
             else:  # render images for a video
-                last_frame = len(glob(args.folder + f"/*_*.png"))
-                image_path = os.path.join(args.folder, f"*_%05d.png")
-                mp4_path = os.path.join(args.folder, f"_vid.mp4")
+                last_frame = len(glob(batchFolder + f"/{timestr}_*.png"))
+                image_path = os.path.join(batchFolder, f"{timestr}_%05d.png")
+                mp4_path = os.path.join(batchFolder, f"_vid.mp4")
                 max_frames = str(last_frame - 1)
 
         # make video
@@ -111,7 +116,6 @@ if __name__ == "__main__":
         if process.returncode != 0:
             print(stderr)
             raise RuntimeError(stderr)
-
 
     if args.f or args.finit:  # Takes path to vid folder
         had_orig = False
