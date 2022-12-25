@@ -2957,9 +2957,10 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 # @markdown (Starts after frame 10,) skips diffusion steps and just uses depth map to warp images for skipped frames.
 # @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
 # @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
+from external_settings import turbo_steps as sturbo_steps
 
 turbo_mode = True  # @param {type:"boolean"}
-turbo_steps = "5"  # @param ["2","3","4","5","6"] {type:"string"}
+turbo_steps = sturbo_steps  # @param ["2","3","4","5","6"] {type:"string"}
 turbo_preroll = 0  # frames
 
 # @markdown ####**Video Init Basic Settings:**

@@ -17,13 +17,14 @@ import random
 
 styled_seconds = 1
 ramp_seconds = 5
+turbo_steps = 5
 strength_schedule = (
     [0.75] + [0.35] * (24 * styled_seconds) + list(np.linspace(0.35, 0.01, 24 * ramp_seconds))
 )
 frames_skip_steps_schedule_vid_input = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
-frames_skip_steps_schedule_3d = [0.75] * 14 + [0.35]
+frames_skip_steps_schedule_3d = list(np.linspace(0.75, 0.35, turbo_steps * 3))
 frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 20
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
@@ -42,7 +43,6 @@ steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
-turbo_steps_schedule = [5]
 # turbo_steps_schedule = [
 #     math.ceil(n) for n in list(np.linspace(5, 2.01, 24 * (styled_seconds + ramp_seconds - 1)))
 # ] + [
