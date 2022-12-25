@@ -16,9 +16,67 @@ other = (
 # josef thoma
 # woodcut?
 # organisms
+
+# p = [
+#     (
+#         "A photograph, amazing cinematic film still , cartoon bear made of yarn in a forest "
+#         " , art by RHADS , "
+#         " colorful, Internal glow , large expressive eyes , large expressive eyes , large"
+#         " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
+#         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
+#         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
+#         " view, vista"
+#     ),
+#     (
+#         "A photograph, remarkable , digital painting , microscopic organisms "
+#         " , in  dawn, art by  Moebius Jean Giraud , "
+#         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
+#         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+#         " dramatic shadows, highly detailed, hyperreal, long view, vista"
+#     ),
+#     (
+#         "A photograph, remarkable  oil painting , cartoon bear astronauts  "
+#         " in space ,  in  dawn,  art by Peter Max , Jon Marro "
+#         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+#         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+#         " dramatic shadows, highly detailed, hyperreal, long view, vista"
+#     ),
+#     (
+#         "A photograph, remarkable planet scale , cartoon bears wearing suits "
+#         " in a futuristic city ,  in  dawn,  art by Vladimir Kush "
+#         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+#         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+#         " dramatic shadows, highly detailed, hyperreal, long view, vista"
+#     ),
+#     (
+#         "A photograph, remarkable , woodcut art , abtract cartoon bears on a farm "
+#         " ,  in  dawn,  art by Mark Ryden "
+#         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+#         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+#         " dramatic shadows, highly detailed, hyperreal, long view, vista"
+#     ),
+#     (
+#         "A epic  cinematic film still and digital illustration of an adorable fluffy and plushy "
+#         " and silly  cartoon bear in a   world made of vines , in morning , art by  Wes"
+#         " Anderson  And   Margaret Keane  And    Zdzisław Beksiński , made from  soft felt "
+#         " intricate and highly detailed, realistic, extreme detail, fine detail, dramatic lighting,"
+#         " volumetric lighting, extreme fluffy, cute, adorable, large expressive eyes, long view,"
+#         " exotic colors, mutant, cyberpunk colors, DSLR,  sharp focus, extremely detailed realistic"
+#         " and highly detailed, 4k, 8k, hd, photorealistic, dramatic shadows"
+#     ),
+#     (
+#         "A  amazing  cinematic film still and pencil illustration of a realistic  cartoon bear "
+#         " swimmin in the ocean , in  dawn, art by ernst"
+#         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
+#         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
+#         " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
+#         " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
+#         " dramatic shadows"
+#     ),
+# ]
 p = [
     (
-        "A photograph, amazing cinematic film still , cartoon bear made of yarn in a forest "
+        "A photograph, amazing cinematic film still , santa flying through space "
         " , art by RHADS , "
         " colorful, Internal glow , large expressive eyes , large expressive eyes , large"
         " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
@@ -27,45 +85,36 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph, remarkable , digital painting , microscopic organisms "
-        " , in  dawn, art by  Moebius Jean Giraud , "
+        "A photograph, remarkable , digital painting , elves smoking weed "
+        " , in  dawn, art by Peter Max , "
         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable  oil painting , cartoon bear astronauts  "
-        " in space ,  in  dawn,  art by Peter Max , Jon Marro "
+        "A photograph, remarkable , woodcut art , sitting around a fire with friends "
+        " , in  dawn, by Jon Marro, Vladimir Kush "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable planet scale , cartoon bears wearing suits "
-        " in a futuristic city ,  in  dawn,  art by Vladimir Kush "
+        "A photograph, remarkable planet scale , 70s psychedelic poster art , cats wearing santa hats "
+        " in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable , woodcut art , abtract cartoon bears on a farm "
-        " ,  in  dawn,  art by Mark Ryden "
+        "A photograph, remarkable , architecture diagram , christmas trees "
+        " ,  art by Mark Ryden "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A epic  cinematic film still and digital illustration of an adorable fluffy and plushy "
-        " and silly  cartoon bear in a   world made of vines , in morning , art by  Wes"
-        " Anderson  And   Margaret Keane  And    Zdzisław Beksiński , made from  soft felt "
-        " intricate and highly detailed, realistic, extreme detail, fine detail, dramatic lighting,"
-        " volumetric lighting, extreme fluffy, cute, adorable, large expressive eyes, long view,"
-        " exotic colors, mutant, cyberpunk colors, DSLR,  sharp focus, extremely detailed realistic"
-        " and highly detailed, 4k, 8k, hd, photorealistic, dramatic shadows"
-    ),
-    (
-        "A  amazing  cinematic film still and pencil illustration of a realistic  cartoon bear "
-        " swimmin in the ocean , in  dawn, art by ernst"
+        "A  amazing  cinematic film still , oil painting , snowy mountain "
+        " in  dawn, art by ernst"
         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
         " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
