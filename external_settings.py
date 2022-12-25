@@ -2,8 +2,8 @@ vid_input = "_93archtrimlonger.mp4"
 # 97 on stablewarp images_out has a good seed
 init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(115)_000001.png"
 
-width = 1024
-height = 576
+width = 832 # 1024
+height = 512 # 576 
 
 michael_mode = True
 
