@@ -2016,16 +2016,17 @@ def do_run():
                                 frame_step_pct = args.frames_skip_steps_series[frame_num]
                                 blend_ramp = args.blend_ramp_series[frame_num]
 
-                                original_image = f"{videoFramesFolder}/{frame_num+1:04}.jpg"
-                                orig_img = Image.open(fetch(original_image)).convert("RGB")
-                                orig_img = orig_img.resize(
-                                    (args.side_x, args.side_y), args.warp_interp
-                                )
-                                image.save("lastDiffusion.png")
-                                pct = frame_step_pct**blend_ramp
-                                print(f"Blend pct: {pct}")
-                                # Higher number favors second image
-                                image = Image.blend(image, orig_img, pct)
+                                if args.animation_mode == "Video Input":
+                                    original_image = f"{videoFramesFolder}/{frame_num+1:04}.jpg"
+                                    orig_img = Image.open(fetch(original_image)).convert("RGB")
+                                    orig_img = orig_img.resize(
+                                        (args.side_x, args.side_y), args.warp_interp
+                                    )
+                                    image.save("lastDiffusion.png")
+                                    pct = frame_step_pct**blend_ramp
+                                    print(f"Blend pct: {pct}")
+                                    # Higher number favors second image
+                                    image = Image.blend(image, orig_img, pct)
 
                                 if frame_num == 12:
                                     image.save("12.png")
