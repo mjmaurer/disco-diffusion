@@ -2937,12 +2937,6 @@ frames_skip_steps_series = frames_skip_steps_schedule
 flow_blend_series = flow_blend_schedule
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
-translation_x = "0:(2 * sin(3.14*t/100))"  # @param {type:"string"}
-translation_y = "0: (0)"  # @param {type:"string"}
-translation_z = "0: (2.5)"  # @param {type:"string"}
-rotation_3d_x = "0: (0)"  # @param {type:"string"}
-rotation_3d_y = "0:(0), 12:(-2 * sin(3.14*t/110))"  # @param {type:"string"}
-rotation_3d_z = "0: (.5 * cos(3.14*t/90))"  # @param {type:"string"}
 midas_depth_model = "dpt_large"  # @param {type:"string"}
 midas_weight = 0.3  # @param {type:"number"}
 near_plane = 200  # @param {type:"number"}
@@ -3216,89 +3210,6 @@ if key_frames:
         zoom = f"0: ({zoom})"
         zoom_series = get_inbetweens(parse_key_frames(zoom))
 
-    try:
-        translation_x_series = get_inbetweens(parse_key_frames(translation_x))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `translation_x` correctly for key frames.\n"
-            "Attempting to interpret `translation_x` as "
-            f'"0: ({translation_x})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        translation_x = f"0: ({translation_x})"
-        translation_x_series = get_inbetweens(parse_key_frames(translation_x))
-
-    try:
-        translation_y_series = get_inbetweens(parse_key_frames(translation_y))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `translation_y` correctly for key frames.\n"
-            "Attempting to interpret `translation_y` as "
-            f'"0: ({translation_y})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        translation_y = f"0: ({translation_y})"
-        translation_y_series = get_inbetweens(parse_key_frames(translation_y))
-
-    try:
-        translation_z_series = get_inbetweens(parse_key_frames(translation_z))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `translation_z` correctly for key frames.\n"
-            "Attempting to interpret `translation_z` as "
-            f'"0: ({translation_z})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        translation_z = f"0: ({translation_z})"
-        translation_z_series = get_inbetweens(parse_key_frames(translation_z))
-
-    try:
-        rotation_3d_x_series = get_inbetweens(parse_key_frames(rotation_3d_x))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `rotation_3d_x` correctly for key frames.\n"
-            "Attempting to interpret `rotation_3d_x` as "
-            f'"0: ({rotation_3d_x})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        rotation_3d_x = f"0: ({rotation_3d_x})"
-        rotation_3d_x_series = get_inbetweens(parse_key_frames(rotation_3d_x))
-
-    try:
-        rotation_3d_y_series = get_inbetweens(parse_key_frames(rotation_3d_y))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `rotation_3d_y` correctly for key frames.\n"
-            "Attempting to interpret `rotation_3d_y` as "
-            f'"0: ({rotation_3d_y})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        rotation_3d_y = f"0: ({rotation_3d_y})"
-        rotation_3d_y_series = get_inbetweens(parse_key_frames(rotation_3d_y))
-
-    try:
-        rotation_3d_z_series = get_inbetweens(parse_key_frames(rotation_3d_z))
-    except RuntimeError as e:
-        print(
-            "WARNING: You have selected to use key frames, but you have not "
-            "formatted `rotation_3d_z` correctly for key frames.\n"
-            "Attempting to interpret `rotation_3d_z` as "
-            f'"0: ({rotation_3d_z})"\n'
-            "Please read the instructions to find out how to use key frames "
-            "correctly.\n"
-        )
-        rotation_3d_z = f"0: ({rotation_3d_z})"
-        rotation_3d_z_series = get_inbetweens(parse_key_frames(rotation_3d_z))
 
 else:
     angle = float(angle)

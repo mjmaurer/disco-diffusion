@@ -39,6 +39,19 @@ flow_blend_schedule = (
     # + list(np.linspace(0.8, 0, 24))
 )
 flow_blend_schedule = flow_blend_schedule + [flow_blend_schedule[-1]] * 500
+translation_x = "0:(2 * sin(3.14*t/100))"  # @param {type:"string"}
+translation_y = "0: (0)"  # @param {type:"string"}
+translation_z = "0: (2.5)"  # @param {type:"string"}
+rotation_3d_x = "0:(0)"  # @param {type:"string"}
+rotation_3d_y = "0:(0), 12:(-1.15 * sin(3.14*t/110))"  # @param {type:"string"}
+rotation_3d_z = "0: (.5 * cos(3.14*t/90))"  # @param {type:"string"}
+rotation_y_trigger = list(np.linspace(0, -1, 10)) + list(np.linspace(-1, 0, 10))
+neg_rotation_y_trigger = list(np.linspace(0, 1, 10)) + list(np.linspace(1, 0, 10))
+rotation_3d_y = rotation_y_trigger + [0] * 24 + neg_rotation_y_trigger + [0] * 24
+rotation_3d_y = rotation_3d_y * 30
+translation_z_trigger = list(np.linspace(1.5, 3.5, 10)) + list(np.linspace(3.5, 1.5, 10))
+translation_z = translation_z_trigger + [1.5] * 24
+translation_z = translation_z * 30
 steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
@@ -48,3 +61,106 @@ steps_schedule = [150]
 # ] + [
 #     1
 # ]  # Could also turn on turbo colormatch here
+from disco_utils import parse_key_frames, get_inbetweens
+
+try:
+    if isinstance(translation_x, list):
+        translation_x_series = translation_x
+    else:
+        translation_x_series = get_inbetweens(parse_key_frames(translation_x))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `translation_x` correctly for key frames.\n"
+        "Attempting to interpret `translation_x` as "
+        f'"0: ({translation_x})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    translation_x = f"0: ({translation_x})"
+    translation_x_series = get_inbetweens(parse_key_frames(translation_x))
+
+try:
+    if isinstance(translation_y, list):
+        translation_y_series = translation_y
+    else:
+        translation_y_series = get_inbetweens(parse_key_frames(translation_y))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `translation_y` correctly for key frames.\n"
+        "Attempting to interpret `translation_y` as "
+        f'"0: ({translation_y})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    translation_y = f"0: ({translation_y})"
+    translation_y_series = get_inbetweens(parse_key_frames(translation_y))
+
+try:
+    if isinstance(translation_z, list):
+        translation_z_series = translation_z
+    else:
+        translation_z_series = get_inbetweens(parse_key_frames(translation_z))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `translation_z` correctly for key frames.\n"
+        "Attempting to interpret `translation_z` as "
+        f'"0: ({translation_z})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    translation_z = f"0: ({translation_z})"
+    translation_z_series = get_inbetweens(parse_key_frames(translation_z))
+
+try:
+    if isinstance(rotation_3d_x, list):
+        rotation_3d_x_series = rotation_3d_x
+    else:
+        rotation_3d_x_series = get_inbetweens(parse_key_frames(rotation_3d_x))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `rotation_3d_x` correctly for key frames.\n"
+        "Attempting to interpret `rotation_3d_x` as "
+        f'"0: ({rotation_3d_x})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    rotation_3d_x = f"0: ({rotation_3d_x})"
+    rotation_3d_x_series = get_inbetweens(parse_key_frames(rotation_3d_x))
+
+try:
+    if isinstance(rotation_3d_y, list):
+        rotation_3d_y_series = rotation_3d_y
+    else:
+        rotation_3d_y_series = get_inbetweens(parse_key_frames(rotation_3d_y))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `rotation_3d_y` correctly for key frames.\n"
+        "Attempting to interpret `rotation_3d_y` as "
+        f'"0: ({rotation_3d_y})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    rotation_3d_y = f"0: ({rotation_3d_y})"
+    rotation_3d_y_series = get_inbetweens(parse_key_frames(rotation_3d_y))
+
+try:
+    if isinstance(rotation_3d_z, list):
+        rotation_3d_z_series = rotation_3d_z
+    else:
+        rotation_3d_z_series = get_inbetweens(parse_key_frames(rotation_3d_z))
+except RuntimeError as e:
+    print(
+        "WARNING: You have selected to use key frames, but you have not "
+        "formatted `rotation_3d_z` correctly for key frames.\n"
+        "Attempting to interpret `rotation_3d_z` as "
+        f'"0: ({rotation_3d_z})"\n'
+        "Please read the instructions to find out how to use key frames "
+        "correctly.\n"
+    )
+    rotation_3d_z = f"0: ({rotation_3d_z})"
+    rotation_3d_z_series = get_inbetweens(parse_key_frames(rotation_3d_z))
