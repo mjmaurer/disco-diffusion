@@ -26,7 +26,9 @@ frames_skip_steps_schedule_vid_input = (
 frames_skip_steps_schedule_3d = [0.75] * 14 + [0.35]
 frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 20
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
-frames_skip_steps_schedule = frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
+frames_skip_steps_schedule = (
+    [0.75] + frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
+)
 psych_poster_seed = 245114
 seed = 798329237  # random.random() * 1000000
 flow_blend_schedule = (
