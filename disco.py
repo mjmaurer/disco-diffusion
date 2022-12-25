@@ -2913,7 +2913,7 @@ key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
 animation_mode = (  # "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
-    "Video Input"
+    "3D"
 )
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
@@ -2936,12 +2936,12 @@ frames_skip_steps_series = frames_skip_steps_schedule
 flow_blend_series = flow_blend_schedule
 angle = "0:(0)"  # @param {type:"string"}
 zoom = "0: (1), 10: (1.05)"  # @param {type:"string"}
-translation_x = "0: (0)"  # @param {type:"string"}
+translation_x = "0:(4*sin(3.14*t/60))"  # @param {type:"string"}
 translation_y = "0: (0)"  # @param {type:"string"}
-translation_z = "0: (0.2), 24: (1)"  # @param {type:"string"}
+translation_z = "0: (10)"  # @param {type:"string"}
 rotation_3d_x = "0: (0)"  # @param {type:"string"}
-rotation_3d_y = "0: (0)"  # @param {type:"string"}
-rotation_3d_z = "0: (1)"  # @param {type:"string"}
+rotation_3d_y = "0:(.2), 24:(.4*sin(2*3.14*t/20))"  # @param {type:"string"}
+rotation_3d_z = "0: (0)"  # @param {type:"string"}
 midas_depth_model = "dpt_large"  # @param {type:"string"}
 midas_weight = 0.3  # @param {type:"number"}
 near_plane = 200  # @param {type:"number"}
@@ -2957,7 +2957,7 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 # @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
 # @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
 
-turbo_mode = False  # @param {type:"boolean"}
+turbo_mode = True  # @param {type:"boolean"}
 turbo_steps = "5"  # @param ["2","3","4","5","6"] {type:"string"}
 turbo_preroll = 0  # frames
 
@@ -3591,7 +3591,8 @@ if intermediate_saves and intermediates_in_subfolder is True:
 
 perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
-set_seed = "random_seed"  # @param{type: 'string'}
+from external_settings import seed as sseed
+set_seed = sseed  # @param{type: 'string'}
 clamp_grad = True  # @param{type: 'boolean'}
 clamp_max = 0.08  # @param{type: 'number'}
 
