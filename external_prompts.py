@@ -76,7 +76,7 @@ p = [
 cadence = 54
 
 text_prompts = {
-    i * cadence: p[i % len(p)]
+    i * cadence * 2: p[i % len(p)]
     for i in range(20)
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
