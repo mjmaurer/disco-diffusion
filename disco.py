@@ -2931,7 +2931,7 @@ frames_skip_steps = (  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'stri
 blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # frames_skip_steps = f"0:(0.7)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
 # blend_ramp = f"0:(10)"  # @param ['40%', '50%', '60%', '70%', '80%'] {type: 'string'}
-eta = "0:(0.2)"
+eta = "0:(0.4)"
 
 frames_skip_steps_series = frames_skip_steps_schedule
 flow_blend_series = flow_blend_schedule
