@@ -29,8 +29,8 @@ text_prompts = {
         " view, vista"
     ),
     cadence: (
-        "A photograph, remarkable , greek marble statue of muscular cartoon bears "
-        " in a gym ,  in  dawn,  art by  Moebius Jean Giraud , "
+        "A photograph, remarkable , digital painting , microscopic organisms "
+        " , in  dawn, art by  Moebius Jean Giraud , "
         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
@@ -47,6 +47,14 @@ text_prompts = {
     * cadence: (
         "A photograph, remarkable planet scale , cartoon bears wearing suits "
         " in a futuristic city ,  in  dawn,  art by Vladimir Kush , Mark Ryden "
+        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+    ),
+    4
+    * cadence: (
+        "A photograph, remarkable , woodcut art , abtract cartoon bears on a farm "
+        " ,  in  dawn,  art by Mark Ryden "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
