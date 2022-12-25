@@ -39,6 +39,13 @@ text_prompts = {
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
+    "162": (
+        "A photograph, remarkable   oil painting , cartoon bears wearing suits "
+        " in a futuristic city ,  in  dawn,  art by Vladimir Kush , Mark Ryden "
+        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+    ),
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
     #     " explosion  in a   world made of skittles ,  in  evening ,  art by  Mark Ryden ,  Margaret"
