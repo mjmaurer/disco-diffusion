@@ -76,7 +76,7 @@ if __name__ == "__main__":
                 last_frame = len(glob(args.folder + f"/*_*.png"))
                 image_path = os.path.join(args.folder, f"*_%05d.png")
                 mp4_path = os.path.join(args.folder, f"_vid.mp4")
-                max_frames = last_frame - 1
+                max_frames = str(last_frame - 1)
 
         # make video
         cmd = [
