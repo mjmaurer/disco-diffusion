@@ -2900,7 +2900,8 @@ cutn_batches = 4  # @param{type: 'number'}
 # !play aroudn with this
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
-init_image = None  # @param{type: 'string'}
+from external_settings import init_image as sinit_image
+init_image = sinit_image  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
 skip_steps = int(frames_skip_steps_schedule[0] * steps)  # @param{type: 'integer'}
@@ -2912,9 +2913,7 @@ width_height_for_256x256_models = [512, 448]  # @param{type: 'raw'}
 key_frames = True  # @param {type:"boolean"}
 max_frames = 10000  # @param {type:"number"}
 
-animation_mode = (  # "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
-    "3D"
-)
+animation_mode = "3D"  # "Video Input"  # @param ['None', '2D', '3D', 'Video Input'] {type:'string'}
 interp_spline = (  # Do not change, currently will not look good. param ['Linear','Quadratic','Cubic']{type:"string"}
     "Linear"
 )
@@ -3592,6 +3591,7 @@ if intermediate_saves and intermediates_in_subfolder is True:
 perlin_init = False  # @param{type: 'boolean'}
 perlin_mode = "mixed"  # @param ['mixed', 'color', 'gray']
 from external_settings import seed as sseed
+
 set_seed = sseed  # @param{type: 'string'}
 clamp_grad = True  # @param{type: 'boolean'}
 clamp_max = 0.08  # @param{type: 'number'}

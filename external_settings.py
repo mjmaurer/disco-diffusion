@@ -1,6 +1,6 @@
 vid_input = "_93archtrimlonger.mp4"
 # 97 on stablewarp images_out has a good seed
-init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(115)_000001.png"
+init_image = "output/_93archtrimlonger/_990_12_25__00_09/_93archtrimlonger(0)_0000.png"
 
 width = 1024
 height = 576
