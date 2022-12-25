@@ -50,10 +50,10 @@ trig_length = turbo_steps * 2
 trig_space = turbo_steps * 5 # space between triggers
 neg_rotation_y_trigger = list(np.linspace(0, -1, trig_length)) + list(np.linspace(-1, 0, trig_length))
 rotation_3d_y = rotation_y_trigger + [0] * trig_space + neg_rotation_y_trigger + [0] * trig_space
-rotation_3d_y = rotation_3d_y * 30
+rotation_3d_y = [0] + rotation_3d_y * 30
 translation_z_trigger = list(np.linspace(1.5, 4.5, 10)) + list(np.linspace(4.5, 1.5, 10))
 translation_z = translation_z_trigger + [1.5] * trig_space
-translation_z = translation_z * 30
+translation_z = [1.5] + translation_z * 30
 steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
