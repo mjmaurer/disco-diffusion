@@ -85,14 +85,14 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph, remarkable , digital painting , cartoon of santas elves smoking a bong "
+        "A photograph, remarkable , digital painting , santas elves dancing "
         " , in  dawn, art by Peter Max , "
         " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable , woodcut art , opening presents on christmas with friends and family "
+        "A photograph, remarkable , woodcut art , christmas presents "
         " , in  dawn, by Jon Marro, Vladimir Kush "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
