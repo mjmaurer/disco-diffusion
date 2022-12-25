@@ -2903,6 +2903,7 @@ cutn_batches = 4  # @param{type: 'number'}
 skip_augs = False  # @param{type: 'boolean'}
 # @markdown ####**Init Image Settings:**
 from external_settings import init_image as sinit_image
+
 init_image = sinit_image  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
 init_scale = 10000  # @param{type: 'integer'}
@@ -2951,7 +2952,21 @@ sampling_mode = "bicubic"  # @param {type:"string"}
 # @markdown (Starts after frame 10,) skips diffusion steps and just uses depth map to warp images for skipped frames.
 # @markdown Speeds up rendering by 2x-4x, and may improve image coherence between frames.
 # @markdown For different settings tuned for Turbo Mode, refer to the original Disco-Turbo Github: https://github.com/zippy731/disco-diffusion-turbo
-from external_settings import turbo_steps as sturbo_steps
+from external_settings import (
+    turbo_steps as sturbo_steps,
+    translation_x,
+    translation_x_series,
+    translation_z,
+    translation_z_series,
+    translation_y,
+    translation_y_series,
+    rotation_3d_x,
+    rotation_3d_x_series,
+    rotation_3d_y,
+    rotation_3d_y_series,
+    rotation_3d_z,
+    rotation_3d_z_series
+)
 
 turbo_mode = True  # @param {type:"boolean"}
 turbo_steps = sturbo_steps  # @param ["2","3","4","5","6"] {type:"string"}
