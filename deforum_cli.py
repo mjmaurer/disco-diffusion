@@ -73,10 +73,10 @@ if __name__ == "__main__":
                 mp4_path = os.path.join(newest_dir, f"{args.timestring}_{path_name_modifier}.mp4")
                 max_frames = str(args.steps)
             else:  # render images for a video
-                last_frame = len(glob(args.folder + f"/{args.timestring}_*.png"))
-                image_path = os.path.join(args.folder, f"{args.timestring}_%05d.png")
-                mp4_path = os.path.join(args.folder, f"_{args.timestring}.mp4")
-                max_frames = last_frame - 2
+                last_frame = len(glob(args.folder + f"/*_*.png"))
+                image_path = os.path.join(args.folder, f"*_%05d.png")
+                mp4_path = os.path.join(args.folder, f"_vid.mp4")
+                max_frames = last_frame - 1
 
         # make video
         cmd = [
