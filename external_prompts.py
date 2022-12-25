@@ -25,13 +25,20 @@ text_prompts = {
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
     ),
-    # "100": (
-    #     "A photograph, remarkable   oil painting ,  greek marble statue    hysterical    Tardigrade"
-    #     "  in a   world made of skittles ,  in  dawn,  art by  Moebius Jean Giraud ,   Salvador"
-    #     " Dali ,  Alejandro Jodorowsky ,   redshift render ,  Volumetric ,  raytracing ,  realistic"
-    #     "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-    #     " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    # ),
+    "54": (
+        "A photograph, remarkable  oil painting , greek marble statue of cartoon bears "
+        " in space ,  in  dawn,  art by  Moebius Jean Giraud , "
+        " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+    ),
+    "108": (
+        "A photograph, remarkable   oil painting , muscular cartoon bear astronauts  "
+        " in space ,  in  dawn,  art by Peter Max , Jon Marro "
+        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+    ),
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
     #     " explosion  in a   world made of skittles ,  in  evening ,  art by  Mark Ryden ,  Margaret"
