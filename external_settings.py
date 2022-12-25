@@ -24,7 +24,7 @@ strength_schedule = (
 frames_skip_steps_schedule_vid_input = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
-frames_skip_steps_schedule_3d = list(np.linspace(0.75, 0.35, turbo_steps * 3))
+frames_skip_steps_schedule_3d = list(np.linspace(0.75, 0.45, turbo_steps * 2))
 frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 20
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
