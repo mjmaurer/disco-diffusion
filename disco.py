@@ -571,6 +571,7 @@ multipip_res = subprocess.run(
         "lpips",
         "datetime",
         "timm",
+        "numexpr",
         "ftfy",
         "einops",
         "pytorch-lightning",
