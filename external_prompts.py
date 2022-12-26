@@ -76,8 +76,8 @@ other = (
 # ]
 p = [
     (
-        "A photograph, amazing cinematic film still , santa flying through space "
-        " , art by RHADS , "
+        "an amazing cinematic film still , santa flying through space "
+        " , by RHADS , "
         " colorful, Internal glow , "
         " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
