@@ -17,15 +17,15 @@ import random
 
 styled_seconds = 1
 ramp_seconds = 5
-turbo_steps = 6
+turbo_steps = 8
 strength_schedule = (
     [0.75] + [0.35] * (24 * styled_seconds) + list(np.linspace(0.35, 0.01, 24 * ramp_seconds))
 )
 frames_skip_steps_schedule_vid_input = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
-frames_skip_steps_schedule_3d = [.80] * (turbo_steps * 2 - 2) + [.265] * 2 # list(np.linspace(0.75, 0.25, turbo_steps * 2))
-frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 20
+frames_skip_steps_schedule_3d = [.66] * (turbo_steps * 2 - 2) + [.2] * 2 # list(np.linspace(0.75, 0.25, turbo_steps * 2))
+frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 70
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
     [0.75] + frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
@@ -54,10 +54,10 @@ rotation_3d_y = [0] + rotation_3d_y * 30
 translation_z_trigger = list(np.linspace(1.5, 4.5, 10)) + list(np.linspace(4.5, 1.5, 10))
 translation_z = translation_z_trigger + [1.5] * trig_space
 translation_z = []
-for i in range(60):
-    translation_z.append(i * .15)
-translation_z = translation_z + [1.5] * 60
-translation_z = [1.5] + translation_z * 30
+for i in range(80):
+    translation_z.append(i * .1)
+translation_z = translation_z + [1.5] * 80
+translation_z = [1.5] + translation_z * 70
 steps_schedule = [150]
 rotation_3d_x = "0: (0), 24: (0.25*cos(1.2*3.141*(t + 5)/108))"
 rotation_3d_y = "0: (0.22*sin(3.141*t/108))"
