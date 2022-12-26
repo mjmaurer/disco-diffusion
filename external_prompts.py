@@ -122,7 +122,7 @@ p = [
         " dramatic shadows"
     ),
 ]
-cadence = 110
+cadence = 120
 
 text_prompts = {
     i * cadence * 2: p[i % len(p)]
