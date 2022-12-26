@@ -78,21 +78,21 @@ p = [
     (
         "A photograph, amazing cinematic film still , santa flying through space "
         " , art by RHADS , "
-        " colorful, Internal glow , large"
+        " colorful, Internal glow , "
         " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
     ),
     (
-        "digital painting , cartoon elves in the north pole "
-        " , art by Peter Max and "
-        " Alejandro Jodorowsky , happy ,  "
+        "digital painting , elves made of skittles in the north pole "
+        " , art by Peter Max "
+        " , happy ,  "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " dramatic shadows, highly detailed, long view, vista"
     ),
     (
-        "A  amazing  cinematic film still , christmas presents under a christmas tree in a world made of yarn "
+        "A  amazing  cinematic film still , christmas presents under a christmas tree made of yarn "
         " , in  dawn, by Jon Marro, "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
