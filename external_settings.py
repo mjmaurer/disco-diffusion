@@ -31,7 +31,7 @@ frames_skip_steps_schedule = (
     [0.75] + frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
 )
 psych_poster_seed = 245114
-seed = 798329237  # random.random() * 1000000
+seed = random.random() * 1000000
 flow_blend_schedule = (
     [0.9] * (24 * styled_seconds)  # .999 before
     + list(np.linspace(0.9, 0.55, 24 * (ramp_seconds - 1)))

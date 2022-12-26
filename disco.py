@@ -2906,7 +2906,7 @@ from external_settings import init_image as sinit_image
 
 init_image = sinit_image  # @param{type: 'string'}
 # Init scale and CGS must be balanced against each other
-init_scale = 10000  # @param{type: 'integer'}
+init_scale = 4000  # @param{type: 'integer'}
 skip_steps = int(frames_skip_steps_schedule[0] * steps)  # @param{type: 'integer'}
 # @markdown *Make sure you set skip_steps to ~50% of your steps if you want to use an init image.*
 
