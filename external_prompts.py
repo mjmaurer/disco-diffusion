@@ -78,8 +78,8 @@ p = [
     (
         "A photograph, amazing cinematic film still , santa flying through space "
         " , art by RHADS , "
-        " colorful, Internal glow , large expressive eyes , large expressive eyes , large"
-        " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
+        " colorful, Internal glow , "
+        " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
