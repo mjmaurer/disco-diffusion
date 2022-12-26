@@ -85,11 +85,11 @@ p = [
         " view, vista"
     ),
     (
-        "digital painting , elves in the north pole "
+        "digital painting , cartoon elves in the north pole "
         " , art by Peter Max and "
-        " Alejandro Jodorowsky , happy , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+        " Alejandro Jodorowsky , happy ,  "
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+        " dramatic shadows, highly detailed, long view, vista"
     ),
     (
         "A  amazing  cinematic film still , christmas presents under a christmas tree in a world made of yarn "
