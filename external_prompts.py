@@ -85,11 +85,11 @@ p = [
         " view, vista"
     ),
     (
-        "A  amazing  cinematic film still , presents under a christmas tree made of yarn "
-        " , in  dawn, by Jon Marro, "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, wide range of colors, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+        "digital painting , christmas elf dolls in the north pole "
+        " , art by Peter Max "
+        " , happy , expressive eyes "
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+        " dramatic shadows, highly detailed, long view, vista"
     ),
     (
         "A photograph, remarkable planet scale , 70s psychedelic poster art , hippie santa claus "
@@ -99,11 +99,11 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "digital painting , christmas elf dolls in the north pole "
-        " , art by Peter Max "
-        " , happy ,  "
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " dramatic shadows, highly detailed, long view, vista"
+        "A photograph , amazing  cinematic film still , a nutcracker made of yarn, expressive eyes "
+        " , in  dawn, by Jon Marro, "
+        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, wide range of colors, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
         "A  amazing  cinematic film still , a woodcut portrait of santa claus , "
