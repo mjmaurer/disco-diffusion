@@ -85,14 +85,14 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph, remarkable , cartoon elves in the north pole "
+        "A cheerful cartoon of elves in the north pole "
         " , art by Peter Max , "
-        " Alejandro Jodorowsky ,  redshift render ,  Volumetric ,  raytracing ,  realistic"
+        " Alejandro Jodorowsky , happy , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable , woodcut art , christmas presents "
+        "A  amazing  cinematic film still , christmas presents under a christmas tree in a world made of yarn "
         " , in  dawn, by Jon Marro, "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
@@ -100,20 +100,20 @@ p = [
     ),
     (
         "A photograph, remarkable planet scale , 70s psychedelic poster art , hippie santa claus "
-        " in  dawn,  art by  Wes Wilson "
+        ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable , architecture diagram , christmas trees "
+        "remarkable planet scale , architecture diagram of christmas trees "
         " ,  art by Mark Ryden "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A  amazing  cinematic film still , a portrait of santa claus made of yarn , "
+        "A  amazing  cinematic film still , a woodcut portrait of santa claus , "
         " in  dawn, art by ernst"
         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
