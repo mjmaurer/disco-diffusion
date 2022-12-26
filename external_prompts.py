@@ -85,8 +85,8 @@ p = [
         " view, vista"
     ),
     (
-        "A cheerful cartoon of elves in the north pole "
-        " , art by Peter Max , "
+        "digital painting , elves in the north pole "
+        " , art by Peter Max and "
         " Alejandro Jodorowsky , happy , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
@@ -106,7 +106,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "remarkable planet scale , architecture diagram of christmas trees "
+        "remarkable planet scale christmas ornaments , christmas trees "
         " ,  art by Mark Ryden "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
