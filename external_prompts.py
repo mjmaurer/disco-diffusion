@@ -99,7 +99,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "digital painting , christmas nutcrackers made of popcorn "
+        "an oil painting , amazing  cinematic film still , christmas nutcracker made out of pinecones and popcorn "
         " , art by Peter Max "
         " , expressive eyes "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
