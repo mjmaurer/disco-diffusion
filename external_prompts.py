@@ -99,11 +99,11 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "digital painting , christmas elf dolls in the north pole "
+        "digital painting , christmas nutcrackers made of popcorn "
         " , art by Peter Max "
-        " , happy , expressive eyes "
+        " , expressive eyes "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " dramatic shadows, highly detailed, long view, vista"
+        " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
     (
         "A  amazing  cinematic film still , a woodcut portrait of santa claus , "
