@@ -122,10 +122,10 @@ p = [
         " dramatic shadows"
     ),
 ]
-cadence = 100
+cadence = 108
 
 text_prompts = {
-    i * cadence * 2: p[i % len(p)]
+    i * cadence: p[i % len(p)]
     for i in range(20)
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
