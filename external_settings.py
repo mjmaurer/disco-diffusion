@@ -24,7 +24,7 @@ strength_schedule = (
 frames_skip_steps_schedule_vid_input = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
-frames_skip_steps_schedule_3d = list(np.linspace(0.65, 0.3, turbo_steps * 2))
+frames_skip_steps_schedule_3d = list(np.linspace(0.75, 0.25, turbo_steps * 2))
 frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 20
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
@@ -55,6 +55,10 @@ translation_z_trigger = list(np.linspace(1.5, 4.5, 10)) + list(np.linspace(4.5, 
 translation_z = translation_z_trigger + [1.5] * trig_space
 translation_z = [1.5] + translation_z * 30
 steps_schedule = [150]
+rotation_3d_x = "0: (0), 24: (0.45*cos(1.2*3.141*t/108))"
+rotation_3d_y = "0: (0.4*sin(3.141*t/108))"
+rotation_3d_z = "0: (8*(sin(3.141*t/216)**75)+0.25)"
+translation_z = "0: (0.2*(t%60))"
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
