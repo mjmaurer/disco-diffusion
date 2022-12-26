@@ -113,7 +113,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A  amazing  cinematic film still , snowy mountain made of yarn "
+        "A  amazing  cinematic film still , a portrait of santa claus made of yarn , "
         " in  dawn, art by ernst"
         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
