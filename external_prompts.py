@@ -85,10 +85,10 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph , amazing  cinematic film still , the abominable snowman , made of yarn,"
+        "A photograph , amazing  cinematic film still , a snowman made out of yarn,"
         " , in  dawn, by Jon Marro, expressive eyes "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, wide range of colors, trending on art station, photorealistic,"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
