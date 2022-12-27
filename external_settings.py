@@ -26,7 +26,9 @@ frames_skip_steps_schedule_vid_input = (
 )
 # /2022-12-26-15-00 this deforum one has the same issue as this. See 26-14-16 for a good example
 frames_skip_steps_schedule_3d = [.65] * (turbo_steps * 2 - 2) + [.52] * 2 # list(np.linspace(0.75, 0.25, turbo_steps * 2))
-frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 70
+frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 4
+frames_skip_steps_schedule_3d[-1] = .4
+frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 30
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
     [0.90] + frames_skip_steps_schedule + [frames_skip_steps_schedule[-1]] * 500
