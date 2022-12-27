@@ -17,14 +17,15 @@ import random
 
 styled_seconds = 1
 ramp_seconds = 5
-turbo_steps = 8
+turbo_steps = 2
 strength_schedule = (
     [0.75] + [0.35] * (24 * styled_seconds) + list(np.linspace(0.35, 0.01, 24 * ramp_seconds))
 )
 frames_skip_steps_schedule_vid_input = (
     [0.25] + [0.65] * (24 * styled_seconds) + list(np.linspace(0.65, 0.99, 24 * ramp_seconds))
 )
-frames_skip_steps_schedule_3d = [.86] * (turbo_steps * 2 - 2) + [.35] * 2 # list(np.linspace(0.75, 0.25, turbo_steps * 2))
+# /2022-12-26-15-00 this deforum one has the same issue as this. See 26-14-16 for a good example
+frames_skip_steps_schedule_3d = [.65] * (turbo_steps * 2 - 2) + [.52] * 2 # list(np.linspace(0.75, 0.25, turbo_steps * 2))
 frames_skip_steps_schedule_3d = frames_skip_steps_schedule_3d * 70
 frames_skip_steps_schedule = frames_skip_steps_schedule_3d
 frames_skip_steps_schedule = (
@@ -39,8 +40,8 @@ flow_blend_schedule = (
     # + list(np.linspace(0.8, 0, 24))
 )
 flow_blend_schedule = flow_blend_schedule + [flow_blend_schedule[-1]] * 500
-translation_x = "0:(2 * sin(3.14*t/100))"  # @param {type:"string"}
-translation_y = "0: (0)"  # @param {type:"string"}
+translation_x = "0:(.8 * sin(3.14*(t+10)/120))"  # @param {type:"string"}
+translation_y = "0:(.68 * cos((t+10)/100))"  # @param {type:"string"}
 translation_z = "0: (2.5)"  # @param {type:"string"}
 rotation_3d_x = "0:(.5 * sin(3.14*t/150))"  # @param {type:"string"}
 rotation_3d_y = "0:(0), 12:(-1.15 * sin(3.14*t/110))"  # @param {type:"string"}
@@ -54,14 +55,14 @@ rotation_3d_y = [0] + rotation_3d_y * 30
 translation_z_trigger = list(np.linspace(1.5, 4.5, 10)) + list(np.linspace(4.5, 1.5, 10))
 translation_z = translation_z_trigger + [1.5] * trig_space
 translation_z = []
-for i in range(80):
+for i in range(100):
     translation_z.append(i * .1)
-translation_z = translation_z + [1.5] * 80
+translation_z = translation_z + [1.5] * 70
 translation_z = [1.5] + translation_z * 70
 steps_schedule = [150]
 rotation_3d_x = "0: (0), 24: (0.25*cos(1.2*3.141*(t + 5)/108))"
 rotation_3d_y = "0: (0.22*sin(3.141*t/108))"
-rotation_3d_z = "0: (8*(sin(3.141*t/216)**75)+0.25)"
+rotation_3d_z = "0: (8*(sin(3.141*t/250)**75)+0.25)"
 # translation_z = "0: (0.2*(t%60))"
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
