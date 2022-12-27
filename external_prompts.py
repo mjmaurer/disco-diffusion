@@ -76,37 +76,37 @@ other = (
 # ]
 p = [
     (
-        "an amazing cinematic film still , santa flying through space "
+        "a photograph , an amazing cinematic film still , spiderwebs made of steampunk pipes "
         " , by RHADS , "
         " colorful, Internal glow , "
-        " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
+        " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
     ),
     (
-        "A photograph , amazing  cinematic film still , a snowman made out of yarn,"
-        " , in  dawn, by Jon Marro, expressive eyes "
+        "A photograph , amazing cinematic film still , vast fall foilage , pile of leaves "
+        " , in  dawn, by Jon Marro, "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable planet scale , 70s psychedelic poster art , hippie santa claus "
+        "A photograph, remarkable planet scale , 70s psychedelic poster art , microscopic organisms "
         ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "an oil painting , amazing  cinematic film still , christmas nutcracker made out of pinecones and popcorn "
+        "an oil painting , amazing  cinematic film still , clouds made of coral reef "
         " , art by Peter Max "
         " , expressive eyes "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
     (
-        "A  amazing  cinematic film still , a woodcut portrait of santa claus , "
+        "A  amazing  cinematic film still , a woodcut whale , "
         " in  dawn, art by ernst"
         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
@@ -114,18 +114,11 @@ p = [
         " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
         " dramatic shadows"
     ),
-    (
-        "remarkable planet scale christmas ornaments , christmas trees "
-        " ,  art by Mark Ryden "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
 ]
 cadence = 108
 
 text_prompts = {
-    i * cadence: p[i % len(p)]
+    i * cadence * 2: p[i % len(p)]
     for i in range(20)
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
