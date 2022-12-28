@@ -85,7 +85,7 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph , amazing cinematic film still , hands reaching into a pile of leaves "
+        "A photograph , amazing cinematic film still , a sea of tree leaves "
         " , in  dawn, by Jon Marro, "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
