@@ -92,7 +92,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, 70s psychedelic poster art , microscopic organisms made of skittles "
+        "A photograph, 70s psychedelic poster art , microscopic organisms made of ribbon "
         ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
