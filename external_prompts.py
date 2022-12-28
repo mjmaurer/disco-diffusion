@@ -76,7 +76,7 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , miniature airplanes flying , in a colorful coral reef "
+        "a photograph , an amazing cinematic film still , a world made of coral reef "
         " , by RHADS , "
         " colorful, Internal glow , "
         " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
