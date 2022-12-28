@@ -76,9 +76,9 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , colorful coral reef "
+        "a photograph , an amazing cinematic film still , skeleton make of colorful coral reef "
         " , by RHADS , "
-        " colorful, Internal glow , "
+        " colorful, psychedelic , Internal glow , "
         " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
