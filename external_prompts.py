@@ -76,9 +76,9 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , miniature airplanes , in a colorful coral reef "
+        "a photograph , an amazing cinematic film still , miniature airplanes flying , in a colorful coral reef "
         " , by RHADS , "
-        " colorful, psychedelic , Internal glow , "
+        " colorful, Internal glow , "
         " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
         " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
