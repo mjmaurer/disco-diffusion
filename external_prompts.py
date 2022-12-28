@@ -76,7 +76,7 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , spiderwebs made of steampunk pipes "
+        "a photograph , an amazing cinematic film still , colorful coral reef "
         " , by RHADS , "
         " colorful, Internal glow , "
         " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
@@ -85,14 +85,14 @@ p = [
         " view, vista"
     ),
     (
-        "A photograph , amazing cinematic film still , vast fall foilage , pile of leaves "
+        "A photograph , amazing cinematic film still , hands reaching into a pile of leaves "
         " , in  dawn, by Jon Marro, "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "A photograph, remarkable planet scale , 70s psychedelic poster art , microscopic organisms "
+        "A photograph, 70s psychedelic poster art , microscopic organisms made of skittles "
         ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
