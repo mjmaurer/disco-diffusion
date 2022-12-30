@@ -76,22 +76,6 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , art nouveau , a world made of coral reef "
-        " , by RHADS , "
-        " colorful, Internal glow , "
-        " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
-        " realistic, trending on art station, wide range of colors, photorealistic,"
-        " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
-        " view, vista"
-    ),
-    (
-        "A photograph , amazing cinematic film still , art nouveau , a sea of tree leaves "
-        " , in  dawn, by alphonse mucha , "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
         "A photograph, 70s psychedelic poster art , microscopic organisms made of ribbon "
         ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
@@ -106,7 +90,12 @@ p = [
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
     (
-        "A  amazing  cinematic film still , a woodcut whale , "
+        "an oil painting , amazing  cinematic film still , art nouveau  , ocean , forest "
+        ",  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+        " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    ),
+    (
+        "A  amazing  cinematic film still , a woodcut forest , "
         " in  dawn, art by ernst"
         " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
         " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"

@@ -28,7 +28,7 @@ flow_blend_schedule = (
     + list(np.linspace(0.55, 0, 24))
     # + list(np.linspace(0.8, 0, 24))
 )
-steps_schedule = [130]
+steps_schedule = [120]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
