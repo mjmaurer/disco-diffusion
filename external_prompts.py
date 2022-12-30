@@ -76,18 +76,17 @@ other = (
 # ]
 p = [
     (
-        "A photograph, 70s psychedelic poster art , microscopic organisms made of ribbon "
-        ", in  dawn,  art by  Wes Wilson "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
         "an oil painting , amazing  cinematic film still , art nouveau  , clouds made of coral reef "
         " , art by Peter Max "
         " , expressive eyes "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    ),
+    (
+        "A oil painting , 70s psychedelic poster art , microscopic organisms made of ribbon "
+        ", in  dawn,  art by  Wes Wilson "
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, long view, vista"
     ),
     (
         "an oil painting , amazing  cinematic film still , art nouveau  , ocean , forest "
