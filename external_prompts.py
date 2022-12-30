@@ -76,17 +76,17 @@ other = (
 # ]
 p = [
     (
-        "a photograph , an amazing cinematic film still , a world made of coral reef "
+        "a photograph , an amazing cinematic film still , art nouveau , a world made of coral reef "
         " , by RHADS , "
         " colorful, Internal glow , "
         " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
-        " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
+        " realistic, trending on art station, wide range of colors, photorealistic,"
         " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
         " view, vista"
     ),
     (
-        "A photograph , amazing cinematic film still , a sea of tree leaves "
-        " , in  dawn, by Jon Marro, "
+        "A photograph , amazing cinematic film still , art nouveau , a sea of tree leaves "
+        " , in  dawn, by alphonse mucha , "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
@@ -99,7 +99,7 @@ p = [
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
     (
-        "an oil painting , amazing  cinematic film still , clouds made of coral reef "
+        "an oil painting , amazing  cinematic film still , art nouveau  , clouds made of coral reef "
         " , art by Peter Max "
         " , expressive eyes "
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
