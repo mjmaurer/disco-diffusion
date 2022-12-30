@@ -76,6 +76,13 @@ other = (
 # ]
 p = [
     (
+        "A photograph, 70s psychedelic poster art , microscopic organisms "
+        ", in  dawn,  art by  Wes Wilson "
+        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
+        " dramatic shadows, highly detailed, hyperreal, long view, vista"
+    ),
+    (
         "a photograph , an amazing cinematic film still , art nouveau , a world made of coral reef "
         " , by RHADS , "
         " colorful, Internal glow , "
@@ -87,13 +94,6 @@ p = [
     (
         "A photograph , amazing cinematic film still , art nouveau , a sea of tree leaves "
         " , in  dawn, by alphonse mucha , "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
-        "A photograph, 70s psychedelic poster art , microscopic organisms made of ribbon "
-        ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
@@ -118,7 +118,7 @@ p = [
 cadence = 108
 
 text_prompts = {
-    i * cadence * 2: p[i % len(p)]
+    i * cadence: p[i % len(p)]
     for i in range(20)
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
@@ -136,7 +136,7 @@ text_prompts = {
     # ),
 }
 
-negative_prompts = {0: ["red, face, humans, people, text, blurry, unfocused"]}
+negative_prompts = {0: ["red, face, humans, man, woman, people, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
