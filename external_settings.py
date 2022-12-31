@@ -1,9 +1,9 @@
-vid_input = "_93archtrimlonger.mp4"
+vid_input = "_92pinesintro.mp4"
 # 97 on stablewarp images_out has a good seed
 init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(115)_000001.png"
 
-width = 960 # 832 # 1024
-height = 512      # 576 
+width =  1024
+height = 576 
 
 michael_mode = True
 
@@ -28,7 +28,7 @@ flow_blend_schedule = (
     + list(np.linspace(0.55, 0, 24))
     # + list(np.linspace(0.8, 0, 24))
 )
-steps_schedule = [150]
+steps_schedule = [0]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
