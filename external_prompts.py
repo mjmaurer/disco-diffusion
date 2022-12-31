@@ -76,9 +76,9 @@ other = (
 # ]
 p = [
     (
-        "an oil painting , amazing  cinematic film still , art nouveau  , clouds made of coral reef "
+        "an oil painting , amazing  cinematic film still , art nouveau  , vast network of coral reef "
         " , art by Peter Max "
-        " , expressive eyes "
+        " ,"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
