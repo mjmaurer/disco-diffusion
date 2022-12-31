@@ -77,14 +77,21 @@ other = (
 # TODO hair?
 p = [
     (
-        "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef without fish "
+        "an oil painting , amazing  cinematic film still , art nouveau  ,  lush fantasy forest "
         " , art by Peter Max "
         " ,"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
     (
-        "an oil painting , amazing  cinematic film still , art nouveau  ,  lush fantasy forest "
+        "an digital painting , amazing  cinematic film still , a world made of hair "
+        " , art by Wes Wilson , surreal "
+        " ,"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+        " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    ),
+    (
+        "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef without fish "
         " , art by Peter Max "
         " ,"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
