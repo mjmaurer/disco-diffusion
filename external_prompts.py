@@ -83,20 +83,20 @@ p = [
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
-    (
-        "an oil painting , amazing  cinematic film still , art nouveau  ,  lush fantasy forest "
-        " , art by Peter Max "
-        " ,"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " photorealistic , dramatic shadows, highly detailed, long view, vista"
-    ),
-    (
-        "an digital painting , amazing  cinematic film still , a world made of hair "
-        " , art by Wes Wilson , surreal "
-        " ,"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " photorealistic , dramatic shadows, highly detailed, long view, vista"
-    ),
+    # (
+    #     "an oil painting , amazing  cinematic film still , art nouveau  ,  lush fantasy forest "
+    #     " , art by Peter Max "
+    #     " ,"
+    #     "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+    #     " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    # ),
+    # (
+    #     "an digital painting , amazing  cinematic film still , a world made of hair "
+    #     " , art by Wes Wilson , surreal "
+    #     " ,"
+    #     "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+    #     " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    # ),
     (
         "A oil painting , 70s psychedelic poster art , microscopic organisms made of ribbon "
         ", in  dawn,  art by  Wes Wilson "
@@ -108,17 +108,17 @@ p = [
         ",  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
         " photorealistic , dramatic shadows, highly detailed, long view, vista"
     ),
-    (
-        "A  amazing  cinematic film still , a woodcut forest , "
-        " in  dawn, art by ernst"
-        " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
-        " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
-        " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
-        " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
-        " dramatic shadows"
-    ),
+    # (
+    #     "A  amazing  cinematic film still , a woodcut forest , "
+    #     " in  dawn, art by ernst"
+    #     " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
+    #     " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
+    #     " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
+    #     " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
+    #     " dramatic shadows"
+    # ),
 ]
-cadence = 120
+cadence = 240
 
 text_prompts = {
     i * cadence * 2: p[i % len(p)]
