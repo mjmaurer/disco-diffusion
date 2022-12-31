@@ -74,6 +74,7 @@ other = (
 #         " dramatic shadows"
 #     ),
 # ]
+# TODO hair?
 p = [
     (
         "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef without fish "
