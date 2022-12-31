@@ -76,7 +76,14 @@ other = (
 # ]
 p = [
     (
-        "an oil painting , amazing  cinematic film still , art nouveau  , vast network of coral reef "
+        "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef without fish "
+        " , art by Peter Max "
+        " ,"
+        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
+        " photorealistic , dramatic shadows, highly detailed, long view, vista"
+    ),
+    (
+        "an oil painting , amazing  cinematic film still , art nouveau  ,  lush fantasy forest "
         " , art by Peter Max "
         " ,"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
@@ -103,7 +110,7 @@ p = [
         " dramatic shadows"
     ),
 ]
-cadence = 108
+cadence = 120
 
 text_prompts = {
     i * cadence * 2: p[i % len(p)]
