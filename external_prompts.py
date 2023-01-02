@@ -75,52 +75,7 @@ other = (
 #     ),
 # ]
 p = [
-    (
-        "an amazing cinematic film still , santa flying through space "
-        " , by RHADS , "
-        " colorful, Internal glow , "
-        " expressive eyes ,  4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
-        " realistic, trending on art station, wide range of colors, green , blue, photorealistic,"
-        " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
-        " view, vista"
-    ),
-    (
-        "A photograph , amazing  cinematic film still , a snowman made out of yarn,"
-        " , in  dawn, by Jon Marro, expressive eyes "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
-        "A photograph, remarkable planet scale , 70s psychedelic poster art , hippie santa claus "
-        ", in  dawn,  art by  Wes Wilson "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
-        "an oil painting , amazing  cinematic film still , christmas nutcracker made out of pinecones and popcorn "
-        " , art by Peter Max "
-        " , expressive eyes "
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " photorealistic , dramatic shadows, highly detailed, long view, vista"
-    ),
-    (
-        "A  amazing  cinematic film still , a woodcut portrait of santa claus , "
-        " in  dawn, art by ernst"
-        " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
-        " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
-        " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
-        " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
-        " dramatic shadows"
-    ),
-    (
-        "remarkable planet scale christmas ornaments , christmas trees "
-        " ,  art by Mark Ryden "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
+    ("An oil painting , portrait of a psychedelic woman , psychedelic , by Wes Wilson and Marijke Koger-Dunham and Peter Max , vibrant , 8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic, dramatic shadows, highly detailed, long view, vista"),
 ]
 cadence = 108
 

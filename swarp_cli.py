@@ -33,6 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", type=str)
     parser.add_argument("--vid", help="Make video")
+    parser.add_argument("--reverse", help="Make video")
     parser.add_argument("--trim", help="Input like '2,40' so second frame would be first")
     parser.add_argument("--f", nargs="+", help="Colorize first frame")
     parser.add_argument("--finit")
@@ -42,6 +43,13 @@ if __name__ == "__main__":
     batchFolder = str(Path(args.folder).parent.absolute())
     print(batchFolder)
     print(timestr)
+
+    if args.reverse:
+        num_frames = len(glob(batchFolder + "/videoFrames/*.jpg"))
+        for i in range(1, num_frames+1):
+            os.rename(f"{batchFolder}/videoFrames/{i:06d}.jpg", f"{batchFolder}/videoFrames/{i:06d}-old.jpg")
+        for i in range(1, num_frames+1):
+            os.rename(f"{batchFolder}/videoFrames/{i:06d}-old.jpg", f"{batchFolder}/videoFrames/{num_frames+1-i:06d}.jpg")
 
     if args.trim:
         first = int(args.trim.split(",")[0])

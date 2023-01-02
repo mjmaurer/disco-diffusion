@@ -18,12 +18,12 @@ import random
 styled_seconds = 1
 ramp_seconds = 5
 strength_schedule = (
-    [0.2]
+    [0.15]
 )
 psych_poster_seed = 245114
 seed = random.random() * 1000000
 flow_blend_schedule = (
-    [0.9]
+    [0.88]
 )
 steps_schedule = [120]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
