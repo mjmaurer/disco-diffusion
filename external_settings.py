@@ -21,7 +21,8 @@ psych_poster_seed = 245114
 seed = random.random() * 1000000
 steps_schedule = [1]
 strength_schedule = [0]
-flow_blend_schedule = [0] * 170 + list(np.linspace(0.0, 0.99, 50))
+strength_schedule = [0] * 50 + [.1] 
+flow_blend_schedule = [0] * 50 + list(np.linspace(0.0, 0.99, 5))
 #     np.linspace(0.4, 0, 24 * 1)
 # )
 turbo_steps_schedule = [5]
