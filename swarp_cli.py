@@ -33,7 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", type=str)
     parser.add_argument("--vid", help="Make video")
-    parser.add_argument("--reverse", help="Make video")
+    parser.add_argument("--reverse", help="Make video", action="store_true")
     parser.add_argument("--trim", help="Input like '2,40' so second frame would be first")
     parser.add_argument("--f", nargs="+", help="Colorize first frame")
     parser.add_argument("--finit")
