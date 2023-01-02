@@ -75,13 +75,12 @@ other = (
 #     ),
 # ]
 p = [
-    ("An oil painting , portrait of a psychedelic woman , psychedelic , by Wes Wilson and Marijke Koger-Dunham and Peter Max , vibrant , 8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic, dramatic shadows, highly detailed, long view, vista"),
+    ("An oil painting , 70s psychedelic poster art , a woman made of ribbon , in dawn , by Wes Wilson , psychedelic , vibrant , 8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic, dramatic shadows, highly detailed, long view, vista"),
 ]
 cadence = 108
 
 text_prompts = {
-    i * cadence: p[i % len(p)]
-    for i in range(20)
+    "0": p
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
     #     " explosion  in a   world made of skittles ,  in  evening ,  art by  Mark Ryden ,  Margaret"
@@ -98,7 +97,7 @@ text_prompts = {
     # ),
 }
 
-negative_prompts = {0: ["red, face, humans, people, text, blurry, unfocused"]}
+negative_prompts = {0: ["text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
