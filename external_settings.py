@@ -18,10 +18,10 @@ import random
 styled_seconds = 1
 ramp_seconds = 5
 strength_schedule = (
-    [0.3] 
+    [0.2] 
 )
 psych_poster_seed = 245114
-seed = -1 # 1261233236 #660008352 #925432632 # 245114 # random.random() * 1000000
+seed = random.random() * 1000000
 flow_blend_schedule = (
     [0.9]
     # [0.9] * (24 * styled_seconds) # .999 before
