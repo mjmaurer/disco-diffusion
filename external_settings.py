@@ -23,7 +23,7 @@ strength_schedule = (
 psych_poster_seed = 245114
 seed = random.random() * 1000000
 flow_blend_schedule = (
-    [0.9]
+    [0.95]
     # [0.9] * (24 * styled_seconds) # .999 before
     # + list(np.linspace(0.9, 0.55, 24 * (ramp_seconds - 1)))
     # + list(np.linspace(0.55, 0, 24))
