@@ -19,7 +19,7 @@ styled_seconds = 1
 ramp_seconds = 5
 psych_poster_seed = 245114
 seed = random.random() * 1000000
-steps_schedule = [120]
+steps_schedule = [150]
 strength_schedule = [.2] * 24 + list(np.linspace(0.2, 0.05, 36))
 flow_blend_schedule = list(np.linspace(0.99, 0.6, 60))
 #     np.linspace(0.4, 0, 24 * 1)
