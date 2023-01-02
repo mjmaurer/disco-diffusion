@@ -1,6 +1,7 @@
-vid_input = "_89timdance.mp4"
+vid_input = "_90pinesdeforumintro.mp4"
+flow_vid_input = "/notebooks/init_images/_89timdance.mp4" 
 # 97 on stablewarp images_out has a good seed
-init_image = "/notebooks/deforum-output/deforum-texture/2022-12-31-15-13/20221231151334_01976.png"
+init_image = None # "/notebooks/deforum-output/deforum-texture/2022-12-31-15-13/20221231151334_01976.png"
 
 width = 1024 # 960 # 832 # 1024
 height = 576 # 512      # 576 
