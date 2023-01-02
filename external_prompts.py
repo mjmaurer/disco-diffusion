@@ -76,50 +76,17 @@ other = (
 # ]
 p = [
     (
-        "A photograph, 70s psychedelic poster art , microscopic organisms "
+        "A photograph, 70s psychedelic poster art , a man made of ribbon "
         ", in  dawn,  art by  Wes Wilson "
         " , redshift render ,  Volumetric ,  raytracing ,  realistic"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
         " dramatic shadows, highly detailed, hyperreal, long view, vista"
     ),
-    (
-        "a photograph , an amazing cinematic film still , art nouveau , a world made of coral reef "
-        " , by RHADS , "
-        " colorful, Internal glow , "
-        " 4k ,  subsurface scattering  8k, 4k, hd, intricate and highly"
-        " realistic, trending on art station, wide range of colors, photorealistic,"
-        " dramatic shadows, photorealistic, dramatic shadows, highly detailed, hyperreal, long"
-        " view, vista"
-    ),
-    (
-        "A photograph , amazing cinematic film still , art nouveau , a sea of tree leaves "
-        " , in  dawn, by alphonse mucha , "
-        " , redshift render ,  Volumetric ,  raytracing ,  realistic"
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic,"
-        " dramatic shadows, highly detailed, hyperreal, long view, vista"
-    ),
-    (
-        "an oil painting , amazing  cinematic film still , art nouveau  , clouds made of coral reef "
-        " , art by Peter Max "
-        " , expressive eyes "
-        "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
-        " photorealistic , dramatic shadows, highly detailed, long view, vista"
-    ),
-    (
-        "A  amazing  cinematic film still , a woodcut whale , "
-        " in  dawn, art by ernst"
-        " haeckl  And  Lucian Freud , intricate and highly detailed, realistic, extreme detail,"
-        " fine detail, dramatic lighting, volumetric lighting, extreme fluffy, cute, adorable,"
-        " large expressive eyes, long view, exotic colors, mutant, cyberpunk colors, DSLR,  sharp"
-        " focus, extremely detailed realistic and highly detailed, 4k, 8k, hd, photorealistic,"
-        " dramatic shadows"
-    ),
 ]
 cadence = 108
 
 text_prompts = {
-    i * cadence: p[i % len(p)]
-    for i in range(20)
+    "0": p
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
     #     " explosion  in a   world made of skittles ,  in  evening ,  art by  Mark Ryden ,  Margaret"

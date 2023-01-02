@@ -1,6 +1,6 @@
-vid_input = "_92drummer.mp4"
+vid_input = "_89timdance.mp4"
 # 97 on stablewarp images_out has a good seed
-init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(115)_000001.png"
+init_image = "/notebooks/deforum-output/deforum-texture/2022-12-31-15-13/20221231151334_01976.png"
 
 width = 1024 # 960 # 832 # 1024
 height = 576 # 512      # 576 
@@ -18,7 +18,7 @@ import random
 styled_seconds = 1
 ramp_seconds = 5
 strength_schedule = (
-    [0.35] 
+    [0.3] 
 )
 psych_poster_seed = 245114
 seed = -1 # 1261233236 #660008352 #925432632 # 245114 # random.random() * 1000000
@@ -29,7 +29,7 @@ flow_blend_schedule = (
     # + list(np.linspace(0.55, 0, 24))
     # # + list(np.linspace(0.8, 0, 24))
 )
-steps_schedule = [100]
+steps_schedule = [150]
 # flow_blend_schedule = list(np.linspace(0.999, 0.4, 24 * (seconds - 1))) + list(
 #     np.linspace(0.4, 0, 24 * 1)
 # )
