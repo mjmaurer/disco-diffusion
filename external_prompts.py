@@ -75,7 +75,7 @@ other = (
 #     ),
 # ]
 p = [
-    ("An oil painting , 70s psychedelic poster art , a woman made of ribbon , in dawn , by Wes Wilson , psychedelic , vibrant , 8k, 4k, hd, intricate and highly realistic, trending on art station, photorealistic, dramatic shadows, highly detailed, long view, vista"),
+    ("an digital painting , amazing  cinematic film still , a world made of hair  , art by Wes Wilson , surreal  ,  8k, 4k, hd, intricate and highly realistic, trending on art station,  photorealistic , dramatic shadows, highly detailed, long view, vista"),
 ]
 cadence = 108
 
