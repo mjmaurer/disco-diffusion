@@ -1,4 +1,4 @@
-vid_input = "_91sarahclose.mp4"
+vid_input = "_90pinesdeforumintro.mp4"
 # 97 on stablewarp images_out has a good seed
 init_image = "/notebooks/images_out/_93archtrimlonger/_93archtrimlonger(115)_000001.png"
 
@@ -19,9 +19,9 @@ styled_seconds = 1
 ramp_seconds = 5
 psych_poster_seed = 245114
 seed = random.random() * 1000000
-steps_schedule = [150]
-strength_schedule = [.2] * 24 + list(np.linspace(0.2, 0.05, 36))
-flow_blend_schedule = list(np.linspace(0.99, 0.6, 60))
+steps_schedule = [1]
+strength_schedule = [0]
+flow_blend_schedule = [0] * 170 + list(np.linspace(0.0, 0.99, 50))
 #     np.linspace(0.4, 0, 24 * 1)
 # )
 turbo_steps_schedule = [5]
