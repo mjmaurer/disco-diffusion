@@ -77,7 +77,7 @@ other = (
 # TODO hair?
 p = [
     (
-        "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef without fish "
+        "an oil painting , amazing  cinematic film still , art nouveau  , close up of a coral reef"
         " , art by Peter Max "
         " ,"
         "  8k, 4k, hd, intricate and highly realistic, trending on art station, " 
@@ -120,7 +120,7 @@ p = [
 ]
 cadence = 240
 
-negative_prompts = ["face, humans, people, arms, legs: -5", "blurry: -1"]
+negative_prompts = ["face, humans, people, arms, legs, fish:-5", "blurry:-1"]
 
 text_prompts = {
     i * cadence * 2: f"{p[i % len(p)]}:1 {' '.join(negative_prompts)}"
