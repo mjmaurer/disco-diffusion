@@ -120,8 +120,10 @@ p = [
 ]
 cadence = 240
 
+negative_prompts = ["face, humans, people, arms, legs: -5", "blurry: -1"]
+
 text_prompts = {
-    i * cadence * 2: p[i % len(p)]
+    i * cadence * 2: f"{p[i % len(p)]}:1 {' '.join(negative_prompts)}"
     for i in range(20)
     # "200": (
     #     "A photograph, amazing   daguerrotype ,  surrealist painting    raging    tsar bomba"
@@ -139,7 +141,6 @@ text_prompts = {
     # ),
 }
 
-negative_prompts = {0: ["red, face, humans, people, text, blurry, unfocused"]}
 
 image_prompts = {
     # 0:['ImagePromptsWorkButArentVeryGood.png:2',],
